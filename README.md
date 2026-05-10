@@ -50,11 +50,11 @@ The goal is to reduce ambiguity and improve deterministic reasoning for AI syste
 
 ## Layer 1 — Semantic Navigation Layer
 
-Purpose:
+### Purpose
 
 AI interpretation and cognitive routing.
 
-Contains:
+### Contains
 
 - semantic maps
 - authority maps
@@ -63,62 +63,75 @@ Contains:
 - naming systems
 - metadata standards
 
-Main folder:
+### Main Folder
 
-```text
-00-SYSTEM — Semantic Control Layer
-Layer 2 — Meta Architecture Layer
+`00-SYSTEM — Semantic Control Layer`
 
-Purpose:
+---
+
+## Layer 2 — Meta Architecture Layer
+
+### Purpose
 
 Define how the framework thinks and governs tenant structures.
 
-Contains:
+### Contains
 
-governance models
-architecture standards
-security models
-naming conventions
-collaboration strategies
-compliance architecture
+- governance models
+- architecture standards
+- security models
+- naming conventions
+- collaboration strategies
+- compliance architecture
 
-Main folder:
+### Main Folder
 
-01-FRAMEWORK/01-ARC — Architecture
-Layer 3 — Blueprint Modeling Layer
+`01-FRAMEWORK/01-ARC — Architecture`
 
-Purpose:
+---
+
+## Layer 3 — Blueprint Modeling Layer
+
+### Purpose
 
 Transform architecture concepts into reusable operational templates.
 
-Contains:
+### Contains
 
-blueprint templates
-matrix templates
-department models
-governance blueprints
-security blueprints
+- blueprint templates
+- matrix templates
+- department models
+- governance blueprints
+- security blueprints
 
-Main folder:
+### Main Folder
 
-01-FRAMEWORK/02-BLP — Blueprint Templates
-Layer 4 — Operational Execution Layer
+`01-FRAMEWORK/02-BLP — Blueprint Templates`
 
-Purpose:
+---
+
+## Layer 4 — Operational Execution Layer
+
+### Purpose
 
 Automation preparation and deterministic execution.
 
-Contains:
+### Contains
 
-PowerShell scripts
-CSV schemas
-automation documentation
-deployment execution logic
+- PowerShell scripts
+- CSV schemas
+- automation documentation
+- deployment execution logic
 
-Main folder:
+### Main Folder
 
-01-FRAMEWORK/04-AUT — Automation Executables
-Project Structure
+`01-FRAMEWORK/04-AUT — Automation Executables`
+
+---
+
+# Project Structure
+
+```text
 MS365-TENANT — Framework Setup
 │
 ├── .agents
@@ -126,132 +139,170 @@ MS365-TENANT — Framework Setup
 ├── 01-FRAMEWORK — Tenant Setup
 ├── 02-INSTANCES — Projects
 └── 00-START — Initialization Prompt.md
-AI-Oriented Architecture
+```
+
+---
+
+# AI-Oriented Architecture
 
 The framework is specifically designed to improve:
 
-AI context loading
-semantic retrieval
-ontology navigation
-governance consistency
-deterministic generation
-cross-document relationships
+- AI context loading
+- semantic retrieval
+- ontology navigation
+- governance consistency
+- deterministic generation
+- cross-document relationships
 
 The framework uses:
 
-explicit semantic boundaries
-controlled naming conventions
-authority mapping
-structured context prioritization
+- explicit semantic boundaries
+- controlled naming conventions
+- authority mapping
+- structured context prioritization
 
 to reduce semantic drift and hallucination risks.
 
-What This Is
+---
+
+# What This Is
 
 This project IS:
 
-a semantic framework
-a Microsoft 365 architecture system
-an AI-oriented governance environment
-a blueprint factory
-a knowledge-driven tenant modeling system
-a semantic execution environment
-What This Is NOT
+- a semantic framework
+- a Microsoft 365 architecture system
+- an AI-oriented governance environment
+- a blueprint factory
+- a knowledge-driven tenant modeling system
+- a semantic execution environment
+
+---
+
+# What This Is NOT
 
 This project is NOT:
 
-a traditional web application
-a SaaS platform
-a low-code tool
-a finished automation product
-a replacement for Microsoft 365 admin tooling
+- a traditional web application
+- a SaaS platform
+- a low-code tool
+- a finished automation product
+- a replacement for Microsoft 365 admin tooling
 
 The framework complements existing Microsoft tooling by adding semantic structure and AI-oriented architecture.
 
-Current Status
+---
 
-Current maturity level:
+# Current Status
 
-Foundation / Experimental Alpha
+### Current maturity level
 
-Current capabilities:
+`Foundation / Experimental Alpha`
 
-semantic navigation
-ontology-driven architecture
-blueprint modeling
-governance structuring
-automation preparation
-deterministic AI context loading
-Intended Use Cases
+### Current capabilities
+
+- semantic navigation
+- ontology-driven architecture
+- blueprint modeling
+- governance structuring
+- automation preparation
+- deterministic AI context loading
+
+---
+
+# Intended Use Cases
 
 Examples:
 
-Microsoft 365 tenant architecture
-governance standardization
-AI-assisted tenant generation
-blueprint-driven deployment preparation
-semantic knowledge systems
-organizational modeling
-documentation-as-infrastructure
-Initialization
+- Microsoft 365 tenant architecture
+- governance standardization
+- AI-assisted tenant generation
+- blueprint-driven deployment preparation
+- semantic knowledge systems
+- organizational modeling
+- documentation-as-infrastructure
 
-Primary entry point:
+---
 
-00-START — Initialization Prompt.md
+# Initialization
 
-Recommended initialization order:
+### Primary entry point
 
+`00-START — Initialization Prompt.md`
+
+### Recommended initialization order
+
+```text
 00-SYSTEM
 → 01-ARC
 → 02-BLP
 → 04-AUT
-Git Strategy
+```
+
+---
+
+# Git Strategy
 
 This repository contains only the CORE FRAMEWORK.
 
 Project instances are intentionally excluded from version control.
 
-Ignored:
+### Ignored
 
+```text
 02-INSTANCES — Projects
 03-MTX — Data Matrices
 Research / temporary files
-Design Principles
+```
+
+---
+
+# Design Principles
 
 Core principles:
 
-deterministic navigation
-semantic clarity
-ontology separation
-governance-first architecture
-AI-readable structures
-scalable naming systems
-modular execution
-Future Direction
+- deterministic navigation
+- semantic clarity
+- ontology separation
+- governance-first architecture
+- AI-readable structures
+- scalable naming systems
+- modular execution
+
+---
+
+# Future Direction
 
 Potential future evolution:
 
-GraphRAG integration
-Microsoft Graph execution orchestration
-AI-assisted tenant deployment
-semantic policy engines
-enterprise-scale governance models
-context-aware automation systems
-Repository Purpose
+- GraphRAG integration
+- Microsoft Graph execution orchestration
+- AI-assisted tenant deployment
+- semantic policy engines
+- enterprise-scale governance models
+- context-aware automation systems
+
+---
+
+# Repository Purpose
 
 This repository serves as:
 
-semantic architecture workspace
-AI systems design framework
-Microsoft 365 governance laboratory
-ontology-driven knowledge environment
-tenant blueprint factory
-Author
+- semantic architecture workspace
+- AI systems design framework
+- Microsoft 365 governance laboratory
+- ontology-driven knowledge environment
+- tenant blueprint factory
+
+---
+
+# Author
 
 Federico Mosqueira
 
 Belgium — Antwerp
 
-License
+---
+
+# License
 
 Currently private governance architecture research and experimental framework development.
