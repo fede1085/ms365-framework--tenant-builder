@@ -1,0 +1,43 @@
+# @SYS-MAP-002 — Relations Map
+
+> **Purpose:** Global relationship map to allow AI systems to navigate document relationships.
+
+## Architecture to Blueprint
+@ARC-STD-007
+depends_on:
+  - @ARC-SYS-000
+feeds:
+  - @BLP-SYS-000
+  - @BLP-TMP-002
+governed_by:
+  - @ARC-GOV-016
+
+## Blueprint to Matrix
+@BLP-TMP-003
+depends_on:
+  - @ARC-STD-007
+feeds:
+  - @MTX-USR-001
+  - @MTX-GRP-001
+related_to:
+  - @BLP-TMP-002
+impacts:
+  - @BLP-TMP-004
+
+## Matrix to Automation
+@MTX-USR-001
+depends_on:
+  - @BLP-TMP-003
+  - @BLP-TMP-006
+feeds:
+  - @AUT-DOC-009
+governed_by:
+  - @BLP-TMP-015
+
+## Global Security
+@ARC-STD-014
+impacts:
+  - @BLP-TMP-006
+  - @BLP-TMP-002
+related_to:
+  - @ARC-SYS-000

@@ -1,0 +1,61 @@
+# Taxonomy Design:
+
+/Framework Structure
+    /01-ARC — Architecture (Core baselines, policies, and semantic rules)
+    /02-BLP — Blueprint Templates (Reusable schemas, generic matrices, safe blueprints)
+    /03-MTX — Data Matrices (Instantiated real project data, e.g., CSV files)
+    /04-AUT — Automation Executables (Deployment scripts, automated CSV schemas)
+
+/Knowledge Graph Maps
+   - SYS-MAP-005 — Semantic Map.md
+   - SYS-MAP-006 — Workflow Map.md
+   - SYS-ENT-001 — Entity Map.md
+   - SYS-AGT-001 — Agent Map.md
+
+---
+
+**Dentro del archivo central:**
+
+@semantic-map.md
+
+    - mapa global
+    - relaciones
+    - entidades
+    - dependencias
+    - conceptos
+
+---
+
+**Dentro de cada archivo:**
+
+@workflow-map.md
+@entity-map.md
+@agent-map.md
+
+    - links importantes
+    - relaciones inmediatas
+    - referencias útiles
+
+---
+
+La IA necesita restricciones semánticas
+
+O sea:
+
+- naming conventions
+- relaciones claras
+- contexto
+- ownership
+- jerarquías
+- entidades definidas
+
+---
+
+## 2. Abstraction Model
+
+La estructura semántica DEBE ser estricta:
+
+*   **ARC (Architecture)**: Lógica conceptual y de gobierno.
+*   **BLP (Blueprint Templates)**: Plantillas reutilizables, NO contienen datos reales de un proyecto.
+*   **MTX (Data Matrices)**: Matrices de datos pobladas. Esta es la única capa con datos reales del usuario.
+*   **AUT (Automation Executables)**: Scripts de ejecución y automatización.
