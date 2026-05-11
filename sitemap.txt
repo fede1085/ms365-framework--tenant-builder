@@ -108,7 +108,7 @@ MS365-TENANT — Framework Setup
 │   │   ├── BLP-TMP-006 — Permission Matrix Template.md
 │   │   └── BLP-TMP-015 — License Matrix Template.md
 │   │
-│   ├── 03-MTX — Data Matrices
+│   ├── 03-MTX — Data Matrices [ignore]
 │   │   │
 │   │   └── Security
 │   │       └── MTX-SEC-004 — Device Compliance Matrix.csv
@@ -128,7 +128,7 @@ MS365-TENANT — Framework Setup
 │       ├── AUT-SYS-000 — Automation Control Layer.md
 │       └── 00-START — Execution Workflow.md
 │
-├── 02-INSTANCES — Projects
+├── 02-INSTANCES — Projects [ignore]
 │
 ├── .gitignore
 │

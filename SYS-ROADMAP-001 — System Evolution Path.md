@@ -31,6 +31,9 @@ Because the framework already has:
 ✔ project instancing
 ✔ automation preparation
 ✔ operational modeling
+✔ semantic routing
+✔ governance continuity
+✔ semantic authority hierarchy
 ```
 
 This is already beyond:
@@ -59,6 +62,7 @@ authority rule enforcement
 context boundary enforcement
 parser / compiler layer
 runtime execution orchestration
+deterministic structured validation
 ```
 
 The system still depends heavily on:
@@ -71,6 +75,8 @@ instead of:
 
 ```text
 formal machine-readable logic
+semantic structured objects
+canonical deterministic validation
 ```
 
 ---
@@ -104,14 +110,15 @@ turn semantic Markdown into structured canonical objects
 This means:
 
 ```text
-Markdown → YAML / JSON → validation → generation
+Markdown
+→ YAML / JSON
+→ validation
+→ deterministic generation
 ```
 
 ---
 
 # 6. Core Near-Term Focus
-
-The next improvement is NOT vector database or RAG.
 
 The next improvement is:
 
@@ -130,13 +137,146 @@ Focus on these four pillars:
 
 ---
 
-# 7. Priority 1 — Authority Loading
+# 7. Structured Parallel Layer
 
-## Goal
+## Core Strategic Direction
 
-Make the system know which layer has authority.
+The framework will evolve into:
 
-Example:
+```text
+Semantic Layer
++
+Structured Deterministic Layer
+```
+
+The structured layer does NOT replace the semantic layer.
+
+It acts as:
+
+```text
+machine-readable deterministic enforcement
+```
+
+for the semantic system.
+
+---
+
+# 8. Parallel Layer Architecture
+
+The new structured layer should mirror the same conceptual hierarchy already used inside the Semantic Control Layer.
+
+---
+
+## L1 — Navigation
+
+Semantic equivalent:
+
+```text
+SYS-MAP-*
+SYS-GOV-*
+```
+
+Structured equivalent:
+
+```text
+graphs/
+routing/
+```
+
+Purpose:
+
+```text
+deterministic context routing
+relationship mapping
+authority traversal
+semantic dependency loading
+```
+
+---
+
+## L2 — Meta Governance
+
+Semantic equivalent:
+
+```text
+ARC-SYS-000
+SYS-MAP-004
+SYS-STD-*
+```
+
+Structured equivalent:
+
+```text
+rules/
+```
+
+Purpose:
+
+```text
+authority enforcement
+boundary validation
+governance enforcement
+deterministic control logic
+```
+
+---
+
+## L3 — Blueprint Modeling
+
+Semantic equivalent:
+
+```text
+BLP-TMP-*
+BLP-SYS-000
+```
+
+Structured equivalent:
+
+```text
+schemas/
+```
+
+Purpose:
+
+```text
+validate blueprint structures
+validate object formats
+validate matrix structures
+```
+
+---
+
+## L4 — Execution
+
+Semantic equivalent:
+
+```text
+MTX
+AUT
+```
+
+Structured equivalent:
+
+```text
+compiled/
+```
+
+Purpose:
+
+```text
+machine-readable execution objects
+compiled YAML/JSON
+runtime-ready structures
+automation-ready outputs
+```
+
+---
+
+# 9. Deterministic Authority
+
+The canonical layer must preserve the authority hierarchy already defined semantically.
+
+Core hierarchy:
 
 ```text
 ARCH governs BLP
@@ -169,7 +309,97 @@ authority_rules:
 
 ---
 
-# 8. Priority 2 — Context Loading
+# 10. Canonical Naming System
+
+The framework naming system becomes:
+
+```text
+machine identity
+```
+
+Canonical objects MUST use:
+
+```text
+PREFIX-CATEGORY-###
+```
+
+defined in:
+
+```text
+SYS-STD-002
+```
+
+This avoids:
+
+```text
+semantic collisions
+object ambiguity
+authority confusion
+```
+
+---
+
+# 11. Canonical Vocabulary Enforcement
+
+Object keys MUST derive from:
+
+```text
+SYS-STD-001 — Canonical Vocabulary
+```
+
+Examples:
+
+```text
+identity_type
+access_rights
+authority_level
+object_scope
+security_tier
+```
+
+This ensures:
+
+```text
+shared deterministic language
+```
+
+across:
+
+```text
+semantic
+canonical
+automation
+validation
+execution
+```
+
+---
+
+# 12. Priority 1 — Authority Loading
+
+## Goal
+
+Make the system know which layer has authority.
+
+Authority becomes:
+
+```text
+machine-enforced
+```
+
+instead of only conceptual.
+
+Example:
+
+```yaml
+AUT:
+  cannot:
+    - redefine_architecture
+```
+
+---
+
+# 13. Priority 2 — Context Loading
 
 ## Goal
 
@@ -179,20 +409,23 @@ Example:
 
 ```text
 Task: Generate tenant project
+```
+
 Load:
 
-- SYS-GOV-001
-- SYS-GOV-002
+```text
+SYS-GOV-001
+SYS-GOV-002
 
-- SYS-MAP-000
-- SYS-MAP-004
+SYS-MAP-000
+SYS-MAP-004
 
-- SYS-STD-001
-- SYS-STD-002
+SYS-STD-001
+SYS-STD-002
 
-- ARC-SYS-000
-- BLP-SYS-000
-- AUT-SYS-000
+ARC-SYS-000
+BLP-SYS-000
+AUT-SYS-000
 ```
 
 Do NOT load everything.
@@ -200,31 +433,87 @@ Do NOT load everything.
 Reason:
 
 ```text
-too much context creates semantic contamination
+too much context creates:
+- semantic contamination
+- semantic drift
+- ontology conflicts
+- routing noise
 ```
 
 ---
 
-# 9. Priority 3 — Semantic Boundary Enforcement
+# 14. Deterministic Routing
+
+The structured layer should formalize routing logic.
+
+Example:
+
+```yaml
+task: tenant_generation
+
+load_order:
+  - SYS-GOV-001
+  - SYS-GOV-002
+  - SYS-MAP-000
+  - SYS-MAP-004
+  - ARC-SYS-000
+  - BLP-SYS-000
+  - AUT-SYS-000
+
+allowed_domains:
+  - architecture
+  - blueprint
+  - automation
+
+forbidden_domains:
+  - legacy
+  - instances
+```
+
+This becomes:
+
+```text
+deterministic context loading
+```
+
+instead of:
+
+```text
+probabilistic semantic retrieval
+```
+
+---
+
+# 15. Priority 3 — Semantic Boundary Enforcement
 
 ## Goal
 
 Prevent AI from mixing different ontologies.
 
-The system has at least two semantic worlds:
+The framework contains at least two semantic worlds:
 
 ```text
 1. Framework ontology
 2. Tenant instance ontology
 ```
 
+Definitions:
+
+```text
+Framework ontology
+= the system's meta-ontology
+
+Tenant ontology
+= the generated tenant objects
+```
+
 Rules:
 
 ```text
-Framework ontology explains how the system works.
-Tenant ontology describes the generated tenant.
-Framework rules are read-only during tenant generation.
-Tenant data must not modify framework rules.
+Framework ontology explains how the framework works.
+Tenant ontology describes generated tenants.
+Framework rules are read-only during generation.
+Tenant data must never modify framework logic.
 ```
 
 Example validation:
@@ -233,24 +522,27 @@ Example validation:
 boundary_rules:
   - name: framework_read_only
     applies_when: tenant_generation
+
     forbidden_actions:
       - modify_framework
+      - modify_meta_ontology
       - create_framework_files
       - treat_framework_as_tenant_data
 
   - name: tenant_write_scope
     applies_when: tenant_generation
+
     allowed_write_targets:
       - 02-INSTANCES
 ```
 
 ---
 
-# 10. Priority 4 — Canonical Validation
+# 16. Priority 4 — Canonical Validation
 
 ## Goal
 
-Turn Markdown concepts into structured objects that can be checked.
+Turn Markdown concepts into structured objects that can be validated deterministically.
 
 Example:
 
@@ -264,6 +556,7 @@ Canonical rule:
 
 ```yaml
 rule_id: RULE-MBX-SEC-001
+
 object_type: mailbox
 
 condition:
@@ -284,94 +577,139 @@ THEN SendAs must be empty
 
 ---
 
-# 11. Recommended Next Folder
+# 17. Recommended Next Folder
 
 Add:
 
 ```text
-05-CANONICAL
+03-CANONICAL
 ```
 
 Recommended structure:
 
 ```text
-05-CANONICAL
+03-CANONICAL
 │
 ├── schemas
 ├── rules
 ├── compiled
-└── graphs
+├── graphs
+└── routing
 ```
 
 ---
 
-# 12. Folder Meaning
+# 18. Folder Meaning
 
 ## schemas
 
-Defines valid object shapes.
-
-Example:
-
-```text
-user.schema.yaml
-mailbox.schema.yaml
-group.schema.yaml
-policy.schema.yaml
-```
+Defines valid object structures.
 
 Purpose:
 
 ```text
-define required fields, allowed values, and object types
+validate object shape
+validate required fields
+validate allowed values
+```
+
+Example:
+
+```yaml
+mailbox:
+  required:
+    - id
+    - type
+    - owners
+
+  allowed_types:
+    - BIZ
+    - OPS
+    - SEC
+```
+
+schemas define:
+
+```text
+valid structure
+```
+
+NOT:
+
+```text
+behavior
 ```
 
 ---
 
 ## rules
 
-Defines enforcement logic.
-
-Example:
-
-```text
-authority.rules.yaml
-mailbox.rules.yaml
-security.rules.yaml
-boundary.rules.yaml
-```
+Defines governance and validation logic.
 
 Purpose:
 
 ```text
-make governance machine-readable
+authority enforcement
+security validation
+boundary enforcement
+governance validation
+```
+
+Example:
+
+```yaml
+IF mailbox.type == SEC
+THEN SendAs = forbidden
+```
+
+rules define:
+
+```text
+valid behavior
 ```
 
 ---
 
 ## compiled
 
-Stores generated structured output from Markdown.
-
-Example:
-
-```text
-ARC-SEC-001.yaml
-BLP-OPS-002.yaml
-SYS-MAP-004.yaml
-```
+Stores structured outputs generated from Markdown.
 
 Purpose:
 
 ```text
-Markdown source → compiled YAML / JSON
+Markdown
+→ structured YAML/JSON
+```
+
+Example:
+
+```text
+ARC-SEC-001.md
+↓
+ARC-SEC-001.yaml
+```
+
+compiled contains:
+
+```text
+machine-readable semantic objects
 ```
 
 ---
 
 ## graphs
 
-Stores relationships.
+Stores semantic relationships.
+
+Purpose:
+
+```text
+authority relationships
+dependency mapping
+inheritance
+semantic traversal
+ontology connections
+```
 
 Example:
 
@@ -380,49 +718,64 @@ edges:
   - source: ARC-GOV-002
     relation: governs
     target: BLP-GOV-002
-
-  - source: BLP-OPS-002
-    relation: generates
-    target: MTX-CHANNELS
-```
-
-Purpose:
-
-```text
-represent dependencies
-authority
-inheritance
-semantic relationships
 ```
 
 ---
 
-# 13. YAML vs JSON
+## routing
+
+Stores deterministic loading logic.
+
+Purpose:
+
+```text
+determine:
+- what loads
+- when it loads
+- what is ignored
+- what has authority
+```
+
+This becomes:
+
+```text
+deterministic context orchestration
+```
+
+---
+
+# 19. YAML vs JSON
 
 Recommended model:
 
 ```text
-YAML = canonical authoring format
-JSON = runtime/export format
+YAML
+= canonical authoring format
+
+JSON
+= runtime/export format
 ```
 
 Use YAML for:
 
 ```text
-human-readable canonical rules
-governance objects
+human-readable canonical objects
+machine-readable canonical objects
 authority maps
 semantic relations
+governance structures
+validation rules
 ```
 
 Use JSON for:
 
 ```text
+runtime systems
 APIs
 Microsoft Graph
 Terraform-style outputs
-runtime execution
-validation engines
+automation pipelines
+execution engines
 ```
 
 Recommended pipeline:
@@ -431,12 +784,13 @@ Recommended pipeline:
 Markdown
 → Canonical YAML
 → Compiled JSON
-→ Validation / Graph / Execution
+→ Validation
+→ Execution
 ```
 
 ---
 
-# 14. Correct Evolution Path
+# 20. Correct Evolution Path
 
 ## STEP 1
 
@@ -472,7 +826,10 @@ governs:
 Goal:
 
 ```text
-improve context loading and authority routing
+improve:
+- context loading
+- authority routing
+- deterministic validation
 ```
 
 ---
@@ -488,7 +845,9 @@ canonical YAML objects
 Goal:
 
 ```text
-reduce interpretation and ambiguity
+reduce ambiguity
+reduce interpretation
+reduce semantic drift
 ```
 
 ---
@@ -537,28 +896,28 @@ Markdown
 
 ## STEP 6
 
-Only after previous steps:
+ONLY after previous steps:
 
 Consider:
 
 ```text
 graph runtime
 semantic graph database
-RAG
 GraphRAG
 retrieval orchestration
+vector retrieval
 ```
 
 ---
 
-# 15. Why NOT RAG First
+# 21. Why NOT RAG First
 
 RAG is useful for:
 
 ```text
 retrieving chunks
-answering questions
-searching large document sets
+semantic search
+document Q&A
 ```
 
 But the primary goal of this framework is:
@@ -570,24 +929,24 @@ coherent tenant generation
 NOT:
 
 ```text
-general document Q&A
+conversational memory systems
 ```
 
-Therefore, the priority is:
+The framework is fundamentally oriented toward:
 
 ```text
-canonical generation and validation
+AI-assisted structured generation
 ```
 
 NOT:
 
 ```text
-vector retrieval
+memory-centric chatbot architecture
 ```
 
 ---
 
-# 16. Current Strategic Priority
+# 22. Current Strategic Priority
 
 Most important thing now:
 
@@ -608,12 +967,12 @@ structured objects
 authority rules
 context boundaries
 validation logic
-controlled generation
+controlled deterministic generation
 ```
 
 ---
 
-# 17. What Makes The Framework Strong
+# 23. What Makes The Framework Strong
 
 The strongest parts already achieved:
 
@@ -626,13 +985,15 @@ The strongest parts already achieved:
 ✔ domain separation
 ✔ AI-oriented structure
 ✔ context loading awareness
+✔ semantic routing
+✔ layered governance
 ```
 
 This is the real foundation.
 
 ---
 
-# 18. Most Valuable Future Addition
+# 24. Most Valuable Future Addition
 
 ## Canonical Structured Layer
 
@@ -643,20 +1004,22 @@ Reason:
 It improves:
 
 ```text
+✔ deterministic validation
+✔ authority enforcement
 ✔ context loading
 ✔ authority routing
 ✔ consistency
-✔ validation
 ✔ parsing
 ✔ graph generation
 ✔ multi-output generation
+✔ execution reliability
 ```
 
-without exploding complexity.
+WITHOUT exploding complexity.
 
 ---
 
-# 19. Future Output Targets
+# 25. Future Output Targets
 
 The framework should eventually support multiple outputs:
 
@@ -664,23 +1027,28 @@ The framework should eventually support multiple outputs:
 PowerShell scripts
 Microsoft Graph payloads
 Terraform-style definitions
-Microsoft 365 DSC-style configuration
+Microsoft 365 DSC configurations
 validation reports
 tenant drift comparison
 semantic graphs
+runtime orchestration
 ```
 
-This means the framework should not be designed around one script only.
-
-It should become:
+The framework should evolve into:
 
 ```text
 multi-output semantic orchestration
 ```
 
+NOT:
+
+```text
+single-script execution
+```
+
 ---
 
-# 20. Recommended Development Philosophy
+# 26. Recommended Development Philosophy
 
 Rule:
 
@@ -694,7 +1062,7 @@ Observe patterns first.
 
 ---
 
-# 21. Final Strategic Direction
+# 27. Final Strategic Direction
 
 Current best path:
 
@@ -705,7 +1073,8 @@ Current best path:
 4. Add canonical YAML objects
 5. Add validation rules
 6. Add parser / compiler layer
-7. THEN consider graph runtime and RAG
+7. Add deterministic routing
+8. THEN consider graph runtime and GraphRAG
 ```
 
 This keeps the framework:
@@ -715,8 +1084,9 @@ This keeps the framework:
 ✔ understandable
 ✔ AI-friendly
 ✔ maintainable
-✔ flexible
 ✔ progressively deterministic
+✔ governance-oriented
+✔ execution-safe
 ```
 
 without becoming:
