@@ -313,6 +313,6 @@ Currently private governance architecture research and experimental framework de
 
 # Auxiliary Workspace
 
-`.codex` is an AI-assisted stabilization workspace used for support tooling and contributor/agent execution context.
+`.codex` is an AI-assisted tooling workspace used for support tooling and contributor/agent execution context.
 
 It is **non-authoritative** and does not override SYS/CAN/ARC governance doctrine.
