@@ -6,7 +6,17 @@ param(
 
 $BasePath = "..\..\..\02-INSTANCES — Projects"
 
+
+# -----------------------------
+# Execution Path Notes
+# -----------------------------
+# Expected working directory: 01-FRAMEWORK — Tenant Setup/04-AUT — Automation Executables/scripts
+# Base path resolution depends on framework-relative structure and should not be renamed.
+# You may pass -ProjectPath explicitly to bypass interactive selection and relative path assumptions.
+
 Write-Host "=== PROJECT DEPLOY RUNNER ==="
+Write-Host "Working directory:" (Get-Location)
+Write-Host "Expected base path root:" (Resolve-Path "..\..\.." -ErrorAction SilentlyContinue)
 
 # -----------------------------
 # 1. RESOLVE PROJECT

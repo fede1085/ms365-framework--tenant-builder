@@ -1,0 +1,22 @@
+id: "state:execution:v1"
+source: "CAN-STATE-001 — Execution State Model"
+default: "READ_ONLY"
+states:
+  - name: "READ_ONLY"
+    purpose: "audits, inspections, validation"
+    allow_generate: false
+    allow_execute: false
+  - name: "PLAN"
+    purpose: "discovery and analysis"
+    allow_generate: false
+    allow_execute: false
+  - name: "GENERATE"
+    purpose: "BLP and MTX generation"
+    allow_generate: true
+    allow_execute: false
+  - name: "EXECUTE"
+    purpose: "AUT deployment execution only"
+    allow_generate: true
+    allow_execute: true
+constraints:
+  - "AUT must NEVER execute outside EXECUTE state"
