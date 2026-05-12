@@ -63,3 +63,10 @@ Always validate the structure and content of the Matrix CSV inputs before passin
 - AUT-SYS-000 — Automation Control Layer.md
 - BLP-SYS-000 — Blueprint Control Layer.md
 - ARC-SYS-000 — Architecture Control Map.md
+
+
+## Execution Path Expectations
+- Scripts assume framework-relative paths as documented in `scripts/Run-Project.ps1`.
+- Preferred execution directory is `01-FRAMEWORK — Tenant Setup/04-AUT — Automation Executables/scripts`.
+- `-ProjectPath` can be provided explicitly to avoid path-resolution ambiguity.
+- Path conventions are ontology-dependent and must not be renamed in hardening passes.

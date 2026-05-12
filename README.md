@@ -135,6 +135,7 @@ Automation preparation and deterministic execution.
 MS365-TENANT — Framework Setup
 │
 ├── .agents
+├── .codex
 ├── 00-SYSTEM — Semantic Control Layer
 ├── 01-FRAMEWORK — Tenant Setup
 ├── 02-INSTANCES — Projects
@@ -306,3 +307,12 @@ Belgium — Antwerp
 # License
 
 Currently private governance architecture research and experimental framework development.
+
+
+---
+
+# Auxiliary Workspace
+
+`.codex` is an AI-assisted stabilization workspace used for support tooling and contributor/agent execution context.
+
+It is **non-authoritative** and does not override SYS/CAN/ARC governance doctrine.

@@ -7,6 +7,17 @@ param(
 
 Write-Host "=== DEPLOY TENANT ==="
 
+
+function New-RandomTenantPassword {
+    param([int]$Length = 20)
+
+    $chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@$%*?-_".ToCharArray()
+    $bytes = New-Object byte[] ($Length)
+    [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+    $pwd = -join ($bytes | ForEach-Object { $chars[$_ % $chars.Length] })
+    return $pwd
+}
+
 $Mode = if ($Execute) { "EXECUTE" } else { "DRY-RUN" }
 Write-Host "Mode:" $Mode
 
@@ -73,7 +84,7 @@ foreach ($u in $Users) {
             -MailNickname ($u.UPN.Split("@")[0]) `
             -AccountEnabled $true `
             -PasswordProfile @{
-                Password = "TempP@ss1234"
+                Password = (New-RandomTenantPassword)
                 ForceChangePasswordNextSignIn = $true
             }
 

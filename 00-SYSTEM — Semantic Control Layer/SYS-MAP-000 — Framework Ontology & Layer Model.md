@@ -92,3 +92,13 @@ AI agents should use L1 (Semantic Navigation) to determine which L2 (Meta) logic
 - `ARC-SYS-000 — Architecture Control Map` (Execution model)
 - `SYS-MAP-005 — Semantic Map` (Knowledge Graph)
 - `SYS-STD-001 — Canonical Vocabulary` (Ontology)
+
+
+## 6. Canonical Derivative Layer Clarification
+
+The canonical folders below are derivative control artifacts and do not redefine SYS doctrine:
+
+- **03-COMPILED**: machine-readable semantic compilations derived from SYS/CAN; non-authoritative as semantic doctrine.
+- **04-GRAPHS**: dependency and routing visualization layer derived from SYS/CAN relations.
+- **05-ROUTING**: context loading/orchestration routing constraints for deterministic agent behavior.
+- **06-AUDITS**: verification/synchronization reports as read-only analytical outputs.

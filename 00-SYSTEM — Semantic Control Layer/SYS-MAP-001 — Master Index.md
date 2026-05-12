@@ -48,3 +48,20 @@
 ## 8. Governance Documents
 - @ARC-GOV-016 (User Lifecycle Model)
 - @BLP-TMP-015 (License Matrix Template)
+- @SYS-GOV-003 (Authority Layer Clarification)
+
+
+## 9. Legacy Documents
+- LEGACY-prefixed documents are **historical reference only**.
+- Legacy documents are **non-authoritative** for active governance decisions.
+- Do not use legacy artifacts as source-of-truth for current SYS/CAN/ARC enforcement.
+
+## 10. Canonical Derivative Layer Clarification
+- `03-COMPILED` = derived machine-readable semantic compilations; not semantic authorities.
+- `04-GRAPHS` = dependency/routing visualization derived from SYS/CAN.
+- `05-ROUTING` = context-loading and orchestration routing layer.
+- `06-AUDITS` = verification and synchronization reports; read-only analytical outputs.
+
+## 11. Auxiliary Workspace Clarification
+- `.codex` is an AI-assisted stabilization workspace.
+- `.codex` is non-authoritative and belongs to support tooling only.
