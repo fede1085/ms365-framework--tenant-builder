@@ -13,15 +13,7 @@ MS365-TENANT — Framework Setup
 │       ├── WKFW-001 — Interactive Identity Blueprint.md
 │       └── WKFW-002 — Blueprint Full Project Generator.md
 │
-├── 00-CANONICAL — Structured Control Layer
-│   │
-│   ├── LEGACY-PRJ-ARC-001 — Personal Project Architecture.md
-│   ├── LEGACY-PRJ-LVL-001 — Tenant Project Levels Blueprint.md
-│   ├── LEGACY-PRJ-LVL-001 — Tenant Project Levels Index.md
-│   │
-│   ├── SYS-AGT-001 — Agent Map.md
-│   ├── SYS-ENT-001 — Entity Map.md
-│   ├── SYS-FRWK-999 — Structure Guide.txt
+├── 00-SYSTEM — Semantic Control Layer
 │   │
 │   ├── SYS-GOV-001 — Read First.md
 │   ├── SYS-GOV-002 — Context Loading Priority.md
@@ -37,8 +29,21 @@ MS365-TENANT — Framework Setup
 │   ├── SYS-STD-001 — Canonical Vocabulary.md
 │   ├── SYS-STD-002 — Naming System.md
 │   │
-│   └── //// SYS-TPL-001 — Metadata Template.md //// To Be Created ////
+│   ├── SYS-TPL-001 — Metadata Template.md
+│   │
+│   ├── SYS-ROADMAP-001 — Framework Roadmap.md
+│   └── SYS-STATUS-001 — Stabilization Status.md
 │
+├── 00-CANONICAL — Structured Control Layer
+│   │
+│   ├── LEGACY-PRJ-ARC-001 — Personal Project Architecture.md
+│   ├── LEGACY-PRJ-LVL-001 — Tenant Project Levels Blueprint.md
+│   ├── LEGACY-PRJ-LVL-002 — Tenant Project Levels Index.md
+│   │
+│   ├── SYS-AGT-001 — Agent Map.md
+│   ├── SYS-ENT-001 — Entity Map.md
+│   ├── SYS-FRWK-999 — Structure Guide.txt
+│   │
 │   ├── 01-SCHEMAS
 │   │   ├── CAN-SCH-001 — Semantic Metadata Schema.md
 │   │   ├── CAN-SCH-001.yaml
@@ -78,6 +83,7 @@ MS365-TENANT — Framework Setup
 │   │
 │   ├── 04-GRAPHS
 │   │   ├── CAN-GRP-001 — Semantic Dependency Graph.md
+│   │   ├── CAN-GRP-002 — Routing Dependency Graph.md
 │   │   ├── SYS-AUTHORITY.graph.yaml
 │   │   ├── SYS-DEPENDENCY.graph.yaml
 │   │   └── SYS-ROUTING.graph.yaml
@@ -88,6 +94,7 @@ MS365-TENANT — Framework Setup
 │   │   └── SYS-LOAD-PRIORITY.router.yaml
 │   │
 │   └── 06-AUDITS
+│       ├── CAN-AUD-001 — Canonical Governance Audit.md
 │       ├── CAN-AUD-003 — Post-Interruption Verification Report.md
 │       └── CAN-AUD-004 — Canonical Synchronization Report.md
 │
@@ -182,6 +189,14 @@ MS365-TENANT — Framework Setup
 │
 ├── 02-INSTANCES — Projects [ignore]
 │
+├── .codex
+│   └── environments
+│       └── environment.toml
+│
 ├── .gitignore
 │
-└── 00-START — Initialization Prompt.md
+├── 00-START — Initialization Prompt.md
+├── 01-GENERATION — Blueprint Generation Prompt.md
+├── 02-VALIDATION — Blueprint Validation Prompt.md
+│
+└── README.md

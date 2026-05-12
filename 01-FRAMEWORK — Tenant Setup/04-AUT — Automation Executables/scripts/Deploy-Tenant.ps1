@@ -2,24 +2,54 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$ProjectPath,
 
+    [Parameter(Mandatory=$true)]
+    [string]$TenantId,
+
+    [Parameter(Mandatory=$true)]
+    [string]$TenantDomain,
+
+    [string]$EnvironmentName = "PROD",
+
     [switch]$Execute
 )
 
 Write-Host "=== DEPLOY TENANT ==="
-
 
 function New-RandomTenantPassword {
     param([int]$Length = 20)
 
     $chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@$%*?-_".ToCharArray()
     $bytes = New-Object byte[] ($Length)
+
     [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
-    $pwd = -join ($bytes | ForEach-Object { $chars[$_ % $chars.Length] })
+
+    $pwd = -join ($bytes | ForEach-Object {
+        $chars[$_ % $chars.Length]
+    })
+
     return $pwd
 }
 
 $Mode = if ($Execute) { "EXECUTE" } else { "DRY-RUN" }
+
 Write-Host "Mode:" $Mode
+Write-Host ""
+
+Write-Host "=== TARGET TENANT ==="
+Write-Host "Tenant ID      :" $TenantId
+Write-Host "Tenant Domain  :" $TenantDomain
+Write-Host "Environment    :" $EnvironmentName
+Write-Host "Project Path   :" $ProjectPath
+Write-Host ""
+
+if ($Execute) {
+
+    $confirmation = Read-Host "Type YES to continue"
+
+    if ($confirmation -ne "YES") {
+        throw "❌ Deployment cancelled by user."
+    }
+}
 
 # -----------------------------
 # VALIDATE PATH
@@ -38,9 +68,15 @@ $GroupsFile      = Join-Path $ProjectPath "MTX-GROUPS.csv"
 $MailboxesFile   = Join-Path $ProjectPath "MTX-MAILBOXES.csv"
 $PermissionsFile = Join-Path $ProjectPath "MTX-PERMISSIONS.csv"
 
-$files = @($UsersFile,$GroupsFile,$MailboxesFile,$PermissionsFile)
+$files = @(
+    $UsersFile,
+    $GroupsFile,
+    $MailboxesFile,
+    $PermissionsFile
+)
 
 foreach ($f in $files) {
+
     if (-not (Test-Path $f)) {
         throw "❌ Missing file: $f"
     }
@@ -56,10 +92,31 @@ $Permissions = Import-Csv $PermissionsFile
 # -----------------------------
 
 if ($Execute) {
-    Write-Host "Connecting..."
 
-    Connect-MgGraph -Scopes "User.ReadWrite.All","Group.ReadWrite.All","Directory.ReadWrite.All"
-    Connect-ExchangeOnline
+    Write-Host ""
+    Write-Host "=== CONNECTING ==="
+
+    Connect-MgGraph `
+        -TenantId $TenantId `
+        -Scopes "User.ReadWrite.All","Group.ReadWrite.All","Directory.ReadWrite.All"
+
+    Connect-ExchangeOnline `
+        -Organization $TenantDomain
+
+    Write-Host ""
+    Write-Host "=== VERIFY CONNECTION ==="
+
+    $Context = Get-MgContext
+
+    Write-Host "Connected Tenant ID :" $Context.TenantId
+    Write-Host "Expected Tenant ID  :" $TenantId
+
+    if ($Context.TenantId -ne $TenantId) {
+        throw "❌ Connected tenant does not match expected tenant."
+    }
+
+    Write-Host "[OK] Tenant validation successful."
+    Write-Host ""
 }
 
 # -----------------------------
@@ -78,6 +135,15 @@ foreach ($u in $Users) {
     }
 
     try {
+
+        $ExistingUser = Get-MgUser `
+            -Filter "userPrincipalName eq '$($u.UPN)'"
+
+        if ($ExistingUser) {
+            Write-Host "[SKIP] User already exists $msg"
+            continue
+        }
+
         New-MgUser `
             -DisplayName $u.DisplayName `
             -UserPrincipalName $u.UPN `
@@ -92,6 +158,7 @@ foreach ($u in $Users) {
     }
     catch {
         Write-Host "[ERR] User $msg"
+        Write-Host $_
     }
 }
 
@@ -111,6 +178,15 @@ foreach ($g in $Groups) {
     }
 
     try {
+
+        $ExistingGroup = Get-MgGroup `
+            -Filter "displayName eq '$($g.GroupName)'"
+
+        if ($ExistingGroup) {
+            Write-Host "[SKIP] Group already exists $msg"
+            continue
+        }
+
         New-MgGroup `
             -DisplayName $g.GroupName `
             -MailEnabled $true `
@@ -122,6 +198,7 @@ foreach ($g in $Groups) {
     }
     catch {
         Write-Host "[ERR] Group $msg"
+        Write-Host $_
     }
 }
 
@@ -141,7 +218,18 @@ foreach ($m in $Mailboxes) {
     }
 
     try {
-        New-Mailbox -Shared `
+
+        $ExistingMailbox = Get-Mailbox `
+            -Identity $m.Mailbox `
+            -ErrorAction SilentlyContinue
+
+        if ($ExistingMailbox) {
+            Write-Host "[SKIP] Mailbox already exists $msg"
+            continue
+        }
+
+        New-Mailbox `
+            -Shared `
             -Name ($m.Mailbox.Split("@")[0]) `
             -PrimarySmtpAddress $m.Mailbox
 
@@ -149,6 +237,7 @@ foreach ($m in $Mailboxes) {
     }
     catch {
         Write-Host "[ERR] Mailbox $msg"
+        Write-Host $_
     }
 }
 
@@ -168,7 +257,9 @@ foreach ($p in $Permissions) {
     }
 
     try {
+
         if ($p.FullAccess) {
+
             Add-MailboxPermission `
                 -Identity $mbx `
                 -User $p.FullAccess `
@@ -177,6 +268,7 @@ foreach ($p in $Permissions) {
         }
 
         if ($p.SendAs) {
+
             Add-RecipientPermission `
                 -Identity $mbx `
                 -Trustee $p.SendAs `
@@ -188,7 +280,9 @@ foreach ($p in $Permissions) {
     }
     catch {
         Write-Host "[ERR] Permissions $mbx"
+        Write-Host $_
     }
 }
 
-Write-Host "`nDONE"
+Write-Host ""
+Write-Host "DONE"

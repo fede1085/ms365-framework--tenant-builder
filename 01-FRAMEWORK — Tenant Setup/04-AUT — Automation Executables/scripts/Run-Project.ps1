@@ -1,43 +1,79 @@
 param(
     [string]$ProjectName,
     [string]$ProjectPath,
+
+    [string]$TenantId,
+    [string]$TenantDomain,
+
+    [string]$EnvironmentName = "PROD",
+
     [switch]$Execute
 )
 
 $BasePath = "..\..\..\02-INSTANCES — Projects"
 
+# -----------------------------
+# EXECUTION STATE
+# -----------------------------
+
+$ExecutionState = if ($Execute) {
+    "EXECUTE"
+}
+else {
+    "READ_ONLY / DRY-RUN"
+}
 
 # -----------------------------
-# Execution Path Notes
+# EXECUTION PATH NOTES
 # -----------------------------
-# Expected working directory: 01-FRAMEWORK — Tenant Setup/04-AUT — Automation Executables/scripts
-# Base path resolution depends on framework-relative structure and should not be renamed.
-# You may pass -ProjectPath explicitly to bypass interactive selection and relative path assumptions.
+# Expected working directory:
+# 01-FRAMEWORK — Tenant Setup/04-AUT — Automation Executables/scripts
+#
+# Base path resolution depends on framework-relative structure.
+#
+# You may pass:
+# -ProjectPath
+# -TenantId
+# -TenantDomain
+#
+# explicitly to bypass interactive prompts.
 
 Write-Host "=== PROJECT DEPLOY RUNNER ==="
+Write-Host ""
+Write-Host "Execution State :" $ExecutionState
 Write-Host "Working directory:" (Get-Location)
-Write-Host "Expected base path root:" (Resolve-Path "..\..\.." -ErrorAction SilentlyContinue)
+
+Write-Host "Expected base path root:" `
+    (Resolve-Path "..\..\.." -ErrorAction SilentlyContinue)
+
+Write-Host ""
 
 # -----------------------------
 # 1. RESOLVE PROJECT
 # -----------------------------
 
 if ($ProjectPath) {
+
     $projectFullPath = Resolve-Path $ProjectPath
 }
 elseif ($ProjectName) {
+
     $projectFullPath = Join-Path $BasePath $ProjectName
 }
 else {
+
     Write-Host ""
     Write-Host "Available Projects:"
+
     $projects = Get-ChildItem $BasePath -Directory
 
     for ($i=0; $i -lt $projects.Count; $i++) {
+
         Write-Host "[$i] $($projects[$i].Name)"
     }
 
     $selection = Read-Host "Select project number"
+
     $projectFullPath = $projects[$selection].FullName
 }
 
@@ -45,9 +81,12 @@ else {
 # 2. VALIDATE
 # -----------------------------
 
-$mtxPath = Join-Path $projectFullPath "03-MTX — Data Matrices"
+$mtxPath = Join-Path `
+    $projectFullPath `
+    "03-MTX — Data Matrices"
 
 if (-not (Test-Path $mtxPath)) {
+
     throw "❌ Matrix folder not found: $mtxPath"
 }
 
@@ -59,36 +98,79 @@ $requiredFiles = @(
 )
 
 foreach ($file in $requiredFiles) {
+
     if (-not (Test-Path (Join-Path $mtxPath $file))) {
+
         throw "❌ Missing file: $file"
     }
 }
 
 Write-Host ""
-Write-Host "Project:" $projectFullPath
-Write-Host "Matrix:" $mtxPath
+Write-Host "=== PROJECT VALIDATION ==="
+Write-Host ""
+
+Write-Host "Project Path :" $projectFullPath
+Write-Host "Matrix Path  :" $mtxPath
 Write-Host ""
 
 # -----------------------------
-# 3. CONFIRMATION
+# 3. TENANT TARGETING
+# -----------------------------
+
+if (-not $TenantId) {
+
+    $TenantId = Read-Host "Tenant ID"
+}
+
+if (-not $TenantDomain) {
+
+    $TenantDomain = Read-Host "Tenant Domain"
+}
+
+Write-Host ""
+Write-Host "=== TARGET TENANT ==="
+
+Write-Host "Tenant ID      :" $TenantId
+Write-Host "Tenant Domain  :" $TenantDomain
+Write-Host "Environment    :" $EnvironmentName
+
+Write-Host ""
+
+# -----------------------------
+# 4. EXECUTION CONFIRMATION
 # -----------------------------
 
 if (-not $Execute) {
-    Write-Host "[DRY-RUN MODE]"
-    $confirm = Read-Host "Run in EXECUTE mode? (yes/no)"
 
-    if ($confirm -ne "yes") {
+    Write-Host "[READ_ONLY / DRY-RUN MODE]"
+
+    $confirm = Read-Host `
+        "Type YES to continue into EXECUTE mode"
+
+    if ($confirm -ne "YES") {
+
         Write-Host "Cancelled."
+
         exit
     }
+
+    $Execute = $true
 }
 
 # -----------------------------
-# 4. EXECUTE DEPLOY
+# 5. EXECUTE DEPLOY
 # -----------------------------
 
-Write-Host "Starting deployment..."
+Write-Host ""
+Write-Host "=== STARTING DEPLOYMENT ==="
+Write-Host ""
 
-.\Deploy-Tenant.ps1 -ProjectPath $mtxPath -Execute
+.\Deploy-Tenant.ps1 `
+    -ProjectPath $mtxPath `
+    -TenantId $TenantId `
+    -TenantDomain $TenantDomain `
+    -EnvironmentName $EnvironmentName `
+    -Execute
 
+Write-Host ""
 Write-Host "DONE"

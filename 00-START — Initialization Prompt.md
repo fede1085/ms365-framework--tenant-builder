@@ -4,7 +4,50 @@ Use Agent Mode.
 
 ---
 
-## Source Folders
+# EXECUTION STATE
+
+Current execution state:
+
+```text
+READ_ONLY
+```
+
+Allowed behaviors in READ_ONLY:
+
+- inspection
+- discovery
+- semantic analysis
+- governance validation
+- architecture review
+- workflow review
+- reporting
+
+Forbidden behaviors in READ_ONLY:
+
+- modifying framework files
+- generating MTX
+- generating AUT
+- deployment execution
+- PowerShell execution
+- tenant modification
+- automatic progression into execution phases
+
+Execution-state progression must remain HUMAN-SUPERVISED.
+
+Allowed operational states:
+
+```text
+READ_ONLY
+PLAN
+GENERATE
+EXECUTE
+```
+
+The system must NEVER escalate execution state automatically.
+
+---
+
+# SOURCE FOLDERS
 
 Read framework governance and semantic rules from:
 
@@ -22,21 +65,24 @@ Do NOT modify framework files.
 
 ---
 
-## Core Model
+# CORE MODEL
 
 Follow strictly:
 
+```text
 ARCH → BLP → MTX → AUT
+```
 
 Definitions:
 
-- ARCH = governance and architecture rules
+- ARCH = governance and architecture doctrine
 - BLP = operational blueprint layer
-- MTX = execution-ready tenant data
+- MTX = execution-ready operational data
 - AUT = deployment and automation layer
 
 Additional orchestration flow:
 
+```text
 DISCOVERY
 → PRJ-BLUEPRINT-MASTER-DOC
 → DOMAIN BLP
@@ -44,36 +90,116 @@ DISCOVERY
 → MTX
 → VALIDATION
 → AUT
+```
+
+Each phase requires explicit approval before continuation.
 
 ---
 
-## Ontology Separation
+# ONTOLOGY SEPARATION
 
 Maintain strict ontology boundaries between:
 
-1. Framework ontology
-   - system governance
-   - semantic control
-   - canonical enforcement
-   - architecture standards
+## 1. META-FRAMEWORK ONTOLOGY
 
-2. Tenant ontology
-   - tenant operational structure
-   - tenant business logic
-   - tenant users/groups/mailboxes
-   - tenant operational workflows
+Includes:
 
-Framework ontology is READ-ONLY during tenant generation.
+- SYS
+- CAN
+- ARCH
+- BLP governance
+- AUT governance
+- routing logic
+- semantic governance
+- canonical enforcement
 
-Tenant generation must NEVER modify framework governance.
+Represents:
+
+- framework doctrine
+- semantic architecture
+- governance system
+- reusable operational standards
 
 ---
 
-## STEP 1 — Interactive Discovery
+## 2. TENANT INSTANCE ONTOLOGY
+
+Includes:
+
+- tenant operational structure
+- tenant business logic
+- PRJ files
+- generated BLP documents
+- MTX files
+- users
+- groups
+- shared mailboxes
+- permissions
+- operational workflows
+
+Represents:
+
+- real or simulated tenant operational state
+
+---
+
+# IMPORTANT ONTOLOGY RULE
+
+Framework ontology is STRICT READ-ONLY during tenant generation.
+
+Tenant generation must NEVER:
+
+- modify SYS
+- modify CAN
+- modify ARCH
+- redefine framework governance
+- redefine semantic meaning
+- redefine canonical meaning
+
+Tenant operational data belongs ONLY to tenant ontology.
+
+Framework governance must NEVER be copied into tenant instance files as authoritative architecture.
+
+---
+
+# SEMANTIC / CANONICAL GOVERNANCE
+
+Semantic governance originates from:
+
+```text
+00-SYSTEM
+```
+
+Canonical enforcement derives from:
+
+```text
+00-CANONICAL
+```
+
+Important principle:
+
+```text
+CAN derives from SYS
+CAN does NOT redefine SYS
+```
+
+Canonical files must NEVER invent governance, ontology, authority, or semantic meaning not declared in semantic source files.
+
+---
+
+# STEP 1 — INTERACTIVE DISCOVERY
+
+Execution state required:
+
+```text
+PLAN
+```
 
 Execute interactive business discovery workflow.
 
-### Goal
+---
+
+## DISCOVERY GOAL
 
 Define:
 
@@ -94,58 +220,90 @@ Define:
 
 ---
 
-## Discovery Rules
+## DISCOVERY RULES
 
 - Ask step-by-step
 - Do NOT skip phases
 - Prioritize operational realism
 - Do NOT infer enterprise complexity unless required
 - Do NOT generate CSV yet
+- Do NOT generate MTX yet
 - Do NOT generate AUT
 - Do NOT run scripts
 - Do NOT deploy anything
 
 Focus on:
 
+```text
 how the organization actually operates
+```
 
 NOT only technical structure.
 
 ---
 
-## STEP 2 — Generate Project Structure
+# STEP 2 — GENERATE PROJECT STRUCTURE
+
+Execution state required:
+
+```text
+GENERATE
+```
 
 Create:
 
+```text
 02-INSTANCES — Projects\[project_name]\
 
    ├── 01-DISCOVERY
    ├── 02-BLP
    ├── 03-MTX
    └── 04-AUT
+```
+
+Do NOT generate framework architecture folders inside tenant instances.
+
+Do NOT generate:
+
+```text
+01-ARC
+00-SYSTEM
+00-CANONICAL
+```
+
+inside tenant projects.
+
+Framework architecture remains external and authoritative.
 
 ---
 
-## STEP 3 — Generate MASTER Operational Blueprint
+# STEP 3 — GENERATE MASTER OPERATIONAL BLUEPRINT
 
 Generate:
 
+```text
 PRJ-BLUEPRINT-MASTER-DOC.md
+```
 
 inside:
 
+```text
 02-INSTANCES — Projects\[project_name]\02-BLP
+```
 
 ---
 
-## MASTER Document Purpose
+# MASTER DOCUMENT PURPOSE
 
 This document becomes:
 
-the operational source of truth
-for the tenant instance.
+```text
+tenant operational source of truth
+```
 
-The MASTER document must consolidate:
+for the tenant instance only.
+
+The MASTER document consolidates:
 
 - organizational structure
 - departments
@@ -162,9 +320,9 @@ The MASTER document must consolidate:
 
 ---
 
-## MASTER Rules
+# MASTER RULES
 
-- The MASTER document belongs to tenant ontology only
+- MASTER belongs to tenant ontology only
 - Do NOT modify framework architecture
 - Do NOT generate MTX yet
 - Do NOT generate AUT yet
@@ -177,13 +335,21 @@ Wait for validation approval.
 
 ---
 
-## STEP 4 — Generate Domain Blueprint Layer
+# STEP 4 — GENERATE DOMAIN BLUEPRINT LAYER
 
-ONLY after approval.
+Execution state required:
+
+```text
+GENERATE
+```
+
+ONLY after explicit approval.
 
 Generate specialized Blueprint documents from:
 
+```text
 PRJ-BLUEPRINT-MASTER-DOC
+```
 
 Examples:
 
@@ -195,11 +361,13 @@ Examples:
 
 Generate inside:
 
+```text
 02-INSTANCES — Projects\[project_name]\02-BLP
+```
 
 ---
 
-## Blueprint Rules
+# BLUEPRINT RULES
 
 Blueprints must:
 
@@ -210,8 +378,15 @@ Blueprints must:
 - preserve authority hierarchy
 - remain operationally realistic
 - remain reusable
+- remain tenant-scoped
 
-Do NOT generate MTX yet.
+Blueprints must NEVER:
+
+- redefine framework governance
+- redefine semantic authority
+- generate MTX automatically
+- generate AUT automatically
+- create deployment logic
 
 Stop after Blueprint generation.
 
@@ -219,7 +394,13 @@ Wait for validation approval.
 
 ---
 
-## STEP 5 — Validation Phase
+# STEP 5 — VALIDATION PHASE
+
+Execution state required:
+
+```text
+READ_ONLY
+```
 
 Audit generated Blueprint layer.
 
@@ -244,22 +425,29 @@ Detect:
 - permission conflicts
 - semantic contradictions
 - operational inconsistencies
+- cross-layer contamination
 
 Generate validation report only.
-
-READ-ONLY mode.
 
 Do NOT auto-correct unless explicitly requested.
 
 ---
 
-## STEP 6 — Generate Matrix Layer
+# STEP 6 — GENERATE MATRIX LAYER
+
+Execution state required:
+
+```text
+GENERATE
+```
 
 ONLY after Blueprint validation approval.
 
 Generate execution-ready CSV files inside:
 
+```text
 02-INSTANCES — Projects\[project_name]\03-MTX
+```
 
 Required files:
 
@@ -277,9 +465,9 @@ Optional:
 
 ---
 
-## Matrix Rules
+# MATRIX RULES
 
-- Use roles → convert into operational data
+- Use operational roles → convert into operational data
 - Generate realistic naming
 - Apply naming from ARCH
 - Apply governance from BLP
@@ -288,29 +476,43 @@ Optional:
 
 MTX defines operational data only.
 
+MTX must NEVER redefine governance.
+
 No deployment execution yet.
 
 ---
 
-## STEP 7 — Stop Before Deployment
+# STEP 7 — STOP BEFORE DEPLOYMENT
+
+Execution state required:
+
+```text
+PLAN
+```
 
 When ready, confirm:
 
+```text
 PROJECT READY — BLP and MTX generated
+```
 
 Then ask:
 
+```text
 Do you want to deploy this project?
+```
 
 ---
 
-## Deployment Behavior
+# DEPLOYMENT BEHAVIOR
 
-If user says YES:
+If user explicitly says YES:
 
 Output ONLY:
 
+```powershell
 .\Run-Project.ps1 -ProjectName "[project_name]"
+```
 
 DO NOT:
 
@@ -319,12 +521,16 @@ DO NOT:
 - modify tenant
 - execute PowerShell
 - generate fake execution logs
+- auto-connect to Microsoft Graph
+- auto-connect to Exchange Online
+
+Deployment execution must remain HUMAN-SUPERVISED.
 
 ---
 
-## Global Rules
+# GLOBAL RULES
 
-- Framework is READ-ONLY
+- Framework is STRICT READ-ONLY
 - Do NOT modify framework files
 - Do NOT skip validation phases
 - Do NOT skip MTX layer
@@ -332,17 +538,27 @@ DO NOT:
 - Architecture governs Blueprint
 - Blueprint informs Matrix
 - Matrix feeds Automation
-- Automation must never redefine architecture
+- Automation must NEVER redefine architecture
+
+Important principle:
+
+```text
+redundancy != inconsistency
+```
+
+Do NOT simplify intentional governance redundancy.
 
 ---
 
-## Final Objective
+# FINAL OBJECTIVE
 
+```text
 Business
 → Operational Blueprint
 → Governance Validation
 → Matrix Generation
 → Deployment Preparation
+```
 
 while preserving:
 
@@ -350,3 +566,6 @@ while preserving:
 - ontology integrity
 - operational realism
 - deterministic consistency
+- authority hierarchy
+- framework isolation
+- controlled execution safety
