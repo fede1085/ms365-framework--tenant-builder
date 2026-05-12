@@ -18,7 +18,7 @@ authority_level: 1
 All files within the Framework boundary MUST pass this validation:
 
 ```regex
-^(CAN|SYS|ARC|BLP|MTX|AUT)-(SYS|MAP|SCH|RUL|CMP|GRP|RTE|STD|GOV|TMP|USR|GRP|MBX|PRM|DOC|NAM|SEC|OPS)-[0-9]{3} — [A-Za-z0-9\s\-\&]+\.(md|json|csv|ps1)$
+^(CAN|SYS|ARC|BLP|MTX|AUT)-(SYS|MAP|SCH|RUL|CMP|GRP|RTE|STD|GOV|TMP|USR|MBX|PRM|DOC|NAM|SEC|OPS)-[0-9]{3} — [A-Za-z0-9\s\-\&]+\.(md|json|csv|ps1)$
 ```
 
 ## 2. Sub-folder Routing Constraints

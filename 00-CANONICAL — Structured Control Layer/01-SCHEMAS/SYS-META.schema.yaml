@@ -1,0 +1,53 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "schema:sys-meta:v1"
+title: "SYS Metadata Schema"
+description: "Validation schema for SYS document metadata frontmatter"
+type: "object"
+properties:
+  id:
+    type: "string"
+    pattern: "^@[A-Z]{3}-[A-Z]{3}-[0-9]{3}$"
+  domain:
+    type: "string"
+    enum: ["Identity", "Collaboration", "Messaging", "Devices", "Security", "Framework Ontology", "Operations"]
+  layer:
+    type: "string"
+    enum: ["SYS", "ARC", "BLP", "MTX", "AUT", "CAN"]
+  type:
+    type: "string"
+    enum: ["Index", "Rule", "Template", "Matrix", "Script", "Schema", "Graph", "Router", "Map", "Standard", "Governance"]
+  status:
+    type: "string"
+    enum: ["Draft", "Active", "Deprecated"]
+  depends_on:
+    type: "array"
+    items:
+      type: "string"
+      pattern: "^@[A-Z]{3}-[A-Z]{3}-[0-9]{3}$"
+  feeds:
+    type: "array"
+    items:
+      type: "string"
+      pattern: "^@[A-Z]{3}-[A-Z]{3}-[0-9]{3}$"
+  related_to:
+    type: "array"
+    items:
+      type: "string"
+      pattern: "^@[A-Z]{3}-[A-Z]{3}-[0-9]{3}$"
+  governed_by:
+    type: "array"
+    items:
+      type: "string"
+      pattern: "^@[A-Z]{3}-[A-Z]{3}-[0-9]{3}$"
+  tags:
+    type: "array"
+    items:
+      type: "string"
+  authority_level:
+    type: "integer"
+    enum: [1, 2, 3, 4]
+required:
+  - "id"
+  - "layer"
+  - "type"
+  - "authority_level"

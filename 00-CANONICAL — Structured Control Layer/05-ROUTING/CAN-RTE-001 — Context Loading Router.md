@@ -6,12 +6,16 @@ type: "Router"
 status: "Active"
 depends_on:
   - "@SYS-GOV-002"
+  - "@SYS-MAP-006"
+compiled_equivalent: "SYS-CONTEXT.router.yaml"
 authority_level: 1
 ---
 
 # @CAN-RTE-001 — Context Loading Router
 
-> **Purpose:** Execution logic for AI context window management, derived from `@SYS-GOV-002`. Ensures AI does not load irrelevant data causing token saturation and semantic drift.
+> **Purpose:** Execution logic for AI context window management, derived from `@SYS-GOV-002` and aligned to the workflow sequence defined in `@SYS-MAP-006`. Ensures AI does not load irrelevant data causing token saturation and semantic drift.
+>
+> **Compiled Equivalent:** `SYS-CONTEXT.router.yaml` — the machine-readable enforcement representation of this document. Both files must remain semantically identical. If conflict arises, this document (CAN-RTE-001.md) is the human-semantic authority; `SYS-CONTEXT.router.yaml` is the machine-enforcement layer.
 
 ## 1. Initialization Sequence
 

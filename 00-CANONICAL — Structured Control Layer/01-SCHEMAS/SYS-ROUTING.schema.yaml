@@ -1,0 +1,43 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "schema:sys-routing:v1"
+title: "SYS Routing Schema"
+description: "Validation schema for context loading and routing rules"
+type: "object"
+properties:
+  priority_queue:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        order:
+          type: "integer"
+        file:
+          type: "string"
+        reason:
+          type: "string"
+      required:
+        - "order"
+        - "file"
+  routes:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        task:
+          type: "string"
+        workflow_stage:
+          type: "string"
+        load_layers:
+          type: "array"
+          items:
+            type: "string"
+        block_layers:
+          type: "array"
+          items:
+            type: "string"
+        block_on_violation:
+          type: "boolean"
+      required:
+        - "task"
+        - "load_layers"
+        - "block_layers"

@@ -1,0 +1,23 @@
+id: "schema:can-sch-002:v1"
+title: "Layer Ontology Schema"
+description: "Validation schema for layer boundaries and data flow"
+ontology_rules:
+  ARC:
+    reads: ["SYS", "CAN"]
+    writes: []
+    contains_data: false
+  BLP:
+    reads: ["ARC"]
+    writes: []
+    contains_data: false
+  MTX:
+    reads: ["BLP"]
+    writes: []
+    contains_data: true
+  AUT:
+    reads: ["MTX"]
+    writes: ["Tenant"]
+    contains_data: false
+boundary_enforcement:
+  block_downward_contamination: true
+  explicit_layer_declaration_required: true

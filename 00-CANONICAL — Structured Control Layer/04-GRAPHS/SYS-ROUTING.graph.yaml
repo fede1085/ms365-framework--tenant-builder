@@ -1,0 +1,23 @@
+# source: SYS-MAP-000 — Framework Ontology & Layer Model
+# layer: CAN
+# authority_level: 1
+id: "graph:sys-routing:v1"
+type: "DirectedGraph"
+nodes:
+  - id: "Task_Discovery"
+  - id: "Task_Blueprint"
+  - id: "Task_Matrix"
+  - id: "Task_Automation"
+edges:
+  - source: "Task_Discovery"
+    target: "ARC"
+    relation: "LOADS"
+  - source: "Task_Blueprint"
+    target: "BLP"
+    relation: "LOADS"
+  - source: "Task_Matrix"
+    target: "MTX"
+    relation: "LOADS"
+  - source: "Task_Automation"
+    target: "AUT"
+    relation: "LOADS"

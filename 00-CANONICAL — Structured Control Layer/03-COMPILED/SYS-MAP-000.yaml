@@ -1,0 +1,52 @@
+# source: SYS-MAP-000 — Framework Ontology & Layer Model
+# layer: CAN
+# authority_level: 1
+id: "@SYS-MAP-000"
+title: "Framework Ontology & Layer Model"
+purpose: "Primary cognitive routing map. Defines four conceptual layers and their ontological boundaries."
+conceptual_layers:
+  - layer: 1
+    name: "AI Semantic Navigation"
+    domain: "Framework Ontology"
+    function: "AI routing, pseudo-RAG behavior, contextual loading, ontology navigation"
+    owns: ["@00-SYSTEM", "@00-CANONICAL", "@reference system"]
+    maps_to: ["SYS", "CAN"]
+  - layer: 2
+    name: "Framework Meta-Architecture"
+    domain: "Framework Ontology"
+    function: "How the framework thinks, structures, generates, and governs tenant creation"
+    owns: ["ARC-SYS", "ARC-STR"]
+    maps_to: ["ARC"]
+  - layer: 3
+    name: "Tenant Conceptual Modeling"
+    domain: "Operations"
+    function: "Conceptual SME business architecture and operational modeling"
+    owns: ["BLP philosophy sections", "ARC philosophy sections"]
+    maps_to: ["BLP"]
+  - layer: 4
+    name: "Tenant Operational Execution"
+    domain: "Operations"
+    function: "Real deployable operational objects and naming logic"
+    owns: ["MTX data", "AUT scripts"]
+    maps_to: ["MTX", "AUT"]
+boundary_rules:
+  - id: "BOUND-001"
+    name: "No Downward Contamination"
+    rule: "Conceptual models (L3) must not contain real operational data (L4)"
+  - id: "BOUND-002"
+    name: "Explicit Layer Declaration"
+    rule: "Every core document must declare its primary layer ownership"
+  - id: "BOUND-003"
+    name: "Semantic Routing"
+    rule: "AI agents use L1 to determine which L2 logic to apply to L3 models to generate L4 output"
+cognitive_routing_sequence:
+  - step: 1
+    action: "Receive AI instruction"
+  - step: 2
+    action: "L1 Routing — Load SYS-MAP-001 and SYS-MAP-000"
+  - step: 3
+    action: "L2 Meta-Logic — Access ARC strategy documents"
+  - step: 4
+    action: "L3 Modeling — Access BLP-TMP templates"
+  - step: 5
+    action: "L4 Execution — Generate MTX files and trigger AUT scripts"

@@ -1,0 +1,36 @@
+# source: SYS-GOV-002 — Context Loading Priority
+# layer: CAN
+# authority_level: 1
+id: "router:sys-load-priority:v1"
+type: "LoadPriority"
+priority_queue:
+  - order: 1
+    file: "SYS-MAP-000"
+    reason: "Root ontology and layer model — must be loaded first"
+  - order: 2
+    file: "SYS-MAP-001"
+    reason: "Master Index — provides sitemap of the entire framework"
+  - order: 3
+    file: "SYS-GOV-001"
+    reason: "Read order authority — governs context initialization sequence"
+  - order: 4
+    file: "SYS-GOV-002"
+    reason: "Context loading priority — defines this queue"
+  - order: 5
+    file: "SYS-STD-001"
+    reason: "Canonical vocabulary — prevents terminology drift"
+  - order: 6
+    file: "SYS-STD-002"
+    reason: "Naming system — enforces prefix/pattern rules"
+  - order: 7
+    file: "CAN-SCH-001"
+    reason: "Metadata schema — enforces document identity structure"
+  - order: 8
+    file: "CAN-SCH-002"
+    reason: "Layer ontology schema — enforces abstraction boundaries"
+  - order: 9
+    file: "CAN-RUL-001"
+    reason: "Authority rules — governs conflict resolution"
+  - order: 10
+    file: "CAN-RUL-002"
+    reason: "Naming enforcement — governs file naming validation"

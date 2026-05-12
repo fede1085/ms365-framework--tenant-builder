@@ -33,7 +33,7 @@ properties:
     enum: ["ARC", "BLP", "MTX", "AUT", "SYS", "CAN"]
   type:
     type: string
-    enum: ["Index", "Rule", "Template", "Matrix", "Script", "Schema", "Graph", "Router"]
+    enum: ["Index", "Rule", "Template", "Matrix", "Script", "Schema", "Graph", "Router", "Map", "Standard", "Governance"]
   status:
     type: string
     enum: ["Draft", "Active", "Deprecated"]

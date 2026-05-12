@@ -1,0 +1,38 @@
+# source: SYS-GOV-002 — Context Loading Priority
+# compiled_by: CAN-RTE-001 — Context Loading Router
+# layer: CAN
+# authority_level: 1
+id: "router:sys-context:v1"
+type: "ContextRouter"
+schema_ref: "SYS-ROUTING.schema.yaml"
+routes:
+  - task: "Define Framework Rules"
+    workflow_stage: "Architecture"
+    load_layers: ["SYS", "CAN", "ARC"]
+    block_layers: ["MTX", "AUT"]
+    block_on_violation: true
+  - task: "Generate Templates"
+    workflow_stage: "Blueprint"
+    load_layers: ["ARC", "BLP"]
+    block_layers: ["MTX", "AUT"]
+    block_on_violation: true
+  - task: "Create new tenant"
+    workflow_stage: "Matrix"
+    load_layers: ["BLP", "MTX", "ARC-STD"]
+    block_layers: ["AUT"]
+    block_on_violation: true
+  - task: "Write Automation Script"
+    workflow_stage: "Scripting"
+    load_layers: ["MTX", "ARC-STD-007"]
+    block_layers: ["BLP", "ARC-GOV"]
+    block_on_violation: true
+  - task: "Discovery"
+    workflow_stage: "Discovery"
+    load_layers: ["SYS", "ARC", "BLP"]
+    block_layers: ["MTX", "AUT"]
+    block_on_violation: false
+  - task: "Audit"
+    workflow_stage: "Audit"
+    load_layers: ["SYS", "CAN", "ARC", "MTX"]
+    block_layers: ["AUT"]
+    block_on_violation: false

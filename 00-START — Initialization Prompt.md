@@ -6,14 +6,19 @@ Use Agent Mode.
 
 ## Source Folders
 
-Read framework rules from:
+Read framework governance and semantic rules from:
 
 @00-SYSTEM — Semantic Control Layer
-@.agents\rules  
-@.agents\workflows  
-@01-FRAMEWORK — Tenant Setup\01-ARC — Architecture  
-@01-FRAMEWORK — Tenant Setup\02-BLP — Blueprint Templates  
-@01-FRAMEWORK — Tenant Setup\04-AUT — Automation Executables  
+@00-CANONICAL — Structured Control Layer
+@.agents\rules
+@.agents\workflows
+@01-FRAMEWORK — Tenant Setup\01-ARC — Architecture
+@01-FRAMEWORK — Tenant Setup\02-BLP — Blueprint Templates
+@01-FRAMEWORK — Tenant Setup\04-AUT — Automation Executables
+
+All framework sources are STRICT READ-ONLY.
+
+Do NOT modify framework files.
 
 ---
 
@@ -21,110 +26,281 @@ Read framework rules from:
 
 Follow strictly:
 
-```text
 ARCH → BLP → MTX → AUT
-```
 
-- ARCH = rules  
-- BLP = project blueprint  
-- MTX = project CSV data  
-- AUT = execution scripts  
+Definitions:
+
+- ARCH = governance and architecture rules
+- BLP = operational blueprint layer
+- MTX = execution-ready tenant data
+- AUT = deployment and automation layer
+
+Additional orchestration flow:
+
+DISCOVERY
+→ PRJ-BLUEPRINT-MASTER-DOC
+→ DOMAIN BLP
+→ VALIDATION
+→ MTX
+→ VALIDATION
+→ AUT
+
+---
+
+## Ontology Separation
+
+Maintain strict ontology boundaries between:
+
+1. Framework ontology
+   - system governance
+   - semantic control
+   - canonical enforcement
+   - architecture standards
+
+2. Tenant ontology
+   - tenant operational structure
+   - tenant business logic
+   - tenant users/groups/mailboxes
+   - tenant operational workflows
+
+Framework ontology is READ-ONLY during tenant generation.
+
+Tenant generation must NEVER modify framework governance.
 
 ---
 
 ## STEP 1 — Interactive Discovery
 
-Execute interactive workflow.
+Execute interactive business discovery workflow.
 
 ### Goal
 
-- define company  
-- define departments  
-- define roles  
-- define users  
-- define groups  
-- define shared mailboxes  
-- define permissions  
-- define licenses  
+Define:
 
-### Rules
-
-- Ask step by step  
-- Do NOT skip phases  
-- Do NOT generate CSV yet  
-- Do NOT run scripts  
+- company structure
+- departments
+- operational workflows
+- collaboration logic
+- user roles
+- users
+- groups
+- shared mailboxes
+- permissions
+- ownership
+- escalation paths
+- licenses
+- governance needs
+- security posture
 
 ---
 
-## STEP 2 — Generate Project Folder
+## Discovery Rules
+
+- Ask step-by-step
+- Do NOT skip phases
+- Prioritize operational realism
+- Do NOT infer enterprise complexity unless required
+- Do NOT generate CSV yet
+- Do NOT generate AUT
+- Do NOT run scripts
+- Do NOT deploy anything
+
+Focus on:
+
+how the organization actually operates
+
+NOT only technical structure.
+
+---
+
+## STEP 2 — Generate Project Structure
 
 Create:
 
-```text
 02-INSTANCES — Projects\[project_name]\
-   ├── 01-ARC — Architecture
-   ├── 02-BLP — Blueprint Templates
-   ├── 03-MTX — Data Matrices
-   └── 04-AUT — Automation Executables
-```
+
+   ├── 01-DISCOVERY
+   ├── 02-BLP
+   ├── 03-MTX
+   └── 04-AUT
 
 ---
 
-## STEP 3 — Generate Blueprint
+## STEP 3 — Generate MASTER Operational Blueprint
 
-Generate project-ready BLP documents inside:
+Generate:
 
-```text
-02-INSTANCES — Projects\[project_name]\02-BLP — Blueprint Templates
-```
+PRJ-BLUEPRINT-MASTER-DOC.md
 
-Blueprint must:
+inside:
 
-- follow ARCH rules  
-- define structure only (NO real data)  
-- be reusable  
+02-INSTANCES — Projects\[project_name]\02-BLP
 
 ---
 
-## STEP 4 — Generate Matrix
+## MASTER Document Purpose
+
+This document becomes:
+
+the operational source of truth
+for the tenant instance.
+
+The MASTER document must consolidate:
+
+- organizational structure
+- departments
+- operational relationships
+- user roles
+- collaboration patterns
+- Teams operational behavior
+- mailbox ownership
+- escalation logic
+- lifecycle logic
+- governance requirements
+- security posture
+- operational handoffs
+
+---
+
+## MASTER Rules
+
+- The MASTER document belongs to tenant ontology only
+- Do NOT modify framework architecture
+- Do NOT generate MTX yet
+- Do NOT generate AUT yet
+- Do NOT create deployment logic
+- Do NOT continue automatically
+
+Stop after MASTER generation.
+
+Wait for validation approval.
+
+---
+
+## STEP 4 — Generate Domain Blueprint Layer
+
+ONLY after approval.
+
+Generate specialized Blueprint documents from:
+
+PRJ-BLUEPRINT-MASTER-DOC
+
+Examples:
+
+- Governance Blueprints
+- Collaboration Blueprints
+- Security Blueprints
+- Compliance Blueprints
+- Operational Workflow Blueprints
+
+Generate inside:
+
+02-INSTANCES — Projects\[project_name]\02-BLP
+
+---
+
+## Blueprint Rules
+
+Blueprints must:
+
+- follow ARCH rules
+- preserve semantic consistency
+- preserve naming conventions
+- preserve ontology boundaries
+- preserve authority hierarchy
+- remain operationally realistic
+- remain reusable
+
+Do NOT generate MTX yet.
+
+Stop after Blueprint generation.
+
+Wait for validation approval.
+
+---
+
+## STEP 5 — Validation Phase
+
+Audit generated Blueprint layer.
+
+Validation targets:
+
+- semantic consistency
+- naming consistency
+- governance consistency
+- operational realism
+- authority integrity
+- permission logic
+- escalation logic
+- collaboration logic
+- ontology boundaries
+
+Detect:
+
+- naming drift
+- authority conflicts
+- governance gaps
+- unsupported assumptions
+- permission conflicts
+- semantic contradictions
+- operational inconsistencies
+
+Generate validation report only.
+
+READ-ONLY mode.
+
+Do NOT auto-correct unless explicitly requested.
+
+---
+
+## STEP 6 — Generate Matrix Layer
+
+ONLY after Blueprint validation approval.
 
 Generate execution-ready CSV files inside:
 
-```text
-02-INSTANCES — Projects\[project_name]\03-MTX — Data Matrices
-```
+02-INSTANCES — Projects\[project_name]\03-MTX
 
 Required files:
 
-```text
-MTX-USERS.csv
-MTX-GROUPS.csv
-MTX-MAILBOXES.csv
-MTX-PERMISSIONS.csv
-```
+- MTX-USERS.csv
+- MTX-GROUPS.csv
+- MTX-MAILBOXES.csv
+- MTX-PERMISSIONS.csv
 
-### Rules
+Optional:
 
-- Use roles → convert to real data  
-- Generate realistic emails using <domain>  
-- Apply naming from ARCH  
-- Apply permissions from BLP  
+- MTX-LICENSES.csv
+- MTX-CHANNELS.csv
+- MTX-OWNERSHIP.csv
+- MTX-LIFECYCLE.csv
 
 ---
 
-## STEP 5 — Stop Before Deployment
+## Matrix Rules
+
+- Use roles → convert into operational data
+- Generate realistic naming
+- Apply naming from ARCH
+- Apply governance from BLP
+- Apply permissions from BLP
+- Apply ownership logic from MASTER
+
+MTX defines operational data only.
+
+No deployment execution yet.
+
+---
+
+## STEP 7 — Stop Before Deployment
 
 When ready, confirm:
 
-```text
 PROJECT READY — BLP and MTX generated
-```
 
 Then ask:
 
-```text
 Do you want to deploy this project?
-```
 
 ---
 
@@ -134,33 +310,43 @@ If user says YES:
 
 Output ONLY:
 
-```powershell
 .\Run-Project.ps1 -ProjectName "[project_name]"
-```
 
 DO NOT:
 
-- run scripts  
-- simulate execution  
-- modify tenant  
+- run scripts
+- simulate deployment
+- modify tenant
+- execute PowerShell
+- generate fake execution logs
 
 ---
 
 ## Global Rules
 
-- Do NOT create real tenant changes  
-- Do NOT run PowerShell  
-- Do NOT skip MTX  
-- Do NOT place Matrix inside framework  
-- Always use Architecture as source of truth  
-- Blueprint defines structure  
-- Matrix defines data  
-- Automation executes  
+- Framework is READ-ONLY
+- Do NOT modify framework files
+- Do NOT skip validation phases
+- Do NOT skip MTX layer
+- Do NOT place tenant Matrix inside framework
+- Architecture governs Blueprint
+- Blueprint informs Matrix
+- Matrix feeds Automation
+- Automation must never redefine architecture
 
 ---
 
 ## Final Objective
 
-```text
-Business → Blueprint → Matrix → Ready for Deployment
-```
+Business
+→ Operational Blueprint
+→ Governance Validation
+→ Matrix Generation
+→ Deployment Preparation
+
+while preserving:
+
+- semantic governance
+- ontology integrity
+- operational realism
+- deterministic consistency

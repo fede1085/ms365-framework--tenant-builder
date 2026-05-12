@@ -1,0 +1,27 @@
+id: "rule:sys-authority:v1"
+type: "AuthorityRules"
+rules:
+  - rule_id: "AUTH-001"
+    name: "Absolute Truth Override"
+    condition: "level == 1"
+    action: "Block modifications, override all lower levels"
+    applies_to: ["@ARC-SYS-000", "@ARC-STD-*", "@SYS-MAP-*", "@CAN-*"]
+  - rule_id: "AUTH-002"
+    name: "Policy Enforcement"
+    condition: "level == 2"
+    action: "Enforce policy rules, override structural and data levels"
+    applies_to: ["@ARC-GOV-*", "@BLP-TMP-015"]
+  - rule_id: "AUTH-003"
+    name: "Structural Inheritance"
+    condition: "level == 3"
+    action: "Provide template, cannot override levels 1 and 2"
+    applies_to: ["@BLP-SYS-000", "@BLP-TMP-*"]
+  - rule_id: "AUTH-004"
+    name: "Data Instance Limitation"
+    condition: "level == 4"
+    action: "Define data only, valid only for instance, cannot define rules"
+    applies_to: ["@MTX-*"]
+  - rule_id: "AUTH-005"
+    name: "Hierarchy Flow"
+    condition: "Dependency Check"
+    action: "Dependencies must flow downwards (ARC -> BLP -> MTX -> AUT). Block upward dependencies."

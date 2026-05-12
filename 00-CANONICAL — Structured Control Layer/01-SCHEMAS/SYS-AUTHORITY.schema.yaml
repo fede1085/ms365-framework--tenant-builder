@@ -1,0 +1,40 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "schema:sys-authority:v1"
+title: "SYS Authority Schema"
+description: "Validation schema for authority level classification"
+type: "object"
+properties:
+  authority_levels:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        level:
+          type: "integer"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        overrides:
+          type: "array"
+          items:
+            type: "integer"
+      required:
+        - "level"
+        - "name"
+        - "overrides"
+  document_assignments:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        document_id:
+          type: "string"
+        level:
+          type: "integer"
+      required:
+        - "document_id"
+        - "level"
+required:
+  - "authority_levels"
+  - "document_assignments"

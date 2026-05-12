@@ -1,0 +1,14 @@
+{
+  "id": "@SYS-GOV-002",
+  "title": "Context Loading Priority",
+  "loading_priority": [
+    "Semantic Control Layer",
+    "Structured Control Layer",
+    "Governance Standards",
+    "Architecture Documents",
+    "Blueprint Documents",
+    "Matrix Documents",
+    "Automation Documents",
+    "Research Documents"
+  ]
+}

@@ -1,0 +1,31 @@
+# source: SYS-MAP-004 — Authority Map
+# layer: CAN
+# authority_level: 1
+id: "graph:sys-authority:v1"
+type: "DirectedGraph"
+nodes:
+  - id: "AUTH_L1"
+    name: "Absolute Truth"
+  - id: "AUTH_L2"
+    name: "Policy Truth"
+  - id: "AUTH_L3"
+    name: "Structural Truth"
+  - id: "AUTH_L4"
+    name: "Instance Data Truth"
+edges:
+  - source: "AUTH_L1"
+    target: "AUTH_L2"
+    relation: "GOVERNS"
+  - source: "AUTH_L1"
+    target: "AUTH_L3"
+    relation: "GOVERNS"
+  - source: "AUTH_L2"
+    target: "AUTH_L4"
+    relation: "RESTRICTS"
+  - source: "AUTH_L3"
+    target: "AUTH_L4"
+    relation: "FEEDS"
+  - source: "AUTH_L1"
+    target: "AUTH_L4"
+    relation: "OVERRIDES"
+    note: "L1 (ARC/SYS) overrides all lower levels including instance data"
