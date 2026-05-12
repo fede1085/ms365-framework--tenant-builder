@@ -13,7 +13,7 @@ MS365-TENANT — Framework Setup
 │       ├── WKFW-001 — Interactive Identity Blueprint.md
 │       └── WKFW-002 — Blueprint Full Project Generator.md
 │
-├── 00-SYSTEM — Semantic Control Layer
+├── 00-CANONICAL — Structured Control Layer
 │   │
 │   ├── LEGACY-PRJ-ARC-001 — Personal Project Architecture.md
 │   ├── LEGACY-PRJ-LVL-001 — Tenant Project Levels Blueprint.md
@@ -37,7 +37,59 @@ MS365-TENANT — Framework Setup
 │   ├── SYS-STD-001 — Canonical Vocabulary.md
 │   ├── SYS-STD-002 — Naming System.md
 │   │
-│   └── SYS-TPL-001 — Metadata Template.md
+│   └── //// SYS-TPL-001 — Metadata Template.md //// To Be Created ////
+│
+│   ├── 01-SCHEMAS
+│   │   ├── CAN-SCH-001 — Semantic Metadata Schema.md
+│   │   ├── CAN-SCH-001.yaml
+│   │   ├── CAN-SCH-002 — Layer Ontology Schema.md
+│   │   ├── CAN-SCH-002.yaml
+│   │   ├── SYS-AUTHORITY.schema.yaml
+│   │   ├── SYS-META.schema.yaml
+│   │   └── SYS-ROUTING.schema.yaml
+│   │
+│   ├── 02-RULES
+│   │   ├── CAN-RUL-001 — Authority Inheritance Rules.md
+│   │   ├── CAN-RUL-002 — Canonical Naming Enforcement.md
+│   │   ├── SYS-AUTHORITY.rules.yaml
+│   │   ├── SYS-BOUNDARY.rules.yaml
+│   │   └── SYS-ROUTING.rules.yaml
+│   │
+│   ├── 03-COMPILED
+│   │   ├── CAN-CMP-001 — Canonical Master Index.md
+│   │   ├── SYS-GOV-001.json
+│   │   ├── SYS-GOV-001.yaml
+│   │   ├── SYS-GOV-002.json
+│   │   ├── SYS-GOV-002.yaml
+│   │   ├── SYS-MAP-000.json
+│   │   ├── SYS-MAP-000.yaml
+│   │   ├── SYS-MAP-001.json
+│   │   ├── SYS-MAP-001.yaml
+│   │   ├── SYS-MAP-002.json
+│   │   ├── SYS-MAP-002.yaml
+│   │   ├── SYS-MAP-004.json
+│   │   ├── SYS-MAP-004.yaml
+│   │   ├── SYS-STD-001.json
+│   │   ├── SYS-STD-001.yaml
+│   │   ├── SYS-STD-002.json
+│   │   ├── SYS-STD-002.yaml
+│   │   ├── SYS-TPL-001.json
+│   │   └── SYS-TPL-001.yaml
+│   │
+│   ├── 04-GRAPHS
+│   │   ├── CAN-GRP-001 — Semantic Dependency Graph.md
+│   │   ├── SYS-AUTHORITY.graph.yaml
+│   │   ├── SYS-DEPENDENCY.graph.yaml
+│   │   └── SYS-ROUTING.graph.yaml
+│   │
+│   ├── 05-ROUTING
+│   │   ├── CAN-RTE-001 — Context Loading Router.md
+│   │   ├── SYS-CONTEXT.router.yaml
+│   │   └── SYS-LOAD-PRIORITY.router.yaml
+│   │
+│   └── 06-AUDITS
+│       ├── CAN-AUD-003 — Post-Interruption Verification Report.md
+│       └── CAN-AUD-004 — Canonical Synchronization Report.md
 │
 ├── 01-FRAMEWORK — Tenant Setup
 │   │
