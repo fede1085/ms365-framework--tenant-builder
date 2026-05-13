@@ -1,7 +1,5 @@
 # AUT-DOC-008 — Automation Script Blueprint
 
-# AUT-DOC-008 — Automation Script Blueprint
-
 ## Reusable Tenant Automation Layer
 
 ---
@@ -73,6 +71,7 @@ Apply memberships
 ## Phase 07
 
 Apply mailbox permissions
+- Mailbox and Teams operations may require propagation wait validation before dependent actions.
 
 ## Phase 08
 
@@ -172,11 +171,11 @@ Use CSV / JSON files as source of truth.
 ## Recommended Files
 
 ```
-users.csv
-groups.csv
-mailboxes.csv
-permissions.csv
-licenses.csv
+MTX-USERS.csv
+MTX-GROUPS.csv
+MTX-MAILBOXES.csv
+MTX-PERMISSIONS.csv
+MTX-LICENSES.csv
 ```
 
 ---
@@ -205,11 +204,33 @@ Write every change.
 
 ## Idempotent Logic
 
-If exists, skip safely.
+VERIFY
+→ SKIP or UPDATE
+→ CREATE only if missing
 
 ## Rollback Friendly
 
 Keep before/after exports.
+
+## Execution State Awareness
+
+Automation runtime behavior should follow:
+
+- PENDING
+- VALIDATING
+- READY
+- CREATING
+- WAITING_PROPAGATION
+- VALIDATING_RESULT
+- COMPLETED
+- WARNING
+- FAILED
+- BLOCKED
+- ROLLBACK_REQUIRED
+
+Execution states are governed by:
+
+## @AUT-SYS-001 — Execution State Model
 
 ---
 

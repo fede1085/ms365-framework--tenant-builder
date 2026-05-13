@@ -22,11 +22,11 @@ AUT executes the data.
 # 3. Required Matrix Input Files
 
 The automation scripts require the following Matrix files for execution:
-- `users.csv`
-- `groups.csv`
-- `mailboxes.csv`
-- `permissions.csv`
-- `licenses.csv`
+- `MTX-USERS.csv`
+- `MTX-GROUPS.csv`
+- `MTX-MAILBOXES.csv`
+- `MTX-PERMISSIONS.csv`
+- `MTX-LICENSES.csv`
 
 # 4. Execution Rules
 

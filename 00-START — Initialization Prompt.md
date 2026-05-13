@@ -1,4 +1,3 @@
-````markdown
 # 00-START — Initialization Prompt
 
 # Initialize new tenant project: [project_name]

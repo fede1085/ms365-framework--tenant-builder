@@ -141,10 +141,11 @@ Check:
 Main inputs:
 
 ```
-users.csv
-groups.csv
-mailboxes.csv
-permissions.csv
+MTX-USERS.csv
+MTX-GROUPS.csv
+MTX-MAILBOXES.csv
+MTX-PERMISSIONS.csv
+MTX-LICENSES.csv
 ```
 
 Optional exports:

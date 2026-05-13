@@ -1,131 +1,199 @@
 # MS365-TENANT — Framework Setup
 
-AI-Oriented Semantic Framework for Microsoft 365 Tenant Architecture, Governance, Blueprint Modeling, and Automation Preparation.
+AI-oriented semantic framework for Microsoft 365 tenant architecture, governance, blueprint modeling, matrix generation, and controlled automation preparation.
 
 ---
 
 # Overview
 
-MS365-TENANT — Framework Setup is a semantic and ontology-driven framework designed to model, organize, generate, and govern Microsoft 365 tenant environments using structured Markdown architecture instead of traditional hardcoded-only approaches.
+MS365-TENANT is a semantic and ontology-driven framework designed to model, organize, generate, validate, and prepare Microsoft 365 tenant environments using structured architecture layers and AI-oriented workflows.
 
 The framework separates:
 
-- semantic interpretation
-- architecture governance
+- semantic governance
+- architecture doctrine
 - blueprint modeling
-- operational execution
-- automation preparation
+- operational data
+- automation execution
 
-into deterministic conceptual layers.
+into deterministic and isolated layers.
 
-The system is designed for AI-assisted navigation, context loading, tenant generation, governance modeling, and scalable Microsoft 365 architecture workflows.
+The system is designed for:
+
+- AI-assisted tenant generation
+- governance modeling
+- semantic navigation
+- operational standardization
+- deterministic automation preparation
 
 ---
 
 # Core Philosophy
 
-This framework treats documentation as executable semantic infrastructure.
+This framework treats documentation as semantic infrastructure.
 
 Instead of relying only on scripts or hardcoded logic, the framework uses:
 
 - semantic maps
 - ontology layers
-- naming systems
 - authority maps
+- naming systems
 - blueprint templates
-- workflow orchestration
+- orchestration workflows
 
 to create predictable AI-assisted execution environments.
 
-The goal is to reduce ambiguity and improve deterministic reasoning for AI systems such as:
+The goal is to reduce:
+
+- ambiguity
+- semantic drift
+- governance inconsistencies
+- hallucination risk
+
+for systems such as:
 
 - Gemini
-- NotebookLM
 - ChatGPT
+- NotebookLM
 - GraphRAG-style retrieval systems
+
+---
+
+# Core Execution Model
+
+```text
+ARCH → BLP → MTX → AUT
+```
+
+Where:
+
+- ARCH → governance and architecture doctrine
+- BLP → reusable operational blueprint layer
+- MTX → execution-ready operational data
+- AUT → controlled automation execution
+
+Automation must NEVER redefine architecture or governance.
+
+---
+
+# Official Prompt Workflow
+
+```text
+00-START — Initialization Prompt
+    ↓
+01-GENERATION — Blueprint Generation Prompt
+    ↓
+02-VALIDATION — Blueprint Validation Prompt
+    ↓
+03-MTX — Matrix Generation Prompt
+    ↓
+04-AUT-DEPLOYMENT — Controlled Execution Prompt
+```
+
+Operational flow:
+
+```text
+DISCOVERY
+→ PRJ-BLUEPRINT-MASTER-DOC
+→ DOMAIN BLP
+→ VALIDATED BLP
+→ MTX
+→ AUT
+```
+
+Each phase must STOP after completion and require explicit human approval before continuation.
 
 ---
 
 # Framework Layers
 
-## Layer 1 — Semantic Navigation Layer
+## Layer 1 — Semantic Navigation
 
-### Purpose
+Purpose:
 
-AI interpretation and cognitive routing.
+- AI routing
+- semantic navigation
+- ontology control
+- context prioritization
 
-### Contains
+Contains:
 
 - semantic maps
 - authority maps
-- ontology definitions
-- context loading rules
-- naming systems
+- routing systems
 - metadata standards
+- naming systems
 
-### Main Folder
+Main folder:
 
-`00-SYSTEM — Semantic Control Layer`
+```text
+00-SYSTEM — Semantic Control Layer
+```
 
 ---
 
-## Layer 2 — Meta Architecture Layer
+## Layer 2 — Meta Architecture
 
-### Purpose
+Purpose:
 
-Define how the framework thinks and governs tenant structures.
+Define how the framework governs tenant structures.
 
-### Contains
+Contains:
 
-- governance models
-- architecture standards
+- governance standards
 - security models
-- naming conventions
+- architecture doctrine
+- compliance models
 - collaboration strategies
-- compliance architecture
 
-### Main Folder
+Main folder:
 
-`01-FRAMEWORK/01-ARC — Architecture`
+```text
+01-FRAMEWORK/01-ARC — Architecture
+```
 
 ---
 
-## Layer 3 — Blueprint Modeling Layer
+## Layer 3 — Blueprint Modeling
 
-### Purpose
+Purpose:
 
-Transform architecture concepts into reusable operational templates.
+Transform architecture logic into reusable operational models.
 
-### Contains
+Contains:
 
 - blueprint templates
-- matrix templates
-- department models
 - governance blueprints
+- department models
 - security blueprints
+- workflow structures
 
-### Main Folder
+Main folder:
 
-`01-FRAMEWORK/02-BLP — Blueprint Templates`
+```text
+01-FRAMEWORK/02-BLP — Blueprint Templates
+```
 
 ---
 
-## Layer 4 — Operational Execution Layer
+## Layer 4 — Operational Execution
 
-### Purpose
+Purpose:
 
-Automation preparation and deterministic execution.
+Generate execution-ready operational data and controlled deployment preparation.
 
-### Contains
+Contains:
 
-- PowerShell scripts
+- MTX files
 - CSV schemas
 - automation documentation
-- deployment execution logic
+- PowerShell execution layer
 
-### Main Folder
+Main folder:
 
-`01-FRAMEWORK/04-AUT — Automation Executables`
+```text
+01-FRAMEWORK/04-AUT — Automation Executables
+```
 
 ---
 
@@ -137,6 +205,7 @@ MS365-TENANT — Framework Setup
 ├── .agents
 ├── .codex
 ├── 00-SYSTEM — Semantic Control Layer
+├── 00-CANONICAL — Structured Control Layer
 ├── 01-FRAMEWORK — Tenant Setup
 ├── 02-INSTANCES — Projects
 └── 00-START — Initialization Prompt.md
@@ -144,25 +213,62 @@ MS365-TENANT — Framework Setup
 
 ---
 
+# Ontology Separation
+
+## Framework Ontology
+
+Includes:
+
+- SYS
+- CAN
+- ARCH
+- semantic governance
+- canonical enforcement
+- routing logic
+
+Framework sources are STRICT READ-ONLY.
+
+---
+
+## Tenant Ontology
+
+Includes:
+
+- PRJ files
+- BLP documents
+- MTX files
+- users
+- groups
+- mailboxes
+- permissions
+- workflows
+
+Represents tenant operational state only.
+
+Tenant generation must NEVER modify framework doctrine.
+
+---
+
 # AI-Oriented Architecture
 
-The framework is specifically designed to improve:
+The framework is designed to improve:
 
 - AI context loading
-- semantic retrieval
-- ontology navigation
-- governance consistency
 - deterministic generation
+- semantic retrieval
+- governance consistency
+- ontology navigation
 - cross-document relationships
 
 The framework uses:
 
 - explicit semantic boundaries
-- controlled naming conventions
-- authority mapping
-- structured context prioritization
+- authority hierarchy
+- controlled orchestration
+- deterministic routing
+- structured naming systems
 
-to reduce semantic drift and hallucination risks.
+to minimize semantic drift.
 
 ---
 
@@ -171,11 +277,11 @@ to reduce semantic drift and hallucination risks.
 This project IS:
 
 - a semantic framework
-- a Microsoft 365 architecture system
-- an AI-oriented governance environment
-- a blueprint factory
-- a knowledge-driven tenant modeling system
-- a semantic execution environment
+- a Microsoft 365 governance system
+- an AI-oriented architecture environment
+- a tenant blueprint factory
+- a semantic orchestration framework
+- a deterministic execution model
 
 ---
 
@@ -183,30 +289,32 @@ This project IS:
 
 This project is NOT:
 
-- a traditional web application
 - a SaaS platform
 - a low-code tool
-- a finished automation product
+- a traditional web application
+- a finished deployment product
 - a replacement for Microsoft 365 admin tooling
 
-The framework complements existing Microsoft tooling by adding semantic structure and AI-oriented architecture.
+The framework complements Microsoft tooling through semantic structure and controlled orchestration.
 
 ---
 
 # Current Status
 
-### Current maturity level
+Current maturity level:
 
-`Foundation / Experimental Alpha`
+```text
+Foundation / Experimental Alpha
+```
 
-### Current capabilities
+Current capabilities:
 
 - semantic navigation
 - ontology-driven architecture
 - blueprint modeling
-- governance structuring
-- automation preparation
-- deterministic AI context loading
+- governance standardization
+- MTX generation
+- controlled deployment preparation
 
 ---
 
@@ -218,25 +326,28 @@ Examples:
 - governance standardization
 - AI-assisted tenant generation
 - blueprint-driven deployment preparation
-- semantic knowledge systems
 - organizational modeling
+- semantic knowledge systems
 - documentation-as-infrastructure
 
 ---
 
 # Initialization
 
-### Primary entry point
-
-`00-START — Initialization Prompt.md`
-
-### Recommended initialization order
+Primary entry point:
 
 ```text
-00-SYSTEM
-→ 01-ARC
-→ 02-BLP
-→ 04-AUT
+00-START — Initialization Prompt.md
+```
+
+Initialization sequence:
+
+```text
+00-START
+→ 01-GENERATION
+→ 02-VALIDATION
+→ 03-MTX
+→ 04-AUT-DEPLOYMENT
 ```
 
 ---
@@ -245,14 +356,14 @@ Examples:
 
 This repository contains only the CORE FRAMEWORK.
 
-Project instances are intentionally excluded from version control.
+Tenant instances are intentionally excluded from version control.
 
-### Ignored
+Ignored:
 
 ```text
 02-INSTANCES — Projects
 03-MTX — Data Matrices
-Research / temporary files
+temporary research files
 ```
 
 ---
@@ -262,12 +373,18 @@ Research / temporary files
 Core principles:
 
 - deterministic navigation
-- semantic clarity
 - ontology separation
+- semantic clarity
 - governance-first architecture
 - AI-readable structures
-- scalable naming systems
-- modular execution
+- modular orchestration
+- controlled execution safety
+
+Important principle:
+
+```text
+redundancy != inconsistency
+```
 
 ---
 
@@ -276,10 +393,10 @@ Core principles:
 Potential future evolution:
 
 - GraphRAG integration
-- Microsoft Graph execution orchestration
-- AI-assisted tenant deployment
+- Microsoft Graph orchestration
+- AI-assisted deployment validation
 - semantic policy engines
-- enterprise-scale governance models
+- enterprise governance modeling
 - context-aware automation systems
 
 ---
@@ -289,30 +406,34 @@ Potential future evolution:
 This repository serves as:
 
 - semantic architecture workspace
-- AI systems design framework
-- Microsoft 365 governance laboratory
+- Microsoft 365 governance framework
 - ontology-driven knowledge environment
+- AI-oriented orchestration system
 - tenant blueprint factory
-
----
-
-# Author
-
-Federico Mosqueira
-
-Belgium — Antwerp
-
----
-
-# License
-
-Currently private governance architecture research and experimental framework development.
-
 
 ---
 
 # Auxiliary Workspace
 
-`.codex` is an AI-assisted tooling workspace used for support tooling and contributor/agent execution context.
+`.codex` is a non-authoritative AI tooling workspace used for execution support and contributor context.
 
-It is **non-authoritative** and does not override SYS/CAN/ARC governance doctrine.
+It does NOT override:
+
+- SYS
+- CAN
+- ARCH
+- semantic governance
+- canonical doctrine
+
+---
+
+# Author
+
+Federico Mosqueira  
+Antwerp, Belgium
+
+---
+
+# License
+
+Private governance architecture research and experimental framework development.

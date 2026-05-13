@@ -2,6 +2,10 @@
 
 ## Reusable Tenant Automation Layer
 
+**Legacy compatible naming:**
+- users.csv → MTX-USERS.csv
+- permissions.csv → MTX-PERMISSIONS.csv
+
 ---
 
 # Data Source Rule
@@ -76,10 +80,23 @@ users.csv
 
 ```
 UserID,DisplayName,FirstName,LastName,UserPrincipalName,MailNickname,Department,JobTitle,UsageLocation,LicenseSKU,PasswordProfile,AccountEnabled
-U001,ROLE-GLOBAL-ADMIN,Global,Admin,admin@<tenant-domain>,admin,Executive,Global Administrator,BE,BUSINESS_BASIC,TempPass123!,True
-U002,ROLE-IT-ADMIN,IT,Admin,it.admin@<tenant-domain>,it.admin,Admin,License Administrator,BE,,TempPass123!,True
-U003,ROLE-FIN-ANALYST,Finance,Analyst,user@<domain>,user.finance,Finance,Finance Analyst,BE,BUSINESS_BASIC,TempPass123!,True
+U001,ROLE-GLOBAL-ADMIN,Global,Admin,admin@<tenant-domain>,admin,Executive,Global Administrator,BE,BUSINESS_BASIC,<GENERATED_SECURE_PASSWORD>,True
+U002,ROLE-IT-ADMIN,IT,Admin,it.admin@<tenant-domain>,it.admin,Admin,License Administrator,BE,,<GENERATED_SECURE_PASSWORD>,True
+U003,ROLE-FIN-ANALYST,Finance,Analyst,user@<domain>,user.finance,Finance,Finance Analyst,BE,BUSINESS_BASIC,<GENERATED_SECURE_PASSWORD>,True
 ```
+
+---
+
+Lab-only placeholder example:
+
+<GENERATED_SECURE_PASSWORD>
+
+Production deployments should:
+
+- generate unique random passwords
+- force password reset on first sign-in
+- require MFA
+- avoid shared or hardcoded passwords
 
 ---
 
@@ -154,19 +171,16 @@ NONE
 
 # 10. Password Strategy
 
-For lab tenant:
+Lab-only placeholder example:
 
-```
-TempPass123!
-```
+<GENERATED_SECURE_PASSWORD>
 
-Then force reset later.
+Production deployments should:
 
-For production:
-
-- random generated
-- force password change
-- MFA required
+- generate unique random passwords
+- force password reset on first sign-in
+- require MFA
+- avoid shared or hardcoded passwords
 
 ---
 

@@ -1,8 +1,10 @@
 # AUT-DOC-010 — permissions.csv Schema
 
-# AUT-DOC-010 — permissions.csv Schema
-
 ## Reusable Tenant Automation Layer
+
+**Legacy compatible naming:**
+- users.csv → MTX-USERS.csv
+- permissions.csv → MTX-PERMISSIONS.csv
 
 ---
 

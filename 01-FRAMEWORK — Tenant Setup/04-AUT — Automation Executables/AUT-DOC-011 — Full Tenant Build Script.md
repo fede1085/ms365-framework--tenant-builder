@@ -1,8 +1,21 @@
 # AUT-DOC-011 — Full Tenant Build Script
 
-# AUT-DOC-011 — Full Tenant Build Script
-
 ## Reusable Tenant Automation Layer
+
+**Legacy compatible naming:**
+- users.csv → MTX-USERS.csv
+- groups.csv → MTX-GROUPS.csv
+- mailboxes.csv → MTX-MAILBOXES.csv
+- permissions.csv → MTX-PERMISSIONS.csv
+- licenses.csv → MTX-LICENSES.csv
+
+Preferred MTX naming:
+
+- MTX-USERS.csv
+- MTX-GROUPS.csv
+- MTX-MAILBOXES.csv
+- MTX-PERMISSIONS.csv
+- MTX-LICENSES.csv
 
 ---
 
@@ -31,11 +44,11 @@ This is the orchestration layer.
 # 2. Required Input Files
 
 ```
-users.csv
-groups.csv
-mailboxes.csv
-permissions.csv
-licenses.csv
+MTX-USERS.csv
+MTX-GROUPS.csv
+MTX-MAILBOXES.csv
+MTX-PERMISSIONS.csv
+MTX-LICENSES.csv
 ```
 
 Optional:
@@ -100,15 +113,24 @@ build-tenant.ps1
 # BUILD TENANT
 # =====================================
 
-Write-Host "Starting Tenant Build..."
-
 # Connect
+
+# Connection Strategy
+# Sandbox / Lab environments may use active-session authentication.
+# Production environments should prefer explicit tenant targeting.
+
+# Example production-safe pattern:
+# Connect-MgGraph -TenantId $TenantId
+# Connect-ExchangeOnline -Organization $TenantDomain
+
+# Current runtime connection
 Connect-MgGraph
 Connect-ExchangeOnline
+Write-Host "Starting Tenant Build..."
 
 # Import Data
-$Users       = Import-Csv .\users.csv
-$Permissions = Import-Csv .\permissions.csv
+$Users       = Import-Csv .\MTX-USERS.csv
+$Permissions = Import-Csv .\MTX-PERMISSIONS.csv
 
 # Step 1 Users
 foreach ($u in $Users) {

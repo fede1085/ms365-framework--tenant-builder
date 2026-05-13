@@ -155,11 +155,11 @@ Define:
 
 Generate source files:
 
-- users.csv
-- groups.csv
-- mailboxes.csv
-- permissions.csv
-- licenses.csv
+- MTX-USERS.csv
+- MTX-GROUPS.csv
+- MTX-MAILBOXES.csv
+- MTX-PERMISSIONS.csv
+- MTX-LICENSES.csv
 
 ## Phase 4 — Automated Build
 
