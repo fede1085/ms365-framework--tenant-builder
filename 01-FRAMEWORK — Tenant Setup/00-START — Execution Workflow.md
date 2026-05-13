@@ -104,28 +104,41 @@ Expected project structure:
 
 ---
 
-## 5. Safe Generation Flow
+## 5. Official Prompt Workflow
 
-The approved tenant-generation flow is:
+Official orchestration workflow:
 
 ```text
+00-START — Initialization Prompt
+    ↓
+01-GENERATION — Blueprint Generation Prompt
+    ↓
+02-VALIDATION — Blueprint Validation Prompt
+    ↓
+03-MTX — Matrix Generation Prompt
+    ↓
+04-AUT-DEPLOYMENT — Controlled Execution Prompt
+
+Operational flow:
+
 DISCOVERY
 → PRJ-BLUEPRINT-MASTER-DOC
 → DOMAIN BLP
-→ VALIDATION
+→ VALIDATED BLP
 → MTX
-→ VALIDATION
 → AUT
+
+Execution rules:
+
+each phase requires explicit human approval
+each prompt must STOP after completion
+automatic progression is forbidden
+AUT consumes validated MTX only
+
+Generation flow must preserve:
+
+ARCH → BLP → MTX → AUT
 ```
-
-Each phase requires explicit approval before continuing.
-
-Automation must only begin after:
-
-- Blueprint generation is complete
-- Blueprint validation is approved
-- MTX files are generated
-- MTX validation is approved
 
 ---
 
@@ -146,7 +159,7 @@ MTX-MAILBOXES.csv
 MTX-PERMISSIONS.csv
 ```
 
-Optional files:
+Optional files (always generate if possible, following the framework requirements):
 
 ```text
 MTX-LICENSES.csv
@@ -310,19 +323,23 @@ Automation must verify the connected tenant before creating users, groups, mailb
 
 ---
 
-## 13. Automation Flow
-
-Approved flow:
+## 13. Controlled Execution Flow
+Approved orchestration flow:
 
 ```text
-AI generates tenant BLP
-→ validation approves BLP
-→ AI generates MTX
-→ validation approves MTX
-→ Run-Project selects project MTX
-→ tenant targeting is confirmed
-→ Deploy-Tenant executes only after confirmation
+00-START → generates PRJ-BLUEPRINT-MASTER-DOC
+01-GENERATION → generates DOMAIN BLP
+02-VALIDATION → validates Blueprint layer
+03-MTX → generates execution-ready MTX
+04-AUT-DEPLOYMENT → prepares controlled deployment
 ```
+
+Execution principles:
+
+- MTX is the only valid AUT execution source
+- AUT must NEVER redesign the tenant
+- deployment must remain HUMAN-SUPERVISED
+- execution must require explicit tenant confirmation
 
 ---
 

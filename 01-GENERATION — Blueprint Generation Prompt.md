@@ -1,249 +1,232 @@
-# 01-BLP — Blueprint Generation Prompt
+````markdown id="e7d4nm"
+# 01-GENERATION — Blueprint Generation Prompt
 
-## Purpose
+# Generate tenant Blueprint layer: [project_name]
 
-Transform the approved:
-
-```text
-PRJ-BLUEPRINT-MASTER-DOC
-```
-
-into specialized domain Blueprint documents.
-
-This phase decomposes tenant operational truth into structured Blueprint layers while preserving framework governance boundaries.
+Use Agent Mode.
 
 ---
 
 # EXECUTION STATE
 
-Required execution state:
+Current execution state:
 
 ```text
 GENERATE
-```
+````
 
-This phase is HUMAN-SUPERVISED.
+Allowed operational states:
 
-The system must NEVER escalate automatically into:
-
-```text
-MTX
-AUT
+```text id="6l9jcb"
+READ_ONLY
+PLAN
+GENERATE
 EXECUTE
 ```
 
-Allowed behaviors:
+Execution-state progression must remain HUMAN-SUPERVISED.
 
-- Blueprint generation
-- operational decomposition
-- governance-aligned modeling
-- semantic refinement
-- tenant Blueprint structuring
+The system must NEVER escalate execution state automatically.
 
 Forbidden behaviors:
 
-- MTX generation
-- AUT generation
-- deployment preparation
-- deployment execution
-- framework modification
-- semantic governance redefinition
-- canonical governance redefinition
+* modifying framework files
+* generating MTX
+* generating AUT
+* deployment execution
+* PowerShell execution
+* tenant modification
+* automatic progression into deployment phases
 
 ---
 
-# SOURCE OF TRUTH
+# SOURCE FOLDERS
 
-Use ONLY:
+Read framework governance and semantic rules from:
 
-```text
-PRJ-BLUEPRINT-MASTER-DOC
+@00-SYSTEM — Semantic Control Layer
+@00-CANONICAL — Structured Control Layer
+@.agents\rules
+@.agents\workflows
+@01-FRAMEWORK — Tenant Setup\01-ARC — Architecture
+@01-FRAMEWORK — Tenant Setup\02-BLP — Blueprint Templates
+
+Read tenant operational source from:
+
+```text id="7h77o2"
+02-INSTANCES — Projects\[project_name]\02-BLP\PRJ-BLUEPRINT-MASTER-DOC.md
 ```
 
-as the tenant operational source of truth.
-
-Use:
-
-```text
-@00-SYSTEM
-@00-CANONICAL
-@01-FRAMEWORK
-```
-
-as STRICT READ-ONLY governance and semantic references only.
+Framework sources are STRICT READ-ONLY.
 
 Do NOT modify framework files.
 
 ---
 
-# GOVERNANCE MODEL
+# CORE MODEL
 
 Follow strictly:
 
-```text
+```text id="2mw9c2"
 ARCH → BLP → MTX → AUT
 ```
 
-Definitions:
+Current workflow scope:
 
-- ARCH = governance and architecture doctrine
-- BLP = operational Blueprint layer
-- MTX = execution-ready operational data
-- AUT = deployment and automation layer
-
-Blueprint generation exists ONLY between:
-
-```text
-ARCH
-and
-MTX
+```text id="y1zzyz"
+PRJ-BLUEPRINT-MASTER-DOC
+→ DOMAIN BLP
 ```
 
-Blueprints must NEVER bypass MTX.
+This prompt handles ONLY:
 
-Blueprints must NEVER become deployment logic.
+* Blueprint generation
+* operational decomposition
+* domain Blueprint creation
+
+It must NOT generate:
+
+* MTX
+* AUT
+* deployment preparation
 
 ---
 
 # ONTOLOGY SEPARATION
 
-Maintain strict separation between:
+Maintain strict ontology boundaries between:
 
-## 1. META-FRAMEWORK ONTOLOGY
+## META-FRAMEWORK ONTOLOGY
 
 Includes:
 
-- SYS
-- CAN
-- ARCH
-- framework governance
-- semantic governance
-- canonical enforcement
+* SYS
+* CAN
+* ARCH
+* semantic governance
+* canonical enforcement
+* framework doctrine
 
-Represents:
-
-- framework doctrine
-- reusable architecture standards
-- authority hierarchy
-- governance model
+Represents reusable framework authority.
 
 ---
 
-## 2. TENANT INSTANCE ONTOLOGY
+## TENANT INSTANCE ONTOLOGY
 
 Includes:
 
-- PRJ documents
-- tenant Blueprint documents
-- operational structures
-- tenant workflows
-- tenant ownership logic
-- collaboration logic
-- escalation logic
+* PRJ files
+* tenant Blueprint documents
+* operational structures
+* users
+* groups
+* permissions
+* workflows
 
-Represents:
-
-- tenant operational state
+Represents tenant operational state only.
 
 ---
 
 # IMPORTANT ONTOLOGY RULE
 
-Blueprints belong to:
+Blueprint generation must NEVER:
 
-```text
-tenant ontology
-```
-
-Blueprints must NEVER:
-
-- redefine SYS
-- redefine CAN
-- redefine ARCH
-- redefine semantic meaning
-- redefine authority hierarchy
-- modify framework governance
+* modify SYS
+* modify CAN
+* modify ARCH
+* redefine governance
+* redefine semantic meaning
+* redefine canonical meaning
 
 Framework governance remains external and authoritative.
 
+Prevent:
+
+* semantic drift
+* governance drift
+* cross-layer contamination
+* framework/tenant authority confusion
+
 ---
 
-# SEMANTIC / CANONICAL RULE
+# STEP 1 — LOAD MASTER OPERATIONAL SOURCE
 
-Important principle:
+Required source:
 
-```text
-CAN derives from SYS
-CAN does NOT redefine SYS
+```text id="yjqz5m"
+PRJ-BLUEPRINT-MASTER-DOC.md
 ```
 
-Blueprints must preserve semantic governance defined by SYS and enforced by CAN.
+Treat MASTER as:
 
-Blueprints must NOT invent governance unsupported by semantic sources.
+```text"
+tenant operational source of truth
+```
+
+Generate Blueprint layers ONLY from validated tenant operational logic.
+
+Do NOT invent unsupported business complexity.
 
 ---
 
-# GENERATION GOAL
+# STEP 2 — GENERATE DOMAIN BLUEPRINT LAYER
 
-Generate specialized Blueprint documents by operational domain.
+Generate specialized Blueprint documents inside:
+
+```text id="hm1gyh"
+02-INSTANCES — Projects\[project_name]\02-BLP
+```
+
+Generate ONLY operationally justified Blueprint domains.
 
 Examples:
 
-- Governance Blueprints
-- Collaboration Blueprints
-- Security Blueprints
-- Compliance Blueprints
-- Operational Workflow Blueprints
+* Governance Blueprints
+* Collaboration Blueprints
+* Security Blueprints
+* Compliance Blueprints
+* Operational Workflow Blueprints
 
-Examples include:
-
-- BLP-OPS-001
-- BLP-GOV-001
-- BLP-SEC-001
-- BLP-COMP-001
-
-Generate ONLY documents justified by the operational requirements defined in the MASTER document.
-
-Avoid unnecessary Blueprint proliferation.
+Do NOT force unnecessary enterprise complexity.
 
 ---
 
-# BLUEPRINT REQUIREMENTS
+# BLUEPRINT RULES
 
-Blueprints must remain:
+Blueprints must:
 
-- operationally realistic
-- governance-aligned
-- internally consistent
-- semantically deterministic
-- scalable for SME environments
-- reusable
-- tenant-scoped
+* follow ARCH rules
+* preserve semantic consistency
+* preserve naming conventions
+* preserve ontology boundaries
+* preserve authority hierarchy
+* remain tenant-scoped
+* remain operationally realistic
 
-Blueprints must preserve:
+Blueprints must NEVER:
 
-- semantic consistency
-- naming conventions
-- authority hierarchy
-- ontology boundaries
-- escalation logic
-- collaboration realism
-- operational coherence
+* redefine framework governance
+* redefine semantic authority
+* generate MTX automatically
+* generate AUT automatically
+* create deployment logic
 
 ---
 
-# EXECUTION RULES
+# REQUIRED OUTPUTS
 
-- Do NOT generate MTX
-- Do NOT generate AUT
-- Do NOT create deployment logic
-- Do NOT generate scripts
-- Do NOT create CSV files
-- Do NOT bypass validation phases
-- Do NOT invent architecture unsupported by the MASTER document
-- Do NOT create enterprise complexity unless operationally justified
+Generate tenant-scoped Blueprint files derived from MASTER logic.
 
-Blueprints must remain human-reviewable before Matrix generation.
+Examples may include:
+
+```text id="x6q5ow"
+BLP-GOV-001
+BLP-OPS-001
+BLP-SEC-001
+BLP-COMP-001
+```
+
+Only generate files justified by tenant operational requirements.
 
 ---
 
@@ -253,49 +236,46 @@ After Blueprint generation:
 
 STOP.
 
-Wait for explicit validation approval before continuing into:
+Do NOT continue automatically.
 
-```text
-MTX
+Output:
+
+```text id="jlwmhq"
+BLUEPRINT GENERATION COMPLETE
+DOMAIN BLP GENERATED
 ```
 
-Automatic progression is forbidden.
+Then ask:
+
+```text
+Are you ready for:
+02-VALIDATION — Blueprint Validation Prompt ?
+```
 
 ---
 
-# VALIDATION EXPECTATIONS
+# GLOBAL RULES
 
-Blueprints must be ready for:
+* Framework is STRICT READ-ONLY
+* Do NOT modify framework files
+* Do NOT generate MTX yet
+* Do NOT generate AUT yet
+* Do NOT skip validation phase
 
-```text
-READ_ONLY validation
+Core principle:
+
+```text id="sjlwmr"
+ARCH governs BLP
+BLP informs MTX
+MTX feeds AUT
+AUT never redefines architecture
 ```
 
-Validation targets include:
+Important principle:
 
-- semantic consistency
-- governance consistency
-- naming consistency
-- authority integrity
-- operational realism
-- permission logic
-- collaboration logic
-- ontology integrity
-
----
-
-# IMPORTANT PRINCIPLES
-
-```text
+```text id="5ig3n5"
 redundancy != inconsistency
 ```
-
-Intentional governance repetition may exist across layers for:
-
-- routing reinforcement
-- authority clarity
-- ontology reinforcement
-- AI operational guidance
 
 Do NOT simplify intentional governance redundancy.
 
@@ -303,24 +283,16 @@ Do NOT simplify intentional governance redundancy.
 
 # FINAL OBJECTIVE
 
-Transform:
-
 ```text
-tenant operational truth
-```
-
-into:
-
-```text
-structured operational Blueprint layers
+PRJ-BLUEPRINT-MASTER-DOC
+→ DOMAIN BLUEPRINT LAYER
 ```
 
 while preserving:
 
-- semantic governance
-- ontology isolation
-- operational realism
-- deterministic consistency
-- authority hierarchy
-- framework isolation
-- controlled execution safety
+* semantic governance
+* ontology integrity
+* operational realism
+* deterministic consistency
+* authority hierarchy
+* framework isolation

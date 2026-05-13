@@ -1,7 +1,6 @@
-````markdown id="m6n2xv"
-# 02-VALIDATION — Blueprint Validation Prompt
+# 03-MTX — Matrix Generation Prompt
 
-# Validate tenant Blueprint layer: [project_name]
+# Generate tenant Matrix layer: [project_name]
 
 Use Agent Mode.
 
@@ -12,12 +11,12 @@ Use Agent Mode.
 Current execution state:
 
 ```text
-READ_ONLY
+GENERATE
 ````
 
 Allowed operational states:
 
-```text id="l6f9qk"
+```text id="x8a2wc"
 READ_ONLY
 PLAN
 GENERATE
@@ -31,12 +30,11 @@ The system must NEVER escalate execution state automatically.
 Forbidden behaviors:
 
 * modifying framework files
-* generating MTX automatically
-* generating AUT
+* generating AUT automatically
 * deployment execution
 * PowerShell execution
 * tenant modification
-* automatic correction without approval
+* automatic deployment progression
 
 ---
 
@@ -47,14 +45,19 @@ Read framework governance and semantic rules from:
 @00-SYSTEM — Semantic Control Layer
 @00-CANONICAL — Structured Control Layer
 @.agents\rules
-@.agents\workflows
 @01-FRAMEWORK — Tenant Setup\01-ARC — Architecture
 @01-FRAMEWORK — Tenant Setup\02-BLP — Blueprint Templates
 
-Validate tenant Blueprint files from:
+Read validated Blueprint layer from:
 
-```text id="r9v8dz"
+```text
 02-INSTANCES — Projects\[project_name]\02-BLP
+```
+
+Generate MTX files inside:
+
+```text id="3f5j6l"
+02-INSTANCES — Projects\[project_name]\03-MTX — Data Matrices
 ```
 
 Framework sources are STRICT READ-ONLY.
@@ -67,29 +70,28 @@ Do NOT modify framework files.
 
 Follow strictly:
 
-```text id="svr0r2"
+```text id="mjlwm1"
 ARCH → BLP → MTX → AUT
 ```
 
 Current workflow scope:
 
-```text id="3iuhs2"
-DOMAIN BLP
-→ VALIDATION
+```text id="m0e5xb"
+VALIDATED BLP
+→ MTX
 ```
 
 This prompt handles ONLY:
 
-* Blueprint validation
-* governance validation
-* semantic validation
-* operational validation
+* MTX generation
+* operational data transformation
+* execution-ready CSV generation
 
 It must NOT generate:
 
-* MTX automatically
 * AUT
 * deployment preparation
+* deployment execution
 
 ---
 
@@ -118,10 +120,11 @@ Includes:
 
 * PRJ files
 * tenant Blueprint documents
-* operational structures
-* workflows
+* MTX files
+* operational data
 * users
 * groups
+* mailboxes
 * permissions
 
 Represents tenant operational state only.
@@ -130,7 +133,7 @@ Represents tenant operational state only.
 
 # IMPORTANT ONTOLOGY RULE
 
-Validation must NEVER:
+MTX generation must NEVER:
 
 * modify SYS
 * modify CAN
@@ -148,115 +151,113 @@ Detect and prevent:
 * cross-layer contamination
 * framework/tenant authority confusion
 
+MTX operationalizes Blueprint logic only.
+
 ---
 
-# STEP 1 — LOAD BLUEPRINT LAYER
+# STEP 1 — LOAD VALIDATED BLUEPRINT LAYER
 
-Validate all tenant Blueprint documents from:
+Load Blueprint documents from:
 
-```text id="0x3v7n"
+```text id="t9k5zv"
 02-INSTANCES — Projects\[project_name]\02-BLP
 ```
 
-Treat Blueprint documents as:
+Treat Blueprint layer as:
 
-```text id="xj3d6l"
-tenant operational design layer
+```text id="b0v2mx"
+validated tenant operational design source
 ```
 
-Validation must remain READ_ONLY unless explicitly instructed otherwise.
+Generate operational MTX data ONLY from validated Blueprint logic.
 
 ---
 
-# STEP 2 — VALIDATE BLUEPRINT CONSISTENCY
+# STEP 2 — GENERATE MATRIX LAYER
 
-Validate:
+Generate execution-ready CSV files inside:
 
-* semantic consistency
-* naming consistency
-* governance consistency
-* operational realism
-* authority hierarchy
-* collaboration logic
-* ownership logic
-* permission logic
-* lifecycle coherence
-* ontology boundaries
+```text id="o1u6wc"
+02-INSTANCES — Projects\[project_name]\03-MTX — Data Matrices
+```
+
+Required files:
+
+```text id="i0e6uh"
+MTX-USERS.csv
+MTX-GROUPS.csv
+MTX-MAILBOXES.csv
+MTX-PERMISSIONS.csv
+```
+
+Optional files:
+
+```text id="s5k0re"
+MTX-LICENSES.csv
+MTX-CHANNELS.csv
+MTX-OWNERSHIP.csv
+MTX-LIFECYCLE.csv
+```
+
+---
+
+# MATRIX RULES
+
+MTX generation must:
+
+* apply naming from ARCH
+* apply governance from BLP
+* apply ownership logic from MASTER
+* preserve authority hierarchy
+* preserve operational realism
+* preserve tenant isolation
+
+MTX defines:
+
+```text id="w1s0te"
+execution-ready operational data
+```
+
+MTX must NEVER redefine governance.
+
+---
+
+# REQUIRED VALIDATION DURING GENERATION
 
 Detect:
 
-* semantic contradictions
-* naming drift
-* governance conflicts
-* unsupported assumptions
+* duplicate users
+* duplicate groups
 * orphan ownership
-* permission inconsistencies
-* operational gaps
-* cross-layer contamination
+* invalid naming
+* invalid permissions
+* missing departments
+* inconsistent relationships
 
----
-
-# VALIDATION RULES
-
-Validation must:
-
-* preserve ontology boundaries
-* preserve framework isolation
-* preserve tenant isolation
-* preserve deterministic consistency
-
-Validation must NEVER:
-
-* redesign tenant architecture automatically
-* generate MTX automatically
-* generate AUT automatically
-* create deployment logic
-
-Generate findings only unless explicitly instructed to correct.
-
----
-
-# OUTPUT REQUIREMENTS
-
-Generate a validation report including:
-
-* findings summary
-* governance issues
-* semantic issues
-* naming issues
-* operational issues
-* ontology-boundary verification
-
-Use severity levels:
-
-```text id="szzv6q"
-CLEAN
-WARNING
-CRITICAL
-```
+Do NOT auto-correct unless explicitly requested.
 
 ---
 
 # STOP-GATE RULE
 
-After validation:
+After MTX generation:
 
 STOP.
 
 Do NOT continue automatically.
 
-If validation status is acceptable, output:
+Output:
 
-```text id="s59z3y"
-BLUEPRINT VALIDATION COMPLETE
-READY FOR MTX GENERATION
+```text id="l0q6hz"
+MTX GENERATION COMPLETE
+READY FOR AUT PREPARATION
 ```
 
 Then ask:
 
-```text id="mjlwm8"
+```text id="a6z3mf"
 Are you ready for:
-03-MTX — Matrix Generation Prompt ?
+04-AUT-DEPLOYMENT — Controlled Execution Prompt ?
 ```
 
 ---
@@ -265,13 +266,13 @@ Are you ready for:
 
 * Framework is STRICT READ-ONLY
 * Do NOT modify framework files
-* Do NOT skip validation
-* Do NOT generate AUT
+* Do NOT generate AUT automatically
 * Do NOT deploy
+* Do NOT execute PowerShell
 
 Core principle:
 
-```text id="7e9c0z"
+```text id="b7w4oj"
 ARCH governs BLP
 BLP informs MTX
 MTX feeds AUT
@@ -280,7 +281,7 @@ AUT never redefines architecture
 
 Important principle:
 
-```text id="vgn62v"
+```text id="d5f1gw"
 redundancy != inconsistency
 ```
 
@@ -290,9 +291,9 @@ Do NOT simplify intentional governance redundancy.
 
 # FINAL OBJECTIVE
 
-```text id="m5b7d2"
-DOMAIN BLUEPRINT LAYER
-→ VALIDATED BLUEPRINT LAYER
+```text id="d0h8ze"
+VALIDATED BLUEPRINT LAYER
+→ EXECUTION-READY MTX LAYER
 ```
 
 while preserving:

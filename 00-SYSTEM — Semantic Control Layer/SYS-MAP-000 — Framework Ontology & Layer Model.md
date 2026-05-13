@@ -87,6 +87,39 @@ AI agents should use L1 (Semantic Navigation) to determine which L2 (Meta) logic
 
 ---
 
+### 5.1 Prompt Orchestration Layer
+
+The official orchestration workflow is:
+
+00-START — Initialization Prompt
+    ↓
+01-GENERATION — Blueprint Generation Prompt
+    ↓
+02-VALIDATION — Blueprint Validation Prompt
+    ↓
+03-MTX — Matrix Generation Prompt
+    ↓
+04-AUT-DEPLOYMENT — Controlled Execution Prompt
+
+Prompt-to-layer alignment:
+
+Prompt	Primary Layer
+00-START	LAYER 3
+01-GENERATION	LAYER 3
+02-VALIDATION	LAYER 3
+03-MTX	LAYER 4
+04-AUT-DEPLOYMENT	LAYER 4
+
+Prompt orchestration must preserve:
+
+ARCH → BLP → MTX → AUT
+
+Each orchestration phase must STOP after completion and require explicit human approval before continuation.
+
+Automation phases must consume validated MTX data only.
+
+---
+
 ## Related Documents
 
 - `ARC-SYS-000 — Architecture Control Map` (Execution model)

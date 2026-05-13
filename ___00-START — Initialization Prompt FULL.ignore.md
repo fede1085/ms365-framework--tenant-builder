@@ -1,6 +1,4 @@
 ````markdown
-# 00-START — Initialization Prompt
-
 # Initialize new tenant project: [project_name]
 
 Use Agent Mode.
@@ -48,6 +46,7 @@ Read framework governance and semantic rules from:
 @.agents\workflows
 @01-FRAMEWORK — Tenant Setup\01-ARC — Architecture
 @01-FRAMEWORK — Tenant Setup\02-BLP — Blueprint Templates
+@01-FRAMEWORK — Tenant Setup\04-AUT — Automation Executables
 
 Framework sources are STRICT READ-ONLY.
 
@@ -56,7 +55,13 @@ Do NOT modify framework files.
 Read priority must follow:
 
 ```text
-SYS → CAN → ARC → BLP
+SYS → CAN → ARC → BLP → MTX → AUT
+```
+
+As defined in:
+
+```text
+SYS-GOV-001 — Read First
 ```
 
 ---
@@ -69,25 +74,26 @@ Follow strictly:
 ARCH → BLP → MTX → AUT
 ```
 
-Current workflow scope:
+Definitions:
+
+* ARCH = governance and architecture doctrine
+* BLP = operational blueprint layer
+* MTX = execution-ready operational data
+* AUT = deployment and automation layer
+
+Approved workflow:
 
 ```text
 DISCOVERY
 → PRJ-BLUEPRINT-MASTER-DOC
+→ DOMAIN BLP
+→ VALIDATION
+→ MTX
+→ VALIDATION
+→ AUT
 ```
 
-This prompt handles ONLY:
-
-* discovery
-* project initialization
-* master operational blueprint generation
-
-It must NOT generate:
-
-* DOMAIN BLP
-* MTX
-* AUT
-* deployment preparation
+Each phase requires explicit approval before continuation.
 
 ---
 
@@ -104,6 +110,7 @@ Includes:
 * ARCH
 * semantic governance
 * canonical enforcement
+* routing logic
 * framework doctrine
 
 Represents reusable framework authority.
@@ -116,7 +123,8 @@ Includes:
 
 * PRJ files
 * tenant operational structure
-* business logic
+* generated BLP documents
+* MTX files
 * users
 * groups
 * mailboxes
@@ -149,6 +157,31 @@ Prevent:
 
 ---
 
+# SEMANTIC / CANONICAL GOVERNANCE
+
+Semantic governance originates from:
+
+```text
+00-SYSTEM
+```
+
+Canonical enforcement derives from:
+
+```text
+00-CANONICAL
+```
+
+Important principle:
+
+```text
+CAN derives from SYS
+CAN does NOT redefine SYS
+```
+
+Canonical files must NEVER invent governance or ontology not declared in semantic source files.
+
+---
+
 # STEP 1 — INTERACTIVE DISCOVERY
 
 Required execution state:
@@ -159,7 +192,7 @@ PLAN
 
 Execute interactive business discovery workflow.
 
-Discovery goals:
+Discovery goal:
 
 * company structure
 * departments
@@ -178,7 +211,7 @@ Discovery rules:
 * ask step-by-step
 * prioritize operational realism
 * do NOT infer enterprise complexity unless required
-* do NOT generate MTX
+* do NOT generate MTX yet
 * do NOT generate AUT
 * do NOT deploy
 
@@ -254,34 +287,162 @@ This document consolidates:
 Rules:
 
 * MASTER belongs to tenant ontology only
-* do NOT generate DOMAIN BLP
-* do NOT generate MTX
-* do NOT generate AUT
+* do NOT generate MTX yet
+* do NOT generate AUT yet
 * stop after MASTER generation
+
+Wait for explicit continuation approval.
 
 ---
 
-# HANDOFF RULE
+# STEP 4 — GENERATE DOMAIN BLUEPRINT LAYER
 
-After MASTER generation:
+Required execution state:
 
-STOP.
+```text
+GENERATE
+```
+
+ONLY after approval.
+
+Generate specialized Blueprint documents from:
+
+```text
+PRJ-BLUEPRINT-MASTER-DOC
+```
+
+Examples:
+
+* Governance
+* Collaboration
+* Security
+* Compliance
+* Operational Workflows
+
+Generate inside:
+
+```text
+02-INSTANCES — Projects\[project_name]\02-BLP
+```
+
+Blueprints must:
+
+* follow ARCH rules
+* preserve semantic consistency
+* preserve naming conventions
+* preserve ontology boundaries
+* remain tenant-scoped
+
+Blueprints must NEVER:
+
+* redefine framework governance
+* redefine semantic authority
+* generate MTX automatically
+* generate AUT automatically
+
+Stop after Blueprint generation.
+
+---
+
+# STEP 5 — VALIDATION PHASE
+
+Required execution state:
+
+```text
+READ_ONLY
+```
+
+Audit Blueprint layer.
+
+Validate:
+
+* semantic consistency
+* naming consistency
+* governance consistency
+* operational realism
+* ontology boundaries
+* authority integrity
+
+Detect:
+
+* semantic drift
+* naming drift
+* governance conflicts
+* unsupported assumptions
+* cross-layer contamination
+
+Generate validation report only.
+
+Do NOT auto-correct unless explicitly requested.
+
+---
+
+# STEP 6 — GENERATE MATRIX LAYER
+
+Required execution state:
+
+```text
+GENERATE
+```
+
+ONLY after Blueprint validation approval.
+
+Generate MTX files inside:
+
+```text
+02-INSTANCES — Projects\[project_name]\03-MTX — Data Matrices
+```
+
+Required:
+
+* MTX-USERS.csv
+* MTX-GROUPS.csv
+* MTX-MAILBOXES.csv
+* MTX-PERMISSIONS.csv
+
+Optional:
+
+* MTX-LICENSES.csv
+* MTX-CHANNELS.csv
+* MTX-OWNERSHIP.csv
+* MTX-LIFECYCLE.csv
+
+Rules:
+
+* MTX operationalizes BLP logic
+* apply naming from ARCH
+* apply governance from BLP
+* apply ownership from MASTER
+* MTX defines operational data only
+* MTX must NEVER redefine governance
+
+No deployment execution yet.
+
+---
+
+# STEP 7 — EXECUTION HANDOFF
+
+Required execution state:
+
+```text
+PLAN
+```
+
+When MTX generation completes, STOP.
 
 Output:
 
 ```text
-DISCOVERY COMPLETE
-PRJ-BLUEPRINT-MASTER-DOC GENERATED
+PROJECT READY — BLP and MTX generated
 ```
 
-Then ask:
+Then instruct the user to continue with:
 
 ```text
-Are you ready for:
-01-GENERATION — Blueprint Generation Prompt ?
+04-AUT-DEPLOYMENT — Controlled Execution Prompt
 ```
 
-Do NOT continue automatically.
+Do NOT execute deployment automatically.
 
 ---
 
@@ -289,9 +450,9 @@ Do NOT continue automatically.
 
 * Framework is STRICT READ-ONLY
 * Do NOT modify framework files
-* Do NOT skip phases
-* Do NOT generate MTX yet
-* Do NOT generate AUT yet
+* Do NOT skip validation phases
+* Do NOT skip MTX layer
+* Do NOT place tenant MTX inside framework folders
 
 Core principle:
 
@@ -316,8 +477,10 @@ Do NOT simplify intentional governance redundancy.
 
 ```text
 Business
-→ Discovery
-→ PRJ-BLUEPRINT-MASTER-DOC
+→ Operational Blueprint
+→ Governance Validation
+→ Matrix Generation
+→ Controlled Deployment Preparation
 ```
 
 while preserving:
@@ -328,3 +491,4 @@ while preserving:
 * deterministic consistency
 * authority hierarchy
 * framework isolation
+* controlled execution safety

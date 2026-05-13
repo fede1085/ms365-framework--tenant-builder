@@ -34,6 +34,57 @@ feeds:
 governed_by:
   - @BLP-TMP-015
 
+## Prompt Orchestration Relationships
+
+@00-START — Initialization Prompt
+feeds:
+  - @PRJ-BLUEPRINT-MASTER-DOC
+hands_off_to:
+  - @01-GENERATION — Blueprint Generation Prompt
+governed_by:
+  - @SYS-MAP-006
+  - @SYS-MAP-000
+
+@01-GENERATION — Blueprint Generation Prompt
+depends_on:
+  - @PRJ-BLUEPRINT-MASTER-DOC
+feeds:
+  - @02-BLP
+hands_off_to:
+  - @02-VALIDATION — Blueprint Validation Prompt
+governed_by:
+  - @ARC-SYS-000
+
+@02-VALIDATION — Blueprint Validation Prompt
+depends_on:
+  - @02-BLP
+feeds:
+  - @03-MTX
+hands_off_to:
+  - @03-MTX — Matrix Generation Prompt
+related_to:
+  - @SYS-MAP-006
+
+@03-MTX — Matrix Generation Prompt
+depends_on:
+  - @02-BLP
+feeds:
+  - @03-MTX
+hands_off_to:
+  - @04-AUT-DEPLOYMENT — Controlled Execution Prompt
+governed_by:
+  - @ARC-STD-007
+  - @BLP-TMP-003
+
+@04-AUT-DEPLOYMENT — Controlled Execution Prompt
+depends_on:
+  - @03-MTX
+related_to:
+  - @AUT-DOC-011
+  - @AUT-DOC-012
+governed_by:
+  - @SYS-MAP-006
+
 ## Global Security
 @ARC-STD-014
 impacts:

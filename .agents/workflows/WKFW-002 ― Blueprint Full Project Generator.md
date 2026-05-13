@@ -4,410 +4,308 @@ description: Generates project-specific Microsoft 365 tenant blueprint documents
 
 # WKFW-002 — Microsoft 365 Tenant Automation Blueprint
 
-## Execution Model Awareness
-
-This workflow operates under the following model:
-
-ARCH → defines rules  
-BLP → defines structure  
-MTX → defines real data  
-AUT → executes data  
-
-The agent MUST respect this separation.
-
-## Execution State Gate (Mandatory)
-
-Allowed operational states:
-- `READ_ONLY` → inspect and validate only; no file generation, no file writes.
-- `PLAN` → propose structure and implementation plan; no file writes.
-- `GENERATE` → create/update blueprint and matrix artifacts only when explicitly requested.
-- `EXECUTE` → never performed by this workflow; execution is delegated to AUT scripts.
-
-Default state is `READ_ONLY` unless the user explicitly authorizes a higher state.
-If the task is audit, inspection, or semantic validation, state MUST remain `READ_ONLY`.
-
----
-
-## Phase Control
-
-Phase 1 → Architecture Alignment  
-- Validate inputs against naming, security, and structure rules  
-
-Phase 2 → Blueprint Generation  
-- Generate ONLY template structures  
-- Use placeholders (ROLE-XXX, <domain>)  
-- DO NOT generate real users or emails  
-
-Phase 3 → Matrix Generation (IMPORTANT)  
-- Convert Blueprint structures into real instance data
-- Generate CSV files
-- Use consistent naming and IDs
-- Prepare data for automation scripts
-
-Phase 4 → Execution (external)  
-- Execution is handled only by Automation layer using MTX  
-
----
-
-## Matrix Output Location
-
-Matrix files MUST be created in:
-`02-INSTANCES — Projects/<PROJECT_NAME>/03-MTX — Data Matrices/`
-
-Example:
-`02-INSTANCES — Projects/VAN-Aerde-Logistics/03-MTX — Data Matrices/`
-
-## Files to Generate
-
-### Users
-`MTX-USERS.csv`
-Columns: `UserID,DisplayName,UPN,Role,Department,License`
-
-### Groups
-`MTX-GROUPS.csv`
-Columns: `GroupName,Alias,Type,Department`
-
-### Mailboxes
-`MTX-MAILBOXES.csv`
-Columns: `Mailbox,Type,Department`
-
-### Permissions
-`MTX-PERMISSIONS.csv`
-Columns: `Mailbox,FullAccess,SendAs,Owner`
-
-## Matrix Data Rules
-- Use sequential IDs: U001, U002, U003
-- Map roles from Blueprint
-- Convert ROLE → actual instance rows
-- Replace placeholders with realistic example data
-  Example: `ROLE-OPS-LEAD` → `ops.lead@<domain>`
-
-## Security Enforcement
-- admin mailboxes → NO SendAs
-- Only customer-facing mailboxes → SendAs allowed
-- Protected users must not be assigned automatically
-
-## DO NOT EXECUTE ANYTHING
-IMPORTANT:
-- Do NOT run scripts
-- Do NOT simulate execution
-- Only generate data files
-
----
-
 ## Purpose
 
-Guiar la creación interactiva y estructurada de un tenant Microsoft 365 para SMEs.
+Interactive workflow for structured Microsoft 365 tenant generation for SMEs.
 
-Convierte:
-negocio → arquitectura → datos → automatización
+Transforms:
 
-Capas:
-- Identity
-- Collaboration
-- Service (Exchange)
-- Governance
-- Automation
+Business → Blueprint → Matrix → Automation
 
----
+Core model:
 
-## Trigger Usage
+ARCH → BLP → MTX → AUT
 
-- Inicia nuevo tenant
-- Crear blueprint empresa [sector]
-- Ejecuta WKF-TENANT-001
+- ARCH defines governance and rules
+- BLP defines operational structure
+- MTX defines execution-ready data
+- AUT executes validated MTX only
+
+The workflow MUST preserve ontology separation and framework isolation.
 
 ---
 
-# WORKFLOW PHASES
+# Execution State Model
+
+Allowed states:
+
+- READ_ONLY → inspection and validation only
+- PLAN → discovery and planning
+- GENERATE → BLP and MTX generation
+- EXECUTE → external execution only
+
+Default state:
+
+READ_ONLY
+
+Execution must remain HUMAN-SUPERVISED.
+
+The workflow must NEVER:
+
+- auto-execute deployment
+- auto-escalate execution state
+- modify framework governance
+- redefine semantic meaning
 
 ---
 
-## Fase 0 — Business Discovery (Nivel 0)
+# Official Prompt Workflow
 
-Objetivo: entender la empresa
+```text
+00-START — Initialization Prompt
+    ↓
+01-GENERATION — Blueprint Generation Prompt
+    ↓
+02-VALIDATION — Blueprint Validation Prompt
+    ↓
+03-MTX — Matrix Generation Prompt
+    ↓
+04-AUT-DEPLOYMENT — Controlled Execution Prompt
+```
 
-Preguntas:
-- Nombre empresa
-- Sector
-- Tamaño
-- Ubicaciones
-- Licencias
+Each phase must STOP after completion.
 
----
-
-## Fase 1 — Identity Layer (Nivel 1)
-
-Objetivo: definir quién existe
-
-Definir:
-- usuarios
-- roles
-- managers
-
-Preguntas:
-- Departamentos
-- Líderes
-- ¿Usuarios ficticios?
+Automatic progression is forbidden.
 
 ---
 
-## Fase 2 — Collaboration Layer (Nivel 2 parcial)
+# Workflow Scope
 
-Objetivo: trabajo interno
+## 00-START
+Generates:
 
-Definir:
-- Groups
-- Teams
-- Memberships
-
-Preguntas:
-- ¿Team por departamento?
-- ¿Grupos globales?
+- project structure
+- business discovery
+- PRJ-BLUEPRINT-MASTER-DOC.md
 
 ---
 
-## Fase 3 — Service Layer (Exchange) (Nivel 2 completo)
+## 01-GENERATION
+Generates:
 
-Objetivo: comunicación operativa
-
-Definir:
-- shared mailboxes
-- flujos de trabajo
-
-Ejemplos:
-operations@<domain>
-support@<domain>
-sales@<domain>
-finance@<domain>
-hr@<domain>
-it@<domain>
-admin@<domain>
-
-Preguntas:
-- ¿Qué buzones?
-- ¿Qué tipo de flujo?
+- DOMAIN BLP documents
+- governance-aligned Blueprint structures
 
 ---
 
-## Fase 4 — Governance Layer (Nivel 3)
+## 02-VALIDATION
+Validates:
 
-Objetivo: orden y control
+- Blueprint consistency
+- governance integrity
+- ontology boundaries
+- naming consistency
+- operational realism
 
-Aplicar:
-- naming
-- ownership
+---
+
+## 03-MTX
+Generates:
+
+- MTX-USERS.csv
+- MTX-GROUPS.csv
+- MTX-MAILBOXES.csv
+- MTX-PERMISSIONS.csv
+
+Optional:
+
+- MTX-LICENSES.csv
+- MTX-CHANNELS.csv
+- MTX-OWNERSHIP.csv
+- MTX-LIFECYCLE.csv
+
+---
+
+## 04-AUT-DEPLOYMENT
+Handles:
+
+- deployment readiness
+- AUT preparation
+- controlled deployment handoff
+
+Deployment must remain HUMAN-SUPERVISED.
+
+---
+
+# Ontology Separation
+
+## Framework Ontology
+
+Includes:
+
+- SYS
+- CAN
+- ARCH
+- semantic governance
+- canonical enforcement
+- framework doctrine
+
+Framework sources are STRICT READ-ONLY.
+
+---
+
+## Tenant Ontology
+
+Includes:
+
+- PRJ files
+- BLP documents
+- MTX files
+- users
+- groups
+- mailboxes
 - permissions
+- operational workflows
 
-Reglas:
-
-Naming:
-PREFIX-Name
-function@<domain>
-DEPT-Name
-
-Permisos:
-- FullAccess
-- SendAs
-- Owner
-
-Validar:
-- cada mailbox tiene owner
-- naming consistente
-- no duplicados
+Represents tenant operational state only.
 
 ---
 
-## Fase 5 — Automation Preparation (Nivel 4)
+# Critical Boundary Rules
 
-Objetivo: preparar despliegue
+The workflow must NEVER:
 
-Generar:
-- Department Matrix
-- User Matrix
-- Group Matrix
-- Mailbox Matrix
-- Permission Matrix
+- modify SYS
+- modify CAN
+- modify ARCH
+- redefine governance
+- redefine semantic meaning
+- redefine canonical meaning
+- inject tenant logic into framework doctrine
 
-CSV requeridos:
+Prevent:
 
-users.csv
-groups.csv
-mailboxes.csv
-permissions.csv
-licenses.csv
-
----
-
-## Fase 6 — Security & Maturity (Nivel 5)
-
-No ejecutar en este workflow
-
-Incluye:
-- MFA
-- Conditional Access
-- Intune
-- Compliance
+- semantic drift
+- governance drift
+- cross-layer contamination
+- framework/tenant authority confusion
 
 ---
 
-# CORE LOGIC
+# Matrix Output Location
 
-Separación de capas:
+```text
+02-INSTANCES — Projects/<PROJECT_NAME>/03-MTX — Data Matrices/
+```
 
-Users → Identity
-Groups → Collaboration
-Mailboxes → Service
-Permissions → Governance
-Scripts → Automation
+Required MTX files:
+
+```text
+MTX-USERS.csv
+MTX-GROUPS.csv
+MTX-MAILBOXES.csv
+MTX-PERMISSIONS.csv
+```
 
 ---
 
-# INTERACTIVE FLOW
+# Matrix Rules
 
-Orden:
+- use sequential IDs
+- map Blueprint roles into operational rows
+- preserve naming consistency
+- preserve ownership consistency
+- preserve operational realism
+- preserve authority hierarchy
 
-1. Empresa
-2. Departamentos
-3. Usuarios
-4. Grupos
+Example:
+
+```text
+ROLE-OPS-LEAD
+→
+ops.lead@<domain>
+```
+
+---
+
+# Security Rules
+
+- admin mailboxes → NO SendAs
+- customer-facing mailboxes → SendAs allowed
+- protected users → no automatic assignment
+
+Do NOT:
+
+- execute scripts
+- simulate deployment
+- generate fake logs
+
+---
+
+# Interactive Flow
+
+1. Business discovery
+2. Departments
+3. Users
+4. Groups
 5. Mailboxes
-6. Seguridad
+6. Governance
+7. Validation
+8. MTX generation
+9. AUT preparation
 
 ---
 
-# OUTPUTS
+# Validation Rules
 
-## Blueprint Master Document
+Validate:
 
-Nombre obligatorio:
-PRJ-BLUEPRINT-MASTER-DOC.md
+- naming consistency
+- ownership consistency
+- permission logic
+- operational realism
+- ontology boundaries
 
-Contenido:
-- Company overview
-- Departments
-- Users
-- Groups
-- Mailboxes
-- Operational logic
-- Governance decisions
+Detect:
 
----
+- duplicates
+- orphan ownership
+- governance conflicts
+- unsupported assumptions
+- cross-layer contamination
 
-## Matrices
+If validation fails:
 
-- Departments
-- Users
-- Groups
-- Mailboxes
-- Permissions
+STOP and request correction.
 
 ---
 
-## CSV Schemas
+# Deployment Rules
 
-users.csv
-groups.csv
-mailboxes.csv
-permissions.csv
-licenses.csv
+Deployment belongs ONLY to:
 
----
+```text
+04-AUT-DEPLOYMENT — Controlled Execution Prompt
+```
 
-## Resultado final
+Approved command:
 
-Un único documento consolidado.
-
----
-
-## Validation Step
-
-- Validate naming against Naming Convention Rule
-- Validate permissions against Security Baseline
-- Validate structure against Architecture layer
-
-If validation fails → STOP and ask user for correction.
-
----
-
-# VALIDATION
-
-- Prefijos correctos
-- Naming consistente
-- Mailboxes con owner
-- Sin duplicados
-- Capas respetadas
-
----
-
-# RESPONSE STYLE
-
-- Claro
-- Estructurado
-- Ejecutable
-- Realista
-
----
-
-# PRINCIPIO FINAL
-
-El tenant representa la empresa.
-
-No es técnico.
-
-Es operativo.
-
----
-
-# NOTA
-
-Este workflow:
-genera blueprint
-
-El siguiente:
-genera scripts
-(Defined in Blueprint / to be implemented in Matrix)
-
----
-
-## Rules Alignment
-
-- RULE-001 ― Framework Interpretation Model.md
-- RULE-003 ― Execution Model.md
-- RULE-004 ― Security Baseline.md
-- RULE-005 ― Naming Convention.md
-
----
-
-## Final Output
-
-The agent produces:
-
-1. Blueprint documents (BLP)
-2. Matrix files (MTX) in CSV format
-
-These files are ready for execution by Automation scripts.
-
----
-
-## FINAL STEP — Deployment
-
-When all Blueprint and Matrix files are generated:
-
-1. Ask user:
-
-"Do you want to deploy this project to a real tenant?"
-
-2. If YES:
-
-Ask:
-"Which project do you want to deploy?"
-
-3. Then output ONLY:
-
-Run:
+```powershell
 .\Run-Project.ps1 -ProjectName "<PROJECT_NAME>"
+```
 
-4. DO NOT execute anything
-5. DO NOT simulate deployment
-6. STOP after providing command
+Do NOT:
+
+- execute automatically
+- simulate deployment
+- bypass validation
+- invoke Deploy-Tenant.ps1 directly
+
+---
+
+# Final Principles
+
+```text
+ARCH governs BLP
+BLP informs MTX
+MTX feeds AUT
+AUT never redefines architecture
+```
+
+```text
+redundancy != inconsistency
+```
+
+The tenant represents operational business reality.
+
+The framework governs how that reality is structured safely.

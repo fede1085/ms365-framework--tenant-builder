@@ -202,6 +202,10 @@ MS365-TENANT — Framework Setup
 ├── 00-START — Initialization Prompt.md
 ├── 01-GENERATION — Blueprint Generation Prompt.md
 ├── 02-VALIDATION — Blueprint Validation Prompt.md
+├── 03-MATRIX — Matrix Generation Prompt.md
+├── 04-VALIDATION — Matrix Validation Prompt.md
+├── 05-PREPARATION — Automation Preparation Prompt.md
+├── 06-DEPLOYMENT — Controlled Deployment Prompt.md
 │
 ├── README.md
 │
