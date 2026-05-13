@@ -19,9 +19,17 @@ if (-not (Test-Path $CSVPath)) {
 }
 
 $Users = Import-Csv $CSVPath
+$RequiredColumns = @("UserID", "FirstName", "LastName", "UPN", "DisplayName", "Department", "Role", "Location", "AdminRole")
+$Columns = @($Users | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name -Unique)
+$MissingColumns = @($RequiredColumns | Where-Object { $_ -notin $Columns })
+if ($MissingColumns.Count -gt 0) {
+    Write-Host "[!] Error: MTX-USERS.csv missing required column(s): $($MissingColumns -join ', ')" -ForegroundColor Red
+    return
+}
 
 foreach ($User in $Users) {
     $UPN = $User.UPN
+    $MailNickname = ($User.UPN -split "@")[0]
     Write-Host "Processing User: $UPN" -NoNewline
     
     # Check if user exists
@@ -37,7 +45,7 @@ foreach ($User in $Users) {
                 Password = "InitialPassword123!" # In real scenarios, use dynamic generation
                 ForceChangePasswordNextSignIn = $true
             }
-            # New-MgUser -DisplayName $User.DisplayName -UserPrincipalName $UPN -MailNickname $User.FirstName -AccountEnabled $true -PasswordProfile $PasswordProfile -UsageLocation "BE"
+            # New-MgUser -DisplayName $User.DisplayName -UserPrincipalName $UPN -MailNickname $MailNickname -AccountEnabled $true -PasswordProfile $PasswordProfile -UsageLocation "BE"
         }
     }
 }

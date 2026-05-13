@@ -8,19 +8,20 @@ Not authoritative framework governance
 Param(
     [Parameter(Mandatory=$true)]
     [String]$ProjectName,
-    
+
     [Switch]$Execute,
     [String]$TenantId,
     [String]$TenantDomain
 )
 
-$Header = @"
-============================================================
-AMB LOGISTICS - LAB EXECUTION ORCHESTRATOR
-============================================================
-Project: $ProjectName
-Mode: $(if ($Execute) { "EXECUTION" } else { "DRY-RUN" })
-"@
+$Mode = if ($Execute) { "EXECUTION" } else { "DRY-RUN" }
+$Header = @(
+    "============================================================"
+    "AMB LOGISTICS - LAB EXECUTION ORCHESTRATOR"
+    "============================================================"
+    "Project: $ProjectName"
+    "Mode: $Mode"
+) -join [Environment]::NewLine
 
 Write-Host $Header -ForegroundColor Cyan
 
@@ -30,12 +31,13 @@ if ([string]::IsNullOrEmpty($TenantId) -or [string]::IsNullOrEmpty($TenantDomain
     return
 }
 
-Write-Host "`n[TARGET TENANT]" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "[TARGET TENANT]" -ForegroundColor Yellow
 Write-Host "TenantId:     $TenantId"
 Write-Host "TenantDomain: $TenantDomain"
 
 if ($Execute) {
-    $Confirm = Read-Host "`nType 'YES' to confirm execution against the target tenant"
+    $Confirm = Read-Host "Type 'YES' to confirm execution against the target tenant"
     if ($Confirm -ne "YES") {
         Write-Host "Execution cancelled." -ForegroundColor Red
         return
@@ -44,9 +46,18 @@ if ($Execute) {
 
 # 2. Orchestration
 $ScriptDir = Split-Path $MyInvocation.MyCommand.Path -Parent
-$MTXDir = Join-Path $ScriptDir "..\..\03-MTX — Data Matrices"
+$ProjectRoot = Resolve-Path (Join-Path $ScriptDir "..\..")
+$MTXDir = Get-ChildItem -LiteralPath $ProjectRoot -Directory |
+    Where-Object { $_.Name -like "03-MTX*" } |
+    Select-Object -First 1 -ExpandProperty FullName
 
-Write-Host "`n[STARTING DEPLOYMENT ORCHESTRATION]" -ForegroundColor Green
+if ([string]::IsNullOrEmpty($MTXDir)) {
+    Write-Host "[!] Error: MTX data matrix directory not found under $ProjectRoot" -ForegroundColor Red
+    return
+}
+
+Write-Host ""
+Write-Host "[STARTING DEPLOYMENT ORCHESTRATION]" -ForegroundColor Green
 
 $DeployParams = @{
     MTXDir       = $MTXDir
@@ -57,4 +68,5 @@ $DeployParams = @{
 
 & "$ScriptDir\LAB-Deploy-Tenant.ps1" @DeployParams
 
-Write-Host "`n[ORCHESTRATION COMPLETE]" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "[ORCHESTRATION COMPLETE]" -ForegroundColor Cyan

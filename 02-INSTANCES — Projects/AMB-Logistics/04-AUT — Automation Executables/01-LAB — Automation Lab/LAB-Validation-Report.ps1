@@ -17,13 +17,89 @@ Write-Host "LAB VALIDATION REPORT - AMB LOGISTICS" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 
 # 1. Summary logic (Simulated for Lab)
-$UsersCSV = Import-Csv (Join-Path $MTXDir "MTX-USERS.csv")
-$GroupsCSV = Import-Csv (Join-Path $MTXDir "MTX-GROUPS.csv")
-$MailboxesCSV = Import-Csv (Join-Path $MTXDir "MTX-MAILBOXES.csv")
+$MatrixSchemas = @{
+    "MTX-USERS.csv"       = @("UserID", "FirstName", "LastName", "UPN", "DisplayName", "Department", "Role", "Location", "AdminRole")
+    "MTX-GROUPS.csv"      = @("GroupID", "DisplayName", "Type", "Department", "OwnerID", "Description")
+    "MTX-MAILBOXES.csv"   = @("MailboxID", "DisplayName", "Alias", "UPN", "Department", "OwnerID", "Purpose")
+    "MTX-PERMISSIONS.csv" = @("PermissionID", "SubjectID", "TargetID", "PermissionLevel", "Type")
+    "MTX-LICENSES.csv"    = @("LicenseID", "UserID", "SKU", "Status")
+}
 
-Write-Host "Target User Count:      $($UsersCSV.Count)"
-Write-Host "Target Group Count:     $($GroupsCSV.Count)"
-Write-Host "Target Mailbox Count:   $($MailboxesCSV.Count)"
+$MatrixData = @{}
+foreach ($MatrixName in $MatrixSchemas.Keys) {
+    $MatrixPath = Join-Path $MTXDir $MatrixName
+    if (-not (Test-Path $MatrixPath)) {
+        Write-Host "[!] Error: $MatrixName not found" -ForegroundColor Red
+        return
+    }
+
+    $Rows = Import-Csv $MatrixPath
+    $Columns = @($Rows | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name -Unique)
+    $MissingColumns = @($MatrixSchemas[$MatrixName] | Where-Object { $_ -notin $Columns })
+    if ($MissingColumns.Count -gt 0) {
+        Write-Host "[!] Error: $MatrixName missing required column(s): $($MissingColumns -join ', ')" -ForegroundColor Red
+        return
+    }
+
+    $MatrixData[$MatrixName] = $Rows
+}
+
+$UserIDs = @{}
+$GroupIDs = @{}
+$MailboxIDs = @{}
+foreach ($User in $MatrixData["MTX-USERS.csv"]) {
+    $UserIDs[$User.UserID] = $true
+}
+foreach ($Group in $MatrixData["MTX-GROUPS.csv"]) {
+    $GroupIDs[$Group.GroupID] = $true
+}
+foreach ($Mailbox in $MatrixData["MTX-MAILBOXES.csv"]) {
+    $MailboxIDs[$Mailbox.MailboxID] = $true
+}
+
+$ValidationWarnings = @()
+foreach ($Group in $MatrixData["MTX-GROUPS.csv"]) {
+    if (-not $UserIDs.ContainsKey($Group.OwnerID)) {
+        $ValidationWarnings += "Group $($Group.GroupID) references missing OwnerID $($Group.OwnerID)"
+    }
+}
+foreach ($Mailbox in $MatrixData["MTX-MAILBOXES.csv"]) {
+    if (-not $UserIDs.ContainsKey($Mailbox.OwnerID)) {
+        $ValidationWarnings += "Mailbox $($Mailbox.MailboxID) references missing OwnerID $($Mailbox.OwnerID)"
+    }
+}
+foreach ($Permission in $MatrixData["MTX-PERMISSIONS.csv"]) {
+    if (-not $UserIDs.ContainsKey($Permission.SubjectID)) {
+        $ValidationWarnings += "Permission $($Permission.PermissionID) references missing SubjectID $($Permission.SubjectID)"
+    }
+
+    $TargetIsKnown = $GroupIDs.ContainsKey($Permission.TargetID) -or $MailboxIDs.ContainsKey($Permission.TargetID)
+    if (-not $TargetIsKnown) {
+        $ValidationWarnings += "Permission $($Permission.PermissionID) references missing TargetID $($Permission.TargetID)"
+    }
+
+    if ($Permission.Type -ne $Permission.PermissionLevel) {
+        $ValidationWarnings += "Permission $($Permission.PermissionID) has Type '$($Permission.Type)' but PermissionLevel '$($Permission.PermissionLevel)'"
+    }
+}
+foreach ($License in $MatrixData["MTX-LICENSES.csv"]) {
+    if (-not $UserIDs.ContainsKey($License.UserID)) {
+        $ValidationWarnings += "License $($License.LicenseID) references missing UserID $($License.UserID)"
+    }
+}
+
+Write-Host "Target User Count:        $($MatrixData["MTX-USERS.csv"].Count)"
+Write-Host "Target Group Count:       $($MatrixData["MTX-GROUPS.csv"].Count)"
+Write-Host "Target Mailbox Count:     $($MatrixData["MTX-MAILBOXES.csv"].Count)"
+Write-Host "Target Permission Count:  $($MatrixData["MTX-PERMISSIONS.csv"].Count)"
+Write-Host "Target License Count:     $($MatrixData["MTX-LICENSES.csv"].Count)"
+
+if ($ValidationWarnings.Count -gt 0) {
+    Write-Host "`n[!] MTX relationship warning(s):" -ForegroundColor Yellow
+    foreach ($Warning in $ValidationWarnings) {
+        Write-Host " - $Warning" -ForegroundColor Yellow
+    }
+}
 
 Write-Host "`n[!] Note: Detailed drift analysis requires live API connection." -ForegroundColor Yellow
 
