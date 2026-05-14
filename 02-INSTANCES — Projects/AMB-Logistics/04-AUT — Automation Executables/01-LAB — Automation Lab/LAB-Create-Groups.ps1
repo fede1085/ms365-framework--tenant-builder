@@ -19,7 +19,9 @@ if (-not (Test-Path $CSVPath)) {
 }
 
 $Groups = Import-Csv $CSVPath
-$RequiredColumns = @("GroupID", "DisplayName", "Type", "Department", "OwnerID", "Description")
+# Runtime schema alignment: GroupID is semantic; GroupType, MailNickname,
+# PrimarySMTP, OwnerUPN, MailEnabled, and SecurityEnabled are execution-facing.
+$RequiredColumns = @("GroupID", "DisplayName", "GroupType", "MailNickname", "PrimarySMTP", "Department", "OwnerUPN", "MailEnabled", "SecurityEnabled", "Description")
 $Columns = @($Groups | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name -Unique)
 $MissingColumns = @($RequiredColumns | Where-Object { $_ -notin $Columns })
 if ($MissingColumns.Count -gt 0) {
@@ -29,8 +31,11 @@ if ($MissingColumns.Count -gt 0) {
 
 foreach ($Group in $Groups) {
     $Name = $Group.DisplayName
-    $GroupKind = $Group.Type
-    Write-Host "Processing Group: $Name [$GroupKind]" -NoNewline
+    $GroupKind = $Group.GroupType
+    $MailNickname = $Group.MailNickname
+    $PrimarySMTP = $Group.PrimarySMTP
+    $OwnerUPN = $Group.OwnerUPN
+    Write-Host "Processing Group: $Name [$GroupKind] [Alias: $MailNickname] [Owner: $OwnerUPN]" -NoNewline
     
     if ($DryRun) {
         Write-Host " [DRY-RUN: Skip Create Check]" -ForegroundColor Gray
@@ -40,8 +45,9 @@ foreach ($Group in $Groups) {
             Write-Host " [EXISTS: Skipping]" -ForegroundColor Yellow
         } else {
             Write-Host " [CREATING]" -ForegroundColor Green
-            # Logic for real MTX Type values: "Security" or "Microsoft 365"
-            # New-MgGroup -DisplayName $Name -MailEnabled $false -SecurityEnabled $true ...
+            # Logic for real MTX GroupType values: "Security" or "Microsoft365".
+            # PrimarySMTP is populated only when MailEnabled is True.
+            # New-MgGroup -DisplayName $Name -MailNickname $MailNickname -MailEnabled ([bool]::Parse($Group.MailEnabled)) -SecurityEnabled ([bool]::Parse($Group.SecurityEnabled)) ...
         }
     }
 }

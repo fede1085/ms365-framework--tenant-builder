@@ -19,7 +19,9 @@ if (-not (Test-Path $CSVPath)) {
 }
 
 $Mailboxes = Import-Csv $CSVPath
-$RequiredColumns = @("MailboxID", "DisplayName", "Alias", "TargetAddress", "Department", "OwnerID", "Purpose")
+# Runtime schema alignment: semantic MailboxID remains for traceability, while
+# TargetAddress and OwnerUPN are execution identifiers consumed by LAB runtime.
+$RequiredColumns = @("MailboxID", "DisplayName", "Alias", "TargetAddress", "Department", "OwnerUPN", "Purpose")
 $Columns = @($Mailboxes | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name -Unique)
 $MissingColumns = @($RequiredColumns | Where-Object { $_ -notin $Columns })
 if ($MissingColumns.Count -gt 0) {
@@ -30,7 +32,8 @@ if ($MissingColumns.Count -gt 0) {
 foreach ($MBX in $Mailboxes) {
     $Address = $MBX.TargetAddress
     $Alias = $MBX.Alias
-    Write-Host "Processing Shared Mailbox: $Address" -NoNewline
+    $OwnerUPN = $MBX.OwnerUPN
+    Write-Host "Processing Shared Mailbox: $Address [Owner: $OwnerUPN]" -NoNewline
     
     if ($DryRun) {
         Write-Host " [DRY-RUN: Skip Create Check]" -ForegroundColor Gray
