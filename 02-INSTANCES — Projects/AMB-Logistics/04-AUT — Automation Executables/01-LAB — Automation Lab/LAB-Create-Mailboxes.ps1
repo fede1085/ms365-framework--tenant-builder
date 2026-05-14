@@ -12,6 +12,10 @@ Param(
     [String]$TenantDomain
 )
 
+if (-not $PSBoundParameters.ContainsKey("DryRun")) {
+    $DryRun = $true
+}
+
 $CSVPath = Join-Path $MTXDir "MTX-MAILBOXES.csv"
 if (-not (Test-Path $CSVPath)) {
     Write-Host "[!] Error: MTX-MAILBOXES.csv not found" -ForegroundColor Red
@@ -21,7 +25,7 @@ if (-not (Test-Path $CSVPath)) {
 $Mailboxes = Import-Csv $CSVPath
 # Runtime schema alignment: semantic MailboxID remains for traceability, while
 # TargetAddress and OwnerUPN are execution identifiers consumed by LAB runtime.
-$RequiredColumns = @("MailboxID", "DisplayName", "Alias", "TargetAddress", "Department", "OwnerUPN", "Purpose")
+$RequiredColumns = @("MailboxID", "DisplayName", "Alias", "TargetAddress", "Department", "Purpose", "OwnerUPN", "Enabled")
 $Columns = @($Mailboxes | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name -Unique)
 $MissingColumns = @($RequiredColumns | Where-Object { $_ -notin $Columns })
 if ($MissingColumns.Count -gt 0) {
@@ -30,6 +34,11 @@ if ($MissingColumns.Count -gt 0) {
 }
 
 foreach ($MBX in $Mailboxes) {
+    if ($MBX.Enabled -ne "True") {
+        Write-Host "[SKIPPED: Disabled] $($MBX.MailboxID) $($MBX.TargetAddress)" -ForegroundColor Yellow
+        continue
+    }
+
     $Address = $MBX.TargetAddress
     $Alias = $MBX.Alias
     $OwnerUPN = $MBX.OwnerUPN

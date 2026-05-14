@@ -12,9 +12,38 @@ Param(
     [String]$TenantDomain
 )
 
+if (-not $PSBoundParameters.ContainsKey("DryRun")) {
+    $DryRun = $true
+}
+
 $ScriptDir = Split-Path $MyInvocation.MyCommand.Path -Parent
 
 Write-Host ">>> Starting Full Tenant Baseline Build..." -ForegroundColor Green
+
+if (-not $DryRun) {
+    if ([string]::IsNullOrEmpty($TenantId) -or [string]::IsNullOrEmpty($TenantDomain)) {
+        Write-Host "[BLOCKED] TenantId and TenantDomain are required before non-dry-run execution." -ForegroundColor Red
+        return
+    }
+
+    Write-Host "[TARGET TENANT]" -ForegroundColor Yellow
+    Write-Host "TenantId:     $TenantId"
+    Write-Host "TenantDomain: $TenantDomain"
+    $Confirm = Read-Host "Type 'YES' to confirm LAB execution against the target tenant"
+    if ($Confirm -ne "YES") {
+        Write-Host "Execution cancelled." -ForegroundColor Red
+        return
+    }
+}
+
+# Validate MTX schema and relationships before any tenant-facing connection.
+$ValidationParams = @{
+    MTXDir       = $MTXDir
+    DryRun       = $true
+    TenantId     = $TenantId
+    TenantDomain = $TenantDomain
+}
+& "$ScriptDir\LAB-Validation-Report.ps1" @ValidationParams
 
 # 1. Connection Logic (Simplified for Lab)
 Write-Host ">>> Connecting to Microsoft Graph and Exchange Online..."

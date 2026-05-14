@@ -12,6 +12,10 @@ Param(
     [String]$TenantDomain
 )
 
+if (-not $PSBoundParameters.ContainsKey("DryRun")) {
+    $DryRun = $true
+}
+
 $CSVPath = Join-Path $MTXDir "MTX-GROUPS.csv"
 if (-not (Test-Path $CSVPath)) {
     Write-Host "[!] Error: MTX-GROUPS.csv not found" -ForegroundColor Red

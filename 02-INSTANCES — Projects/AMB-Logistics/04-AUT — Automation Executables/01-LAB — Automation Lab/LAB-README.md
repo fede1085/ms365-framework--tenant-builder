@@ -14,7 +14,8 @@ This directory contains experimental PowerShell scripts for simulating the deplo
 The scripts follow the execution model:
 **MTX (Data) → LAB (Execution) → Tenant (Reality)**
 
-- **Source Data**: `..\..\03-MTX — Data Matrices\`
+- **Source Data**: `..\..\..\03-MTX — Data Matrices\`
+- **Execution Rule**: LAB consumes normalized `MTX-*` CSV columns only. BLP and conceptual files are read-only context and are not runtime input.
 - **Modules Required**: `Microsoft.Graph`, `ExchangeOnlineManagement`
 
 ## 3. Contents
@@ -33,6 +34,8 @@ The scripts follow the execution model:
 - **Tenant Confirmation**: Scripts will display targeting information and wait for a `YES` confirmation.
 - **No Automatic Execution**: These scripts are not intended for hands-off automation.
 - **No Delete**: No destructive operations are included by design.
+- **Validation First**: CSV structure and relationships must validate before tenant-facing execution.
+- **No Fake Success**: LAB planning output is not tenant deployment success; live state still requires validation.
 
 ---
 **Experimental Layer — Use with Caution**

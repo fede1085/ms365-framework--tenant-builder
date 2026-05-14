@@ -12,6 +12,10 @@ Param(
     [String]$TenantDomain
 )
 
+if (-not $PSBoundParameters.ContainsKey("DryRun")) {
+    $DryRun = $true
+}
+
 $CSVPath = Join-Path $MTXDir "MTX-USERS.csv"
 if (-not (Test-Path $CSVPath)) {
     Write-Host "[!] Error: MTX-USERS.csv not found at $CSVPath" -ForegroundColor Red
@@ -41,8 +45,12 @@ foreach ($User in $Users) {
         } else {
             Write-Host " [CREATING]" -ForegroundColor Green
             $PasswordProfile = @{
-                Password = "InitialPassword123!" # In real scenarios, use dynamic generation
+                Password = $User.PasswordProfile
                 ForceChangePasswordNextSignIn = $true
+            }
+            if ([string]::IsNullOrWhiteSpace($PasswordProfile.Password)) {
+                Write-Host " [BLOCKED: Missing PasswordProfile]" -ForegroundColor Red
+                continue
             }
             # New-MgUser -DisplayName $User.DisplayName -UserPrincipalName $UserPrincipalName -MailNickname $User.MailNickname -AccountEnabled ([System.Convert]::ToBoolean($User.AccountEnabled)) -PasswordProfile $PasswordProfile -UsageLocation $User.UsageLocation
         }

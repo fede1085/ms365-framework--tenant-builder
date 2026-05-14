@@ -46,7 +46,7 @@ if ($Execute) {
 
 # 2. Orchestration
 $ScriptDir = Split-Path $MyInvocation.MyCommand.Path -Parent
-$ProjectRoot = Resolve-Path (Join-Path $ScriptDir "..\..")
+$ProjectRoot = Resolve-Path (Join-Path $ScriptDir "..\..\..")
 $MTXDir = Get-ChildItem -LiteralPath $ProjectRoot -Directory |
     Where-Object { $_.Name -like "03-MTX*" } |
     Select-Object -First 1 -ExpandProperty FullName
