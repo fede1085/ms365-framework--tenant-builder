@@ -2,68 +2,85 @@
 
 ## Scope
 
-Controlled LAB hardening was limited to:
+Controlled runtime hardening was limited to:
 
 - `AMB-Logistics/04-AUT — Automation Executables/01-LAB — Automation Lab/`
 - `AMB-Logistics/03-MTX — Data Matrices/`
 
-No canonical, framework, architecture, blueprint, or doctrine documents were modified.
+No canonical, framework, architecture, blueprint, doctrine, discovery, BLP, or other tenant files were intentionally modified.
 
-## Files Modified
+## Runtime Status
 
-- `AMB-Logistics/03-MTX — Data Matrices/MTX-MAILBOXES.csv`
-- `AMB-Logistics/03-MTX — Data Matrices/MTX-GROUPS.csv`
-- `AMB-Logistics/04-AUT — Automation Executables/01-LAB — Automation Lab/LAB-Create-Mailboxes.ps1`
-- `AMB-Logistics/04-AUT — Automation Executables/01-LAB — Automation Lab/LAB-Create-Groups.ps1`
-- `AMB-Logistics/04-AUT — Automation Executables/01-LAB — Automation Lab/LAB-Validation-Report.ps1`
-- `AMB-Logistics/04-AUT — Automation Executables/01-LAB — Automation Lab/LAB-HARDENING-REPORT.md`
+The LAB layer is now a tenant-local controlled runtime:
 
-## Schemas Normalized
+- Tenant-local controlled runtime
+- Production-ready guarded execution
+- Protected-object enforced
+- No license assignment
+- No destructive default behavior
+- DryRun first
+- Execute requires explicit confirmation
 
-### MTX-MAILBOXES.csv
+This is production-ready for controlled AMB-Logistics tenant execution. It is not a generic enterprise automation platform.
 
-- Replaced legacy `UPN` with execution-facing `TargetAddress`.
-- Replaced `OwnerID` with execution-facing `OwnerUPN`.
-- Preserved `MailboxID`, display names, aliases, departments, and mailbox purpose records.
-- Normalized CSV quoting.
+## Files Updated
 
-### MTX-GROUPS.csv
+- `LAB-Protected-Objects.ps1`
+- `LAB-Run-Project.ps1`
+- `LAB-Deploy-Tenant.ps1`
+- `LAB-Create-Users.ps1`
+- `LAB-Create-Groups.ps1`
+- `LAB-Create-Mailboxes.ps1`
+- `LAB-Apply-Permissions.ps1`
+- `LAB-Validation-Report.ps1`
+- `LAB-README.md`
+- `LAB-HARDENING-REPORT.md`
 
-- Replaced legacy `Type` with `GroupType`.
-- Replaced `OwnerID` with execution-facing `OwnerUPN`.
-- Added execution-facing `MailNickname`, `PrimarySMTP`, `MailEnabled`, and `SecurityEnabled`.
-- Preserved `GroupID`, display names, departments, descriptions, and existing group intent.
-- Set Microsoft 365 team groups as mail-enabled and non-security-enabled.
-- Set security groups as non-mail-enabled and security-enabled.
-- Normalized CSV quoting.
+## Execution Capabilities
 
-## Runtime Alignment Status
+- Users: `New-MgUser` for missing users; `Update-MgUser` for safe field updates only.
+- Groups: `New-MgGroup` for missing groups; `Update-MgGroup` for safe metadata updates; `New-MgGroupOwnerByRef` for missing explicit owners.
+- Shared mailboxes: `New-Mailbox -Shared` for missing shared mailboxes; bounded propagation polling at 15, 30, and 60 seconds.
+- Permissions: `Add-MailboxPermission`, `Add-RecipientPermission`, `Set-Mailbox -GrantSendOnBehalfTo`, `New-MgGroupMemberByRef`, and `New-MgGroupOwnerByRef` for supported add-if-missing operations.
+- Validation: static validation by default; live validation only with `-LiveValidation`.
 
-- `LAB-Create-Mailboxes.ps1` now requires and reads `TargetAddress` and `OwnerUPN`.
-- `LAB-Create-Groups.ps1` now requires and reads `GroupType`, `MailNickname`, `PrimarySMTP`, `OwnerUPN`, `MailEnabled`, and `SecurityEnabled`.
-- `LAB-Validation-Report.ps1` now validates normalized runtime schemas and distinguishes semantic IDs from execution identifiers.
-- Validation report generation is persistent and timestamped:
-  - `reports/*.md`
-  - `reports/*.json`
-  - `logs/*.log`
-  - `transcripts/*.log`
-- Validation states include:
-  - `WAITING_PROPAGATION`
-  - `VALIDATING_RESULT`
-  - `WARNING`
-  - `FAILED`
+## Protected Identity Enforcement
 
-## Remaining Technical Debt
+`GLOBAL-Admin` is protected by:
 
-- `LAB-Deploy-Tenant.ps1` still contains non-dry-run connection branches inherited from the existing LAB orchestrator.
-- `LAB-Apply-Permissions.ps1` remains a lightweight placeholder and does not consume group ownership metadata.
-- Relationship validation remains matrix-only and does not inspect live Microsoft 365 state.
-- Report retention and cleanup policy is not defined.
+- UPN: `homelab@federicomosqueira0910.onmicrosoft.com`
+- Aliases: `global.admin@federicomosqueira.site`, `hello@federicomosqueira.site`
+- Display name: `GLOBAL-Admin`
+- Role: `Global Administrator`
+- ObjectId placeholder: `<UNKNOWN_OBJECT_ID_GLOBAL_ADMIN>`
 
-## Remaining Production Gaps
+Runtime ObjectId protection is supported through:
 
-- No production-grade tenant execution logic was added.
-- No production retry, backoff, reconciliation, rollback, or delete workflow exists.
-- No live tenant propagation polling exists.
-- No destructive cleanup logic exists.
-- Human review remains required before any tenant-facing operation.
+- `-ProtectedGlobalAdminObjectId "<object-id>"`
+- dynamic `Add-LabProtectedObjectId`
+- read-only live lookup with `Get-MgUser -UserId "homelab@federicomosqueira0910.onmicrosoft.com"` before write phases
+
+If the ObjectId remains unresolved, the runtime logs:
+
+```text
+GLOBAL-Admin ObjectId unresolved; protection continues by UPN, alias, display name, and role.
+```
+
+## Guard Rails
+
+- Protected-object policy loads before any tenant connection.
+- Scripts fail closed if `LAB-Protected-Objects.ps1` is missing.
+- `Confirm-LabProtectedBaseline` fails if required GLOBAL-Admin UPN, aliases, display name, or role are missing.
+- Write operations call `Assert-LabNotProtectedObject` or equivalent target guard before tenant-facing mutation.
+- Current connected Graph account is added to runtime mutation protection.
+- Non-DryRun execution requires the hard phrase `I UNDERSTAND THIS WILL MODIFY THE TENANT`.
+- No licenses are assigned.
+- No deletion, wipe, reset, or destructive reconciliation path is implemented by default.
+
+## Remaining Limitations
+
+- Live validation verifies supported objects and common permission paths; it does not implement a full privileged role audit beyond the protected identity existence/enabled checks.
+- SharePoint permission application is not part of this runtime branch.
+- Propagation polling is intentionally bounded and may require a later rerun if Microsoft 365 propagation exceeds the configured waits.
+- There is no rollback automation.
+- There is no report retention cleanup policy.

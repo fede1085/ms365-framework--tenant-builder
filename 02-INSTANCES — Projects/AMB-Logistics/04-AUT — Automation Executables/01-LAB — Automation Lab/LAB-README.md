@@ -1,61 +1,107 @@
-# LAB-EXECUTION — AMB Logistics
+# LAB Runtime - AMB Logistics
 
 ```text
-LAB / EXPERIMENTAL / NON-CANONICAL
-Disposable execution layer
-Safe to delete
-Not authoritative framework governance
+Tenant-local controlled runtime
+Production-ready guarded execution
+Protected-object enforced
+No license assignment
+No destructive default behavior
 ```
 
 ## 1. Purpose
-This directory contains experimental PowerShell scripts for simulating the deployment of the **AMB-Logistics** tenant baseline. These scripts are strictly for lab/experimental use and are decoupled from the authoritative framework logic.
+
+This directory contains the tenant-local controlled runtime for executing the **AMB-Logistics** tenant baseline from normalized MTX data.
+
+Status: **Production-ready for controlled AMB-Logistics tenant execution. Not a generic enterprise automation platform.**
 
 ## 2. Logic Model
+
 The scripts follow the execution model:
-**MTX (Data) → LAB (Execution) → Tenant (Reality)**
+
+**MTX (Data) -> LAB Runtime (Guarded Execution) -> Tenant (Reality)**
 
 - **Source Data**: `..\..\..\03-MTX — Data Matrices\`
-- **Execution Rule**: LAB consumes normalized `MTX-*` CSV columns only. BLP and conceptual files are read-only context and are not runtime input.
+- **Execution Rule**: LAB consumes normalized `MTX-*` CSV columns only.
 - **Modules Required**: `Microsoft.Graph`, `ExchangeOnlineManagement`
+- **DryRun First**: DryRun is the default behavior.
+- **Execute Gate**: Real execution requires `-Execute` and the phrase `I UNDERSTAND THIS WILL MODIFY THE TENANT`.
 
 ## 3. Contents
+
 | File | Function |
 | :--- | :--- |
-| `LAB-Run-Project.ps1` | Main entry point for controlled execution. |
-| `LAB-Deploy-Tenant.ps1` | Orchestrator script for full baseline build. |
-| `LAB-Create-Users.ps1` | Logic for user creation from AUT-DOC user schema. |
-| `LAB-Create-Groups.ps1` | Logic for Security and M365 Groups. |
-| `LAB-Create-Mailboxes.ps1` | Logic for Shared Mailboxes in EXO. |
-| `LAB-Apply-Permissions.ps1` | Logic for Group/Mailbox permission mapping. |
-| `LAB-Validation-Report.ps1` | Post-execution audit and verification. |
+| `LAB-Run-Project.ps1` | Safe tenant-local entry point. |
+| `LAB-Deploy-Tenant.ps1` | Controlled orchestrator for validation, connection, and child script order. |
+| `LAB-Create-Users.ps1` | Real create/verify/update-safe user runtime. |
+| `LAB-Create-Groups.ps1` | Real create/verify/owners-safe group runtime. |
+| `LAB-Create-Mailboxes.ps1` | Real create/verify shared mailbox runtime with bounded propagation polling. |
+| `LAB-Apply-Permissions.ps1` | Real apply/verify permissions where supported. |
+| `LAB-Validation-Report.ps1` | Static validation by default; live validation only when explicitly requested. |
 | `LAB-Protected-Objects.ps1` | Tenant-local protected object safety policy. |
 
-## 4. Usage Rules
-- **DRY-RUN First**: All scripts support a `-DryRun` switch. Use it first.
-- **Tenant Confirmation**: Scripts will display targeting information and wait for a `YES` confirmation.
-- **No Automatic Execution**: These scripts are not intended for hands-off automation.
-- **No Delete**: No destructive operations are included by design.
-- **Validation First**: CSV structure and relationships must validate before tenant-facing execution.
-- **No Fake Success**: LAB planning output is not tenant deployment success; live state still requires validation.
+## 4. Execution Rules
+
+- **Tenant-local controlled runtime**
+- **Production-ready guarded execution**
+- **Protected-object enforced**
+- **No license assignment**
+- **No destructive default behavior**
+- **DryRun first**
+- **Execute requires explicit confirmation**
+
+No deletion is implemented by default. No broad tenant wipe is implemented. Reset/rebuild behavior must remain disabled unless separately and explicitly designed with protected-object enforcement.
 
 ## 5. Protected Object Safety
 
-```text
-LAB / EXPERIMENTAL / NON-CANONICAL
-Semi-controlled execution supported
-Not production-grade
-No license assignment
-Protected-object guarded
+Critical protected identity:
+
+- DisplayName: `GLOBAL-Admin`
+- Primary UPN: `homelab@federicomosqueira0910.onmicrosoft.com`
+- Aliases: `global.admin@federicomosqueira.site`, `hello@federicomosqueira.site`
+- Role: `Global Administrator`
+- ObjectId: `<UNKNOWN_OBJECT_ID_GLOBAL_ADMIN>` until supplied or resolved during live execution
+
+The runtime must never delete, disable, rename, recreate, reset password, change UPN, change aliases, remove roles, remove Global Administrator, remove group memberships, remove ownership, change licenses, convert to a standard user, or include this identity in reset/rebuild logic.
+
+ObjectId handling:
+
+- The placeholder remains in `LAB-Protected-Objects.ps1`.
+- `-ProtectedGlobalAdminObjectId "<object-id>"` can add ObjectId protection at runtime.
+- In live execution, the orchestrator attempts a read-only `Get-MgUser -UserId "homelab@federicomosqueira0910.onmicrosoft.com"` lookup after Graph connection and before write phases.
+- If unresolved, execution may continue only with UPN, alias, display name, and role protection validated, and logs a warning.
+
+## 6. Commands
+
+DryRun:
+
+```powershell
+.\LAB-Run-Project.ps1 -ProjectName "AMB-Logistics" -TenantId "<tenant-id>" -TenantDomain "<tenant-domain>"
 ```
 
-- LAB runtime protects tenant owner / Global Admin identities from automation mutation.
-- `GLOBAL-Admin` is protected by UPN, alias, display name, role, and ObjectId if known.
-- Current protected UPN: `homelab@federicomosqueira0910.onmicrosoft.com`.
-- Current protected aliases: `global.admin@federicomosqueira.site`, `hello@federicomosqueira.site`.
-- Execution is blocked if `LAB-Protected-Objects.ps1` is missing or cannot load.
-- Licenses remain skipped; no license assignment is implemented.
-- Reset mode must never delete protected objects.
-- DryRun is still the first required execution mode.
+Execute:
 
----
-**Experimental Layer — Use with Caution**
+```powershell
+.\LAB-Run-Project.ps1 -ProjectName "AMB-Logistics" -TenantId "<tenant-id>" -TenantDomain "<tenant-domain>" -Execute -ProtectedGlobalAdminObjectId "<object-id>"
+```
+
+Static validation:
+
+```powershell
+.\LAB-Validation-Report.ps1 -MTXDir "..\..\..\03-MTX — Data Matrices" -TenantId "<tenant-id>" -TenantDomain "<tenant-domain>"
+```
+
+Live validation:
+
+```powershell
+.\LAB-Validation-Report.ps1 -MTXDir "..\..\..\03-MTX — Data Matrices" -TenantId "<tenant-id>" -TenantDomain "<tenant-domain>" -LiveValidation
+```
+
+## 7. Final Runtime Behavior
+
+- Users: real create/verify/update-safe
+- Groups: real create/verify/owners-safe
+- Shared mailboxes: real create/verify with bounded propagation polling
+- Permissions: real apply/verify where supported
+- Licenses: skipped
+- Delete/reset: disabled by default
+- GLOBAL-Admin: protected

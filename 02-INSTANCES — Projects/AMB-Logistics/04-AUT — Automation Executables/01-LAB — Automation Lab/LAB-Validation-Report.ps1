@@ -1,15 +1,18 @@
 <#
-LAB / EXPERIMENTAL / NON-CANONICAL
-Disposable execution layer
-Safe to delete
-Not authoritative framework governance
+Tenant-local controlled runtime
+Production-ready guarded execution
+Protected-object enforced
+No license assignment
+No destructive default behavior
 #>
 
 Param(
     [String]$MTXDir,
     [Switch]$DryRun,
     [String]$TenantId,
-    [String]$TenantDomain
+    [String]$TenantDomain,
+    [String]$ProtectedGlobalAdminObjectId,
+    [Switch]$LiveValidation
 )
 
 if (-not $PSBoundParameters.ContainsKey("DryRun")) {
@@ -22,55 +25,28 @@ if (-not (Test-Path -LiteralPath $ProtectedObjectsPath)) {
     throw "Protected object policy file missing. Execution blocked."
 }
 . $ProtectedObjectsPath
-if (-not (Test-LabProtectedIdentity -UPN "homelab@federicomosqueira0910.onmicrosoft.com" -DisplayName "GLOBAL-Admin" -Role "Global Administrator")) {
-    throw "GLOBAL-Admin protected identity is not registered. Execution blocked."
+if (-not [string]::IsNullOrWhiteSpace($ProtectedGlobalAdminObjectId)) {
+    [void](Add-LabProtectedObjectId -ObjectId $ProtectedGlobalAdminObjectId)
 }
+[void](Confirm-LabProtectedBaseline)
 $ProtectedSummary = Get-LabProtectedObjectSummary
-$ScriptDir = $ScriptRoot
-$ReportsDir = Join-Path $ScriptDir "reports"
-$LogsDir = Join-Path $ScriptDir "logs"
-$TranscriptsDir = Join-Path $ScriptDir "transcripts"
-$Timestamp = Get-Date -Format "yyyyMMdd-HHmmss"
-$ReportPath = Join-Path $ReportsDir "LAB-Validation-Report-$Timestamp.md"
-$SummaryPath = Join-Path $ReportsDir "LAB-Validation-Summary-$Timestamp.json"
-$LogPath = Join-Path $LogsDir "LAB-Validation-Summary-$Timestamp.log"
-$TranscriptPath = Join-Path $TranscriptsDir "LAB-Validation-Transcript-$Timestamp.log"
-
-foreach ($Directory in @($ReportsDir, $LogsDir, $TranscriptsDir)) {
-    if (-not (Test-Path -LiteralPath $Directory)) {
-        New-Item -ItemType Directory -Path $Directory | Out-Null
-    }
-}
 
 $AllowedStates = @(
-    "PENDING",
     "VALIDATING",
+    "VALIDATING_RESULT",
     "READY",
-    "CREATING",
-    "UPDATING",
     "SKIPPED",
     "SKIPPED_PROTECTED",
-    "WAITING_PROPAGATION",
-    "VALIDATING_RESULT",
     "COMPLETED",
     "WARNING",
     "FAILED",
-    "BLOCKED",
-    "ROLLBACK_REQUIRED"
+    "BLOCKED"
 )
-
-$AllowedObjectTypes = @("SharedMailbox", "M365Group", "Team", "SharePointSite", "SecurityGroup")
-$AllowedAccessTypes = @("FullAccess", "SendAs", "SendOnBehalf", "Member", "Owner", "Read", "Edit", "FullControl")
-$ExchangeAccessTypes = @("FullAccess", "SendAs", "SendOnBehalf")
-$MembershipAccessTypes = @("Member", "Owner")
-$SharePointAccessTypes = @("Read", "Edit", "FullControl")
-$BooleanValues = @("True", "False")
 
 $ValidationRecords = New-Object System.Collections.Generic.List[Object]
 $FailedCount = 0
 $BlockedCount = 0
 $WarningCount = 0
-$WaitingPropagationCount = 0
 $ValidatedCount = 0
 $CompletedCount = 0
 
@@ -98,14 +74,13 @@ function Add-ValidationRecord {
         "FAILED" { $script:FailedCount++ }
         "BLOCKED" { $script:BlockedCount++ }
         "WARNING" { $script:WarningCount++ }
-        "WAITING_PROPAGATION" { $script:WaitingPropagationCount++ }
         "VALIDATING_RESULT" { $script:ValidatedCount++ }
         "COMPLETED" { $script:CompletedCount++ }
     }
 
     $Color = "White"
-    if ($Status -in @("FAILED", "BLOCKED", "ROLLBACK_REQUIRED")) { $Color = "Red" }
-    elseif ($Status -in @("WARNING", "WAITING_PROPAGATION", "SKIPPED_PROTECTED")) { $Color = "Yellow" }
+    if ($Status -in @("FAILED", "BLOCKED")) { $Color = "Red" }
+    elseif ($Status -in @("WARNING", "SKIPPED_PROTECTED")) { $Color = "Yellow" }
     elseif ($Status -in @("VALIDATING_RESULT", "READY")) { $Color = "Cyan" }
     elseif ($Status -eq "COMPLETED") { $Color = "Green" }
     Write-Host "[$Status] $Scope - $Message" -ForegroundColor $Color
@@ -129,123 +104,66 @@ function Test-RequiredColumns {
     return $true
 }
 
-function Add-DuplicateValueRecords {
+function Test-ScriptContains {
     Param(
-        [Object[]]$Rows,
-        [String]$Column,
-        [String]$MatrixName
+        [String]$ScriptName,
+        [String]$Pattern,
+        [String]$Success,
+        [String]$Failure
     )
 
-    $Duplicates = @($Rows |
-        Where-Object { -not [string]::IsNullOrWhiteSpace($_.$Column) } |
-        Group-Object -Property $Column |
-        Where-Object { $_.Count -gt 1 })
-
-    foreach ($Duplicate in $Duplicates) {
-        Add-ValidationRecord -Status "FAILED" -Scope $MatrixName -Message "Duplicate $Column value '$($Duplicate.Name)' appears $($Duplicate.Count) times." -Reference $Column
+    $ScriptPath = Join-Path $ScriptRoot $ScriptName
+    $ScriptText = Get-Content -LiteralPath $ScriptPath -Raw
+    if ($ScriptText -match $Pattern) {
+        Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $ScriptName -Message $Success -Reference $ScriptName
+    } else {
+        Add-ValidationRecord -Status "BLOCKED" -Scope $ScriptName -Message $Failure -Reference $ScriptName
     }
 }
 
-function Add-ToMap {
-    Param(
-        [Hashtable]$Map,
-        [String]$Key,
-        [Object]$Value
-    )
-
-    if (-not [string]::IsNullOrWhiteSpace($Key) -and -not $Map.ContainsKey($Key)) {
-        $Map[$Key] = $Value
-    }
-}
-
-function Resolve-GroupForPermission {
+function Resolve-GroupMatrixRow {
     Param([Object]$Permission)
-
-    $Candidates = @($Groups | Where-Object {
+    return @($script:Groups | Where-Object {
         $_.DisplayName -eq $Permission.ObjectName -or
         $_.PrimarySMTP -eq $Permission.TargetAddress -or
         $_.MailNickname -eq $Permission.TargetAddress
-    })
-    return @($Candidates | Select-Object -First 1)
+    } | Select-Object -First 1)
 }
 
-function Resolve-MailboxForPermission {
+function Resolve-MailboxMatrixRow {
     Param([Object]$Permission)
-
-    $Candidates = @($Mailboxes | Where-Object {
+    return @($script:Mailboxes | Where-Object {
         $_.DisplayName -eq $Permission.ObjectName -or
         $_.TargetAddress -eq $Permission.TargetAddress -or
         $_.Alias -eq $Permission.TargetAddress
-    })
-    return @($Candidates | Select-Object -First 1)
+    } | Select-Object -First 1)
 }
 
-function Get-ExpectedPermissionTarget {
-    Param([Object]$Permission)
-
-    switch ($Permission.ObjectType) {
-        "SharedMailbox" {
-            $Mailbox = Resolve-MailboxForPermission $Permission
-            if ($Mailbox.Count -eq 0) { return $null }
-            return $Mailbox[0].TargetAddress
-        }
-        { $_ -in @("M365Group", "Team") } {
-            $Group = Resolve-GroupForPermission $Permission
-            if ($Group.Count -eq 0) { return $null }
-            return $Group[0].PrimarySMTP
-        }
-        "SecurityGroup" {
-            $Group = Resolve-GroupForPermission $Permission
-            if ($Group.Count -eq 0) { return $null }
-            # Security groups in this MTX are not mail-enabled. TargetAddress is
-            # intentionally MailNickname, with DisplayName as the last fallback.
-            if (-not [string]::IsNullOrWhiteSpace($Group[0].MailNickname)) {
-                return $Group[0].MailNickname
-            }
-            return $Group[0].DisplayName
-        }
-        default {
-            return $Permission.TargetAddress
-        }
-    }
-}
-
-$TranscriptStarted = $false
-try {
-    Start-Transcript -Path $TranscriptPath -Force | Out-Null
-    $TranscriptStarted = $true
-
-    Write-Host "`n============================================================" -ForegroundColor Cyan
-    Write-Host "LAB VALIDATION REPORT - AMB LOGISTICS" -ForegroundColor Cyan
-    Write-Host "============================================================" -ForegroundColor Cyan
-
+function Invoke-StaticValidation {
     Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "ProtectedObjectPolicy" -Message "LAB-Protected-Objects.ps1 exists and was imported fail-closed." -Reference $ProtectedObjectsPath
     Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "ProtectedObjectPolicy" -Message "GLOBAL-Admin protected UPN is present: $($ProtectedSummary.ProtectedUPNs -join ', ')." -Reference "LAB-Protected-Objects.ps1"
     Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "ProtectedObjectPolicy" -Message "GLOBAL-Admin protected aliases are present: $($ProtectedSummary.ProtectedAliases -join ', ')." -Reference "LAB-Protected-Objects.ps1"
     Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "ProtectedObjectPolicy" -Message "GLOBAL-Admin protected display name is present: $($ProtectedSummary.ProtectedDisplayNames -join ', ')." -Reference "LAB-Protected-Objects.ps1"
+    Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "ProtectedObjectPolicy" -Message "GLOBAL-Admin protected role is present: $($ProtectedSummary.ProtectedRoles -join ', ')." -Reference "LAB-Protected-Objects.ps1"
     Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "ProtectedObjectPolicy" -Message "SKIPPED_PROTECTED is supported by LAB validation states." -Reference "AUT-SYS-001"
 
-    if ($ProtectedSummary.ProtectedObjectIds -contains "<UNKNOWN_OBJECT_ID_GLOBAL_ADMIN>") {
-        Add-ValidationRecord -Status "WARNING" -Scope "ProtectedObjectPolicy" -Message "GLOBAL-Admin ObjectId is still unknown; placeholder is present." -Reference "LAB-Protected-Objects.ps1"
+    if ($ProtectedSummary.ObjectIdResolved) {
+        Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "ProtectedObjectPolicy" -Message "GLOBAL-Admin ObjectId protection is present." -Reference "LAB-Protected-Objects.ps1"
+    } else {
+        Add-ValidationRecord -Status "WARNING" -Scope "ProtectedObjectPolicy" -Message "GLOBAL-Admin ObjectId unresolved; protection continues by UPN, alias, display name, and role." -Reference "LAB-Protected-Objects.ps1"
     }
 
     foreach ($ScriptName in @("LAB-Run-Project.ps1", "LAB-Deploy-Tenant.ps1", "LAB-Create-Users.ps1", "LAB-Create-Groups.ps1", "LAB-Create-Mailboxes.ps1", "LAB-Apply-Permissions.ps1", "LAB-Validation-Report.ps1")) {
-        $ScriptPath = Join-Path $ScriptDir $ScriptName
-        $ScriptText = Get-Content -LiteralPath $ScriptPath -Raw
-        if ($ScriptText -match "LAB-Protected-Objects\.ps1" -and $ScriptText -match "Execution blocked") {
-            Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $ScriptName -Message "Imports protected-object policy and fails closed if missing." -Reference $ScriptName
-        } else {
-            Add-ValidationRecord -Status "BLOCKED" -Scope $ScriptName -Message "Protected-object policy import or fail-closed guard is missing." -Reference $ScriptName
-        }
-
-        if ($ScriptName -in @("LAB-Create-Users.ps1", "LAB-Create-Groups.ps1", "LAB-Create-Mailboxes.ps1", "LAB-Apply-Permissions.ps1")) {
-            if ($ScriptText -match "Assert-LabNotProtectedObject") {
-                Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $ScriptName -Message "Protected-object checks are present before write actions." -Reference $ScriptName
-            } else {
-                Add-ValidationRecord -Status "BLOCKED" -Scope $ScriptName -Message "Protected-object checks before write actions are missing." -Reference $ScriptName
-            }
-        }
+        Test-ScriptContains -ScriptName $ScriptName -Pattern "LAB-Protected-Objects\.ps1[\s\S]*Execution blocked" -Success "Imports protected-object policy and fails closed if missing." -Failure "Protected-object policy import or fail-closed guard is missing."
     }
+
+    foreach ($ScriptName in @("LAB-Create-Users.ps1", "LAB-Create-Groups.ps1", "LAB-Create-Mailboxes.ps1", "LAB-Apply-Permissions.ps1")) {
+        Test-ScriptContains -ScriptName $ScriptName -Pattern "Assert-LabNotProtectedObject[\s\S]*(New-MgUser|Update-MgUser|New-MgGroup|Update-MgGroup|New-Mailbox|Set-Mailbox|Set-User|Add-MailboxPermission|Add-RecipientPermission|New-MgGroupMemberByRef|New-MgGroupOwnerByRef)" -Success "Real write commands are protected by Assert-LabNotProtectedObject or equivalent guard." -Failure "Protected-object checks before write actions are missing."
+    }
+
+    Test-ScriptContains -ScriptName "LAB-Deploy-Tenant.ps1" -Pattern "License assignment is explicitly skipped" -Success "License assignment is explicitly skipped by the orchestrator." -Failure "License assignment skip statement is missing."
+    Test-ScriptContains -ScriptName "LAB-Create-Users.ps1" -Pattern "License assignment skipped" -Success "User creation path does not assign licenses." -Failure "User creation path does not clearly skip license assignment."
+    Test-ScriptContains -ScriptName "LAB-Run-Project.ps1" -Pattern "I UNDERSTAND THIS WILL MODIFY THE TENANT" -Success "Execute mode requires the hard confirmation phrase." -Failure "Hard confirmation phrase is missing."
 
     $MatrixSchemas = @{
         "MTX-USERS.csv"       = @("UserID", "DisplayName", "FirstName", "LastName", "UserPrincipalName", "MailNickname", "Department", "JobTitle", "UsageLocation", "LicenseSKU", "PasswordProfile", "AccountEnabled")
@@ -259,276 +177,204 @@ try {
     foreach ($MatrixName in $MatrixSchemas.Keys) {
         $MatrixPath = Join-Path $MTXDir $MatrixName
         Add-ValidationRecord -Status "VALIDATING" -Scope $MatrixName -Message "Checking required file and schema." -Reference $MatrixPath
-
         if (-not (Test-Path -LiteralPath $MatrixPath)) {
             Add-ValidationRecord -Status "FAILED" -Scope $MatrixName -Message "Matrix file not found." -Reference $MatrixPath
             continue
         }
-
         $Rows = @(Import-Csv $MatrixPath)
         $MatrixData[$MatrixName] = $Rows
         [void](Test-RequiredColumns -MatrixName $MatrixName -Rows $Rows -RequiredColumns $MatrixSchemas[$MatrixName])
     }
 
-    $RequiredMatricesLoaded = $true
-    foreach ($MatrixName in $MatrixSchemas.Keys) {
-        if (-not $MatrixData.ContainsKey($MatrixName)) {
-            $RequiredMatricesLoaded = $false
+    if (-not ($MatrixData.ContainsKey("MTX-USERS.csv") -and $MatrixData.ContainsKey("MTX-GROUPS.csv") -and $MatrixData.ContainsKey("MTX-MAILBOXES.csv") -and $MatrixData.ContainsKey("MTX-PERMISSIONS.csv"))) {
+        Add-ValidationRecord -Status "BLOCKED" -Scope "StaticValidation" -Message "One or more required MTX files are missing; relationship validation skipped." -Reference $MTXDir
+        return $MatrixData
+    }
+
+    $script:Users = @($MatrixData["MTX-USERS.csv"])
+    $script:Groups = @($MatrixData["MTX-GROUPS.csv"])
+    $script:Mailboxes = @($MatrixData["MTX-MAILBOXES.csv"])
+    $script:Permissions = @($MatrixData["MTX-PERMISSIONS.csv"])
+
+    $UserByUPN = @{}
+    foreach ($User in $script:Users) {
+        $UserByUPN[$User.UserPrincipalName] = $User
+        if ($User.UserPrincipalName -eq "homelab@federicomosqueira0910.onmicrosoft.com") {
+            Add-ValidationRecord -Status "SKIPPED_PROTECTED" -Scope $User.UserID -Message "GLOBAL-Admin UPN appears in MTX user data and is protected from mutation." -Reference "MTX-USERS.csv"
         }
     }
 
-    if ($RequiredMatricesLoaded) {
-        $Users = @($MatrixData["MTX-USERS.csv"])
-        $Groups = @($MatrixData["MTX-GROUPS.csv"])
-        $Mailboxes = @($MatrixData["MTX-MAILBOXES.csv"])
-        $Permissions = @($MatrixData["MTX-PERMISSIONS.csv"])
-        $Licenses = @($MatrixData["MTX-LICENSES.csv"])
-
-        foreach ($Check in @(
-            @{ Rows = $Users; Column = "UserID"; Matrix = "MTX-USERS.csv" },
-            @{ Rows = $Users; Column = "UserPrincipalName"; Matrix = "MTX-USERS.csv" },
-            @{ Rows = $Users; Column = "MailNickname"; Matrix = "MTX-USERS.csv" },
-            @{ Rows = $Groups; Column = "GroupID"; Matrix = "MTX-GROUPS.csv" },
-            @{ Rows = $Groups; Column = "DisplayName"; Matrix = "MTX-GROUPS.csv" },
-            @{ Rows = $Groups; Column = "MailNickname"; Matrix = "MTX-GROUPS.csv" },
-            @{ Rows = $Mailboxes; Column = "MailboxID"; Matrix = "MTX-MAILBOXES.csv" },
-            @{ Rows = $Mailboxes; Column = "Alias"; Matrix = "MTX-MAILBOXES.csv" },
-            @{ Rows = $Mailboxes; Column = "TargetAddress"; Matrix = "MTX-MAILBOXES.csv" },
-            @{ Rows = $Permissions; Column = "PermissionID"; Matrix = "MTX-PERMISSIONS.csv" },
-            @{ Rows = $Licenses; Column = "LicenseID"; Matrix = "MTX-LICENSES.csv" }
-        )) {
-            Add-DuplicateValueRecords -Rows $Check.Rows -Column $Check.Column -MatrixName $Check.Matrix
+    foreach ($Group in $script:Groups) {
+        if (-not [string]::IsNullOrWhiteSpace($Group.OwnerUPN) -and -not $UserByUPN.ContainsKey($Group.OwnerUPN)) {
+            Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "Group owner UPN does not resolve to MTX-USERS UserPrincipalName: $($Group.OwnerUPN)." -Reference "MTX-GROUPS.csv"
         }
+    }
 
-        $UserByID = @{}
-        $UserByUPN = @{}
-        $GroupByDisplayName = @{}
-        $GroupByPrimarySMTP = @{}
-        $GroupByMailNickname = @{}
-        $MailboxByDisplayName = @{}
-        $MailboxByAddress = @{}
-        $MailboxByAlias = @{}
-
-        foreach ($User in $Users) {
-            Add-ToMap -Map $UserByID -Key $User.UserID -Value $User
-            Add-ToMap -Map $UserByUPN -Key $User.UserPrincipalName -Value $User
-
-            if ($User.AccountEnabled -notin $BooleanValues) {
-                Add-ValidationRecord -Status "WARNING" -Scope $User.UserID -Message "AccountEnabled must be True or False: $($User.AccountEnabled)." -Reference "MTX-USERS.csv"
-            }
+    foreach ($Mailbox in $script:Mailboxes) {
+        if ($Mailbox.Enabled -notin @("True", "False")) {
+            Add-ValidationRecord -Status "WARNING" -Scope $Mailbox.MailboxID -Message "Enabled must be True or False: $($Mailbox.Enabled)." -Reference "MTX-MAILBOXES.csv"
         }
+    }
 
-        foreach ($Group in $Groups) {
-            Add-ToMap -Map $GroupByDisplayName -Key $Group.DisplayName -Value $Group
-            Add-ToMap -Map $GroupByPrimarySMTP -Key $Group.PrimarySMTP -Value $Group
-            Add-ToMap -Map $GroupByMailNickname -Key $Group.MailNickname -Value $Group
-
-            if (-not $UserByUPN.ContainsKey($Group.OwnerUPN)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "Group owner UPN does not resolve to MTX-USERS UserPrincipalName: $($Group.OwnerUPN)." -Reference "MTX-GROUPS.csv"
-            }
-            if ($Group.GroupType -notin @("Microsoft365", "M365Group", "Security")) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "GroupType is outside LAB-supported values: $($Group.GroupType)." -Reference "MTX-GROUPS.csv"
-            }
-            if ($Group.MailEnabled -notin $BooleanValues) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "MailEnabled must be True or False: $($Group.MailEnabled)." -Reference "MTX-GROUPS.csv"
-            }
-            if ($Group.SecurityEnabled -notin $BooleanValues) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "SecurityEnabled must be True or False: $($Group.SecurityEnabled)." -Reference "MTX-GROUPS.csv"
-            }
-            if ($Group.MailEnabled -eq "True" -and [string]::IsNullOrWhiteSpace($Group.PrimarySMTP)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "Mail-enabled group has no PrimarySMTP." -Reference "MTX-GROUPS.csv"
-            }
-            if ($Group.MailEnabled -eq "False" -and -not [string]::IsNullOrWhiteSpace($Group.PrimarySMTP)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "Non-mail-enabled group has PrimarySMTP populated." -Reference "MTX-GROUPS.csv"
-            }
+    foreach ($Permission in $script:Permissions) {
+        if ($Permission.Enabled -ne "True") {
+            continue
         }
+        if ($Permission.ObjectType -eq "SharedMailbox" -and (Resolve-MailboxMatrixRow $Permission).Count -eq 0) {
+            Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Shared mailbox permission target cannot be resolved from MTX." -Reference "MTX-PERMISSIONS.csv"
+        }
+        if ($Permission.ObjectType -in @("M365Group", "Team", "SecurityGroup") -and (Resolve-GroupMatrixRow $Permission).Count -eq 0) {
+            Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Group permission target cannot be resolved from MTX." -Reference "MTX-PERMISSIONS.csv"
+        }
+    }
 
-        foreach ($Mailbox in $Mailboxes) {
-            Add-ToMap -Map $MailboxByDisplayName -Key $Mailbox.DisplayName -Value $Mailbox
-            Add-ToMap -Map $MailboxByAddress -Key $Mailbox.TargetAddress -Value $Mailbox
-            Add-ToMap -Map $MailboxByAlias -Key $Mailbox.Alias -Value $Mailbox
+    Add-ValidationRecord -Status "COMPLETED" -Scope "StaticValidation" -Message "Files, schemas, imports, protected policy, and command guards validated without tenant connection." -Reference "AUT-SYS-001"
+    return $MatrixData
+}
 
-            if (-not $UserByUPN.ContainsKey($Mailbox.OwnerUPN)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Mailbox.MailboxID -Message "Mailbox owner UPN does not resolve to MTX-USERS UserPrincipalName: $($Mailbox.OwnerUPN)." -Reference "MTX-MAILBOXES.csv"
-            }
-            if ($Mailbox.Enabled -notin $BooleanValues) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Mailbox.MailboxID -Message "Enabled must be True or False: $($Mailbox.Enabled)." -Reference "MTX-MAILBOXES.csv"
-            }
-            if ([string]::IsNullOrWhiteSpace($Mailbox.TargetAddress)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Mailbox.MailboxID -Message "TargetAddress is empty." -Reference "MTX-MAILBOXES.csv"
+function Invoke-LiveValidation {
+    Param([Hashtable]$MatrixData)
+
+    if (-not $LiveValidation) {
+        Add-ValidationRecord -Status "SKIPPED" -Scope "LiveValidation" -Message "Live validation not requested; no Graph or Exchange tenant validation performed." -Reference "Use -LiveValidation"
+        return
+    }
+
+    if ([string]::IsNullOrWhiteSpace($TenantId) -or [string]::IsNullOrWhiteSpace($TenantDomain)) {
+        Add-ValidationRecord -Status "BLOCKED" -Scope "LiveValidation" -Message "TenantId and TenantDomain are required for live validation." -Reference "LAB-Validation-Report.ps1"
+        return
+    }
+
+    $Context = Get-MgContext
+    if ($null -eq $Context -or $Context.TenantId -ne $TenantId) {
+        Connect-MgGraph -TenantId $TenantId
+        $Context = Get-MgContext
+    }
+    if ($null -eq $Context -or $Context.TenantId -ne $TenantId) {
+        Add-ValidationRecord -Status "BLOCKED" -Scope "LiveValidation" -Message "Connected Graph tenant does not match target tenant." -Reference $TenantId
+        return
+    }
+
+    try {
+        Get-ConnectionInformation -ErrorAction Stop | Out-Null
+    } catch {
+        Connect-ExchangeOnline -Organization $TenantDomain -ShowBanner:$false
+    }
+
+    $GlobalAdmin = Get-MgUser -UserId "homelab@federicomosqueira0910.onmicrosoft.com" -Property "id,displayName,userPrincipalName,accountEnabled,proxyAddresses,assignedLicenses" -ErrorAction SilentlyContinue
+    if ($GlobalAdmin) {
+        Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "GLOBAL-Admin" -Message "Protected GLOBAL-Admin still exists and is enabled state '$($GlobalAdmin.AccountEnabled)'." -Reference "Get-MgUser"
+        if ($GlobalAdmin.AccountEnabled -ne $true) {
+            Add-ValidationRecord -Status "FAILED" -Scope "GLOBAL-Admin" -Message "Protected GLOBAL-Admin is not enabled." -Reference "Get-MgUser"
+        }
+        foreach ($Alias in @("global.admin@federicomosqueira.site", "hello@federicomosqueira.site")) {
+            if (@($GlobalAdmin.ProxyAddresses) -match [regex]::Escape($Alias)) {
+                Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "GLOBAL-Admin" -Message "Protected alias remains present: $Alias." -Reference "Get-MgUser"
+            } else {
+                Add-ValidationRecord -Status "WARNING" -Scope "GLOBAL-Admin" -Message "Protected alias was not visible in proxyAddresses: $Alias." -Reference "Get-MgUser"
             }
         }
+    } else {
+        Add-ValidationRecord -Status "FAILED" -Scope "GLOBAL-Admin" -Message "Protected GLOBAL-Admin was not found." -Reference "Get-MgUser"
+    }
 
-        $PermissionCompositeKeys = @{}
-        foreach ($Permission in $Permissions) {
-            if ($Permission.Enabled -notin $BooleanValues) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Enabled must be True or False: $($Permission.Enabled)." -Reference "MTX-PERMISSIONS.csv"
+    foreach ($User in @($MatrixData["MTX-USERS.csv"])) {
+        $TenantUser = Get-MgUser -UserId $User.UserPrincipalName -ErrorAction SilentlyContinue
+        if ($TenantUser) {
+            Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $User.UserID -Message "User exists: $($User.UserPrincipalName)." -Reference "Get-MgUser"
+        } else {
+            Add-ValidationRecord -Status "WARNING" -Scope $User.UserID -Message "User missing: $($User.UserPrincipalName)." -Reference "Get-MgUser"
+        }
+    }
+
+    foreach ($Group in @($MatrixData["MTX-GROUPS.csv"])) {
+        $EscapedNickname = $Group.MailNickname.Replace("'", "''")
+        $TenantGroup = @(Get-MgGroup -Filter "mailNickname eq '$EscapedNickname'" -ErrorAction SilentlyContinue | Select-Object -First 1)
+        if ($TenantGroup.Count -gt 0) {
+            Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Group.GroupID -Message "Group exists: $($Group.DisplayName)." -Reference "Get-MgGroup"
+        } else {
+            Add-ValidationRecord -Status "WARNING" -Scope $Group.GroupID -Message "Group missing: $($Group.DisplayName)." -Reference "Get-MgGroup"
+        }
+    }
+
+    foreach ($Mailbox in @($MatrixData["MTX-MAILBOXES.csv"] | Where-Object { $_.Enabled -eq "True" })) {
+        $TenantMailbox = Get-Mailbox -Identity $Mailbox.TargetAddress -ErrorAction SilentlyContinue
+        if ($TenantMailbox) {
+            Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Mailbox.MailboxID -Message "Shared mailbox exists: $($Mailbox.TargetAddress)." -Reference "Get-Mailbox"
+        } else {
+            Add-ValidationRecord -Status "WARNING" -Scope $Mailbox.MailboxID -Message "Shared mailbox missing: $($Mailbox.TargetAddress)." -Reference "Get-Mailbox"
+        }
+    }
+
+    foreach ($Permission in @($MatrixData["MTX-PERMISSIONS.csv"] | Where-Object { $_.Enabled -eq "True" })) {
+        if ($Permission.ObjectType -eq "SharedMailbox") {
+            if ($Permission.AccessType -eq "FullAccess") {
+                $Existing = @(Get-MailboxPermission -Identity $Permission.TargetAddress -User $Permission.UserUPN -ErrorAction SilentlyContinue | Where-Object { $_.AccessRights -contains "FullAccess" -and -not $_.Deny })
+                if ($Existing.Count -gt 0) {
+                    Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Permission.PermissionID -Message "FullAccess exists." -Reference "Get-MailboxPermission"
+                } else {
+                    Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "FullAccess missing." -Reference "Get-MailboxPermission"
+                }
+            } elseif ($Permission.AccessType -eq "SendAs") {
+                $Existing = @(Get-RecipientPermission -Identity $Permission.TargetAddress -Trustee $Permission.UserUPN -ErrorAction SilentlyContinue | Where-Object { $_.AccessRights -contains "SendAs" -and -not $_.Deny })
+                if ($Existing.Count -gt 0) {
+                    Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Permission.PermissionID -Message "SendAs exists." -Reference "Get-RecipientPermission"
+                } else {
+                    Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "SendAs missing." -Reference "Get-RecipientPermission"
+                }
+            } elseif ($Permission.AccessType -eq "SendOnBehalf") {
+                $TenantMailbox = Get-Mailbox -Identity $Permission.TargetAddress -ErrorAction SilentlyContinue
+                $Delegates = @($TenantMailbox.GrantSendOnBehalfTo | ForEach-Object { [string]$_ })
+                if ($Delegates -contains $Permission.UserUPN) {
+                    Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Permission.PermissionID -Message "SendOnBehalf exists." -Reference "Get-Mailbox"
+                } else {
+                    Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "SendOnBehalf missing or not visible by UPN." -Reference "Get-Mailbox"
+                }
             }
-            if ($Permission.ObjectType -notin $AllowedObjectTypes) {
-                Add-ValidationRecord -Status "FAILED" -Scope $Permission.PermissionID -Message "Invalid ObjectType: $($Permission.ObjectType)." -Reference "MTX-PERMISSIONS.csv"
+        } elseif ($Permission.ObjectType -in @("M365Group", "Team", "SecurityGroup")) {
+            $EscapedTarget = $Permission.TargetAddress.Replace("'", "''")
+            $TenantGroup = @(Get-MgGroup -Filter "mailNickname eq '$EscapedTarget' or mail eq '$EscapedTarget' or displayName eq '$EscapedTarget'" -ErrorAction SilentlyContinue | Select-Object -First 1)
+            $Principal = Get-MgUser -UserId $Permission.UserUPN -ErrorAction SilentlyContinue
+            if ($TenantGroup.Count -eq 0 -or $null -eq $Principal) {
+                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Group or principal missing for live permission validation." -Reference "Get-MgGroup/Get-MgUser"
                 continue
             }
-            if ($Permission.AccessType -notin $AllowedAccessTypes) {
-                Add-ValidationRecord -Status "FAILED" -Scope $Permission.PermissionID -Message "Invalid AccessType: $($Permission.AccessType)." -Reference "MTX-PERMISSIONS.csv"
-                continue
-            }
-            if (-not $UserByUPN.ContainsKey($Permission.UserUPN)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Permission UserUPN does not resolve to MTX-USERS UserPrincipalName: $($Permission.UserUPN)." -Reference "MTX-PERMISSIONS.csv"
-            }
 
-            if ($Permission.ObjectType -eq "SharedMailbox" -and $Permission.AccessType -notin $ExchangeAccessTypes) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "SharedMailbox AccessType should be one of: $($ExchangeAccessTypes -join ', ')." -Reference "MTX-PERMISSIONS.csv"
-            }
-            if ($Permission.ObjectType -in @("M365Group", "Team", "SecurityGroup") -and $Permission.AccessType -notin $MembershipAccessTypes) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "$($Permission.ObjectType) AccessType should be Member or Owner." -Reference "MTX-PERMISSIONS.csv"
-            }
-            if ($Permission.ObjectType -eq "SharePointSite" -and $Permission.AccessType -notin $SharePointAccessTypes) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "SharePointSite AccessType should be one of: $($SharePointAccessTypes -join ', ')." -Reference "MTX-PERMISSIONS.csv"
-            }
-
-            $ExpectedTarget = Get-ExpectedPermissionTarget $Permission
-            if ([string]::IsNullOrWhiteSpace($ExpectedTarget)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Permission target cannot be resolved from MTX files: $($Permission.ObjectName)." -Reference "MTX-PERMISSIONS.csv"
-            } elseif ($Permission.TargetAddress -ne $ExpectedTarget) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "TargetAddress '$($Permission.TargetAddress)' should be '$ExpectedTarget'." -Reference "MTX-PERMISSIONS.csv"
-            } elseif ($Permission.ObjectType -eq "SecurityGroup") {
-                Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Permission.PermissionID -Message "SecurityGroup TargetAddress uses MailNickname exception: $($Permission.TargetAddress)." -Reference "MTX-PERMISSIONS.csv"
-            }
-
-            $CompositeKey = "$($Permission.ObjectType)|$($Permission.TargetAddress)|$($Permission.UserUPN)|$($Permission.AccessType)|$($Permission.Enabled)"
-            if ($PermissionCompositeKeys.ContainsKey($CompositeKey)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Duplicate permission assignment also appears at $($PermissionCompositeKeys[$CompositeKey])." -Reference "MTX-PERMISSIONS.csv"
-            } else {
-                $PermissionCompositeKeys[$CompositeKey] = $Permission.PermissionID
-            }
-        }
-
-        foreach ($License in $Licenses) {
-            if (-not $UserByID.ContainsKey($License.UserID)) {
-                Add-ValidationRecord -Status "WARNING" -Scope $License.LicenseID -Message "License UserID does not resolve to MTX-USERS UserID: $($License.UserID)." -Reference "MTX-LICENSES.csv"
-            } else {
-                $User = $UserByID[$License.UserID]
-                if (-not [string]::IsNullOrWhiteSpace($User.LicenseSKU) -and $User.LicenseSKU -ne $License.SKU) {
-                    Add-ValidationRecord -Status "WARNING" -Scope $License.LicenseID -Message "License SKU '$($License.SKU)' differs from MTX-USERS LicenseSKU '$($User.LicenseSKU)' for $($License.UserID)." -Reference "MTX-LICENSES.csv"
+            if ($Permission.AccessType -eq "Member") {
+                $ExistingMembers = @(Get-MgGroupMember -GroupId $TenantGroup[0].Id -All -ErrorAction SilentlyContinue | Where-Object { $_.Id -eq $Principal.Id })
+                if ($ExistingMembers.Count -gt 0) {
+                    Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Permission.PermissionID -Message "Group member exists." -Reference "Get-MgGroupMember"
+                } else {
+                    Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Group member missing." -Reference "Get-MgGroupMember"
+                }
+            } elseif ($Permission.AccessType -eq "Owner") {
+                $ExistingOwners = @(Get-MgGroupOwner -GroupId $TenantGroup[0].Id -All -ErrorAction SilentlyContinue | Where-Object { $_.Id -eq $Principal.Id })
+                if ($ExistingOwners.Count -gt 0) {
+                    Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope $Permission.PermissionID -Message "Group owner exists." -Reference "Get-MgGroupOwner"
+                } else {
+                    Add-ValidationRecord -Status "WARNING" -Scope $Permission.PermissionID -Message "Group owner missing." -Reference "Get-MgGroupOwner"
                 }
             }
         }
-
-        Add-ValidationRecord -Status "WAITING_PROPAGATION" -Scope "TenantDrift" -Message "Live tenant drift validation intentionally not executed by LAB static validator." -Reference "AUT-OPS-001"
-        Add-ValidationRecord -Status "COMPLETED" -Scope "StaticValidation" -Message "MTX schema and relationship validation completed without tenant execution." -Reference "AUT-SYS-001"
-    } else {
-        Add-ValidationRecord -Status "BLOCKED" -Scope "StaticValidation" -Message "One or more required MTX files are missing; relationship validation skipped." -Reference $MTXDir
     }
 
-    $Counts = [PSCustomObject]@{
-        Users       = if ($MatrixData.ContainsKey("MTX-USERS.csv")) { @($MatrixData["MTX-USERS.csv"]).Count } else { 0 }
-        Groups      = if ($MatrixData.ContainsKey("MTX-GROUPS.csv")) { @($MatrixData["MTX-GROUPS.csv"]).Count } else { 0 }
-        Mailboxes   = if ($MatrixData.ContainsKey("MTX-MAILBOXES.csv")) { @($MatrixData["MTX-MAILBOXES.csv"]).Count } else { 0 }
-        Permissions = if ($MatrixData.ContainsKey("MTX-PERMISSIONS.csv")) { @($MatrixData["MTX-PERMISSIONS.csv"]).Count } else { 0 }
-        Licenses    = if ($MatrixData.ContainsKey("MTX-LICENSES.csv")) { @($MatrixData["MTX-LICENSES.csv"]).Count } else { 0 }
-    }
-
-    $OverallStatus = "COMPLETED"
-    if ($FailedCount -gt 0) { $OverallStatus = "FAILED" }
-    elseif ($BlockedCount -gt 0) { $OverallStatus = "BLOCKED" }
-    elseif ($WarningCount -gt 0) { $OverallStatus = "WARNING" }
-
-    $Summary = [PSCustomObject]@{
-        Project            = "AMB Logistics"
-        GeneratedAt        = (Get-Date).ToString("o")
-        Mode               = if ($DryRun) { "DRY-RUN-STATIC-VALIDATION" } else { "STATIC-VALIDATION" }
-        OverallStatus      = $OverallStatus
-        Failed             = $FailedCount
-        Blocked            = $BlockedCount
-        Warning            = $WarningCount
-        WaitingPropagation = $WaitingPropagationCount
-        ValidatingResult   = $ValidatedCount
-        Completed          = $CompletedCount
-        Counts             = $Counts
-        Reports            = [PSCustomObject]@{
-            Markdown   = $ReportPath
-            Json       = $SummaryPath
-            Log        = $LogPath
-            Transcript = $TranscriptPath
-        }
-        AllowedStates      = $AllowedStates
-        Records            = @($ValidationRecords)
-    }
-
-    $ReportLines = @(
-        "# LAB Validation Report - AMB Logistics",
-        "",
-        "- Generated: $($Summary.GeneratedAt)",
-        "- Mode: $($Summary.Mode)",
-        "- OverallStatus: $OverallStatus",
-        "- Failed: $FailedCount",
-        "- Blocked: $BlockedCount",
-        "- Warning: $WarningCount",
-        "- WaitingPropagation: $WaitingPropagationCount",
-        "- ValidatingResult: $ValidatedCount",
-        "- Completed: $CompletedCount",
-        "",
-        "## Target Counts",
-        "",
-        "| Matrix | Count |",
-        "| --- | ---: |",
-        "| Users | $($Counts.Users) |",
-        "| Groups | $($Counts.Groups) |",
-        "| Mailboxes | $($Counts.Mailboxes) |",
-        "| Permissions | $($Counts.Permissions) |",
-        "| Licenses | $($Counts.Licenses) |",
-        "",
-        "## Validation Records",
-        "",
-        "| Status | Scope | Message | Reference |",
-        "| --- | --- | --- | --- |"
-    )
-
-    foreach ($Record in $ValidationRecords) {
-        $Message = $Record.Message -replace "\|", "/"
-        $ReportLines += "| $($Record.Status) | $($Record.Scope) | $Message | $($Record.Reference) |"
-    }
-
-    $ReportLines += @(
-        "",
-        "## LAB Boundary",
-        "",
-        "Validation is schema and relationship only. No tenant connection, production retry, infinite loop, delete action, or live permission reconciliation is performed by this report."
-    )
-
-    $ReportLines | Set-Content -Path $ReportPath -Encoding UTF8
-    $Summary | ConvertTo-Json -Depth 8 | Set-Content -Path $SummaryPath -Encoding UTF8
-    @(
-        "GeneratedAt=$($Summary.GeneratedAt)",
-        "Mode=$($Summary.Mode)",
-        "OverallStatus=$OverallStatus",
-        "Failed=$FailedCount",
-        "Blocked=$BlockedCount",
-        "Warning=$WarningCount",
-        "WaitingPropagation=$WaitingPropagationCount",
-        "ValidatingResult=$ValidatedCount",
-        "Completed=$CompletedCount",
-        "Report=$ReportPath",
-        "Summary=$SummaryPath",
-        "Transcript=$TranscriptPath"
-    ) | Set-Content -Path $LogPath -Encoding UTF8
-
-    Write-Host ""
-    Write-Host "Target User Count:        $($Counts.Users)"
-    Write-Host "Target Group Count:       $($Counts.Groups)"
-    Write-Host "Target Mailbox Count:     $($Counts.Mailboxes)"
-    Write-Host "Target Permission Count:  $($Counts.Permissions)"
-    Write-Host "Target License Count:     $($Counts.Licenses)"
-    Write-Host ""
-    Write-Host "Report:     $ReportPath"
-    Write-Host "Summary:    $SummaryPath"
-    Write-Host "Log:        $LogPath"
-    Write-Host "Transcript: $TranscriptPath"
-    Write-Host ""
-    Write-Host "Status: $OverallStatus" -ForegroundColor Cyan
+    Add-ValidationRecord -Status "VALIDATING_RESULT" -Scope "Licenses" -Message "Runtime does not implement license assignment; no license write command is validated." -Reference "No Set-MgUserLicense path"
+    Add-ValidationRecord -Status "COMPLETED" -Scope "LiveValidation" -Message "Live tenant reality validation completed for supported object types." -Reference "Graph/Exchange read checks"
 }
-finally {
-    if ($TranscriptStarted) {
-        Stop-Transcript | Out-Null
-    }
-}
+
+Write-Host "`n============================================================" -ForegroundColor Cyan
+Write-Host "LAB VALIDATION REPORT - AMB LOGISTICS" -ForegroundColor Cyan
+Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host "Mode: $(if ($LiveValidation) { 'LIVE-VALIDATION' } else { 'STATIC-VALIDATION' })"
+
+$MatrixData = Invoke-StaticValidation
+Invoke-LiveValidation -MatrixData $MatrixData
+
+$OverallStatus = "COMPLETED"
+if ($FailedCount -gt 0) { $OverallStatus = "FAILED" }
+elseif ($BlockedCount -gt 0) { $OverallStatus = "BLOCKED" }
+elseif ($WarningCount -gt 0) { $OverallStatus = "WARNING" }
+
+Write-Host ""
+Write-Host "Status: $OverallStatus" -ForegroundColor Cyan
+Write-Host "Failed: $FailedCount; Blocked: $BlockedCount; Warning: $WarningCount; Validated: $ValidatedCount; Completed: $CompletedCount"

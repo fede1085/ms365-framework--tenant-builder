@@ -1,10 +1,9 @@
 <#
-LAB / EXPERIMENTAL / NON-CANONICAL
-Tenant-local runtime safety data
-Semi-controlled execution supported
-Not production-grade
+Tenant-local controlled runtime
+Production-ready guarded execution
+Protected-object enforced
 No license assignment
-Protected-object guarded
+No destructive default behavior
 #>
 
 $script:LabProtectedObjectPolicy = [PSCustomObject]@{
@@ -24,6 +23,7 @@ $script:LabProtectedObjectPolicy = [PSCustomObject]@{
     ProtectedRoles = @(
         "Global Administrator"
     )
+    CurrentConnectedUserUPN = ""
 }
 
 function Normalize-LabIdentityValue {
@@ -51,6 +51,14 @@ function Test-LabValueInProtectedSet {
 
     foreach ($ProtectedValue in $ProtectedValues) {
         $NormalizedProtectedValue = Normalize-LabIdentityValue $ProtectedValue
+        if ([string]::IsNullOrWhiteSpace($NormalizedProtectedValue)) {
+            continue
+        }
+
+        if ($NormalizedProtectedValue -eq (Normalize-LabIdentityValue "<UNKNOWN_OBJECT_ID_GLOBAL_ADMIN>")) {
+            continue
+        }
+
         if ($NormalizedValue -eq $NormalizedProtectedValue) {
             return $true
         }
@@ -64,6 +72,36 @@ function Test-LabValueInProtectedSet {
     }
 
     return $false
+}
+
+function Add-LabProtectedObjectId {
+    Param(
+        [String]$ObjectId
+    )
+
+    $NormalizedObjectId = Normalize-LabIdentityValue $ObjectId
+    if ([string]::IsNullOrWhiteSpace($NormalizedObjectId)) {
+        return $false
+    }
+
+    if ($NormalizedObjectId -eq (Normalize-LabIdentityValue "<UNKNOWN_OBJECT_ID_GLOBAL_ADMIN>")) {
+        return $false
+    }
+
+    $Existing = @($script:LabProtectedObjectPolicy.ProtectedObjectIds | ForEach-Object { Normalize-LabIdentityValue $_ })
+    if ($NormalizedObjectId -notin $Existing) {
+        $script:LabProtectedObjectPolicy.ProtectedObjectIds = @($script:LabProtectedObjectPolicy.ProtectedObjectIds) + $ObjectId
+    }
+
+    return $true
+}
+
+function Set-LabCurrentConnectedUser {
+    Param(
+        [String]$UserPrincipalName
+    )
+
+    $script:LabProtectedObjectPolicy.CurrentConnectedUserUPN = $UserPrincipalName
 }
 
 function Get-LabProtectedIdentityMatch {
@@ -136,11 +174,17 @@ function Get-LabProtectedObjectMatch {
         }
     }
 
+    $ProtectedUPNs = @($script:LabProtectedObjectPolicy.ProtectedUPNs)
+    if (-not [string]::IsNullOrWhiteSpace($script:LabProtectedObjectPolicy.CurrentConnectedUserUPN)) {
+        $ProtectedUPNs += $script:LabProtectedObjectPolicy.CurrentConnectedUserUPN
+    }
+
     $FieldChecks = @(
-        @{ Field = "UserPrincipalName"; ProtectedValues = $script:LabProtectedObjectPolicy.ProtectedUPNs },
-        @{ Field = "UPN"; ProtectedValues = $script:LabProtectedObjectPolicy.ProtectedUPNs },
-        @{ Field = "UserUPN"; ProtectedValues = $script:LabProtectedObjectPolicy.ProtectedUPNs },
-        @{ Field = "OwnerUPN"; ProtectedValues = $script:LabProtectedObjectPolicy.ProtectedUPNs },
+        @{ Field = "UserPrincipalName"; ProtectedValues = $ProtectedUPNs },
+        @{ Field = "UPN"; ProtectedValues = $ProtectedUPNs },
+        @{ Field = "UserUPN"; ProtectedValues = $ProtectedUPNs },
+        @{ Field = "OwnerUPN"; ProtectedValues = $ProtectedUPNs },
+        @{ Field = "CurrentConnectedUserUPN"; ProtectedValues = $ProtectedUPNs },
         @{ Field = "DisplayName"; ProtectedValues = $script:LabProtectedObjectPolicy.ProtectedDisplayNames },
         @{ Field = "ObjectName"; ProtectedValues = $script:LabProtectedObjectPolicy.ProtectedDisplayNames },
         @{ Field = "TargetAddress"; ProtectedValues = $script:LabProtectedObjectPolicy.ProtectedAliases },
@@ -253,13 +297,46 @@ function Assert-LabNotProtectedObject {
     }
 }
 
+function Confirm-LabProtectedBaseline {
+    $RequiredUPN = "homelab@federicomosqueira0910.onmicrosoft.com"
+    $RequiredAliases = @("global.admin@federicomosqueira.site", "hello@federicomosqueira.site")
+    $RequiredDisplayName = "GLOBAL-Admin"
+    $RequiredRole = "Global Administrator"
+
+    $Problems = New-Object System.Collections.Generic.List[String]
+    if (-not (Test-LabValueInProtectedSet -Value $RequiredUPN -ProtectedValues $script:LabProtectedObjectPolicy.ProtectedUPNs)) {
+        $Problems.Add("Missing protected UPN: $RequiredUPN")
+    }
+    foreach ($Alias in $RequiredAliases) {
+        if (-not (Test-LabValueInProtectedSet -Value $Alias -ProtectedValues $script:LabProtectedObjectPolicy.ProtectedAliases)) {
+            $Problems.Add("Missing protected alias: $Alias")
+        }
+    }
+    if (-not (Test-LabValueInProtectedSet -Value $RequiredDisplayName -ProtectedValues $script:LabProtectedObjectPolicy.ProtectedDisplayNames)) {
+        $Problems.Add("Missing protected display name: $RequiredDisplayName")
+    }
+    if (-not (Test-LabValueInProtectedSet -Value $RequiredRole -ProtectedValues $script:LabProtectedObjectPolicy.ProtectedRoles)) {
+        $Problems.Add("Missing protected role: $RequiredRole")
+    }
+
+    if ($Problems.Count -gt 0) {
+        throw "Protected baseline invalid. $($Problems -join '; ')"
+    }
+
+    return $true
+}
+
 function Get-LabProtectedObjectSummary {
     return [PSCustomObject]@{
-        ProtectedUPNs         = $script:LabProtectedObjectPolicy.ProtectedUPNs
-        ProtectedAliases     = $script:LabProtectedObjectPolicy.ProtectedAliases
-        ProtectedDisplayNames = $script:LabProtectedObjectPolicy.ProtectedDisplayNames
-        ProtectedObjectIds    = $script:LabProtectedObjectPolicy.ProtectedObjectIds
-        ProtectedRoles        = $script:LabProtectedObjectPolicy.ProtectedRoles
-        Boundary              = "LAB / EXPERIMENTAL / NON-CANONICAL; Semi-controlled execution supported; Not production-grade; No license assignment; Protected-object guarded"
+        ProtectedUPNs             = $script:LabProtectedObjectPolicy.ProtectedUPNs
+        ProtectedAliases         = $script:LabProtectedObjectPolicy.ProtectedAliases
+        ProtectedDisplayNames     = $script:LabProtectedObjectPolicy.ProtectedDisplayNames
+        ProtectedObjectIds        = $script:LabProtectedObjectPolicy.ProtectedObjectIds
+        ProtectedRoles            = $script:LabProtectedObjectPolicy.ProtectedRoles
+        CurrentConnectedUserUPN   = $script:LabProtectedObjectPolicy.CurrentConnectedUserUPN
+        ObjectIdResolved          = @($script:LabProtectedObjectPolicy.ProtectedObjectIds | Where-Object {
+            (Normalize-LabIdentityValue $_) -ne (Normalize-LabIdentityValue "<UNKNOWN_OBJECT_ID_GLOBAL_ADMIN>")
+        }).Count -gt 0
+        Boundary                  = "Tenant-local controlled runtime; Production-ready guarded execution; Protected-object enforced; No license assignment; No destructive default behavior"
     }
 }
