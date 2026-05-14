@@ -46,42 +46,50 @@ one giant dangerous script
 
 ## Phase 01
 
-Create users
+Load tenant-local protected-object rules
 
 ## Phase 02
 
-Set display names / departments
+Validate protected objects before tenant write actions
 
 ## Phase 03
 
-Assign licenses
+Create users
 
 ## Phase 04
 
-Create groups / Teams
+Set display names / departments
 
 ## Phase 05
 
-Create shared mailboxes
+Assign licenses
 
 ## Phase 06
 
-Apply memberships
+Create groups / Teams
 
 ## Phase 07
+
+Create shared mailboxes
+
+## Phase 08
+
+Apply memberships
+
+## Phase 09
 
 Apply mailbox permissions
 - Mailbox and Teams operations may require propagation wait validation before dependent actions.
 
-## Phase 08
+## Phase 10
 
 Create aliases
 
-## Phase 09
+## Phase 11
 
 Optional governance settings
 
-## Phase 10
+## Phase 12
 
 Validation report
 
@@ -207,6 +215,12 @@ Write every change.
 VERIFY
 → SKIP or UPDATE
 → CREATE only if missing
+
+## Protected Object Validation
+
+Before tenant write actions, validate users, groups, mailboxes, permissions, roles, aliases, and licenses against protected-object rules.
+
+Protected objects return SKIPPED_PROTECTED or BLOCKED and are not modified.
 
 ## Rollback Friendly
 

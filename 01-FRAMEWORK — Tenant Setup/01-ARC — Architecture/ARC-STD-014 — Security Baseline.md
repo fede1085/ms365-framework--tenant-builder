@@ -119,7 +119,30 @@ Rules:
 
 ---
 
-# 7. Conditional Access (Recommended)
+# 7. Protected Administrator Objects
+
+Protected administrator objects include:
+
+- Global Administrator accounts
+- breakglass accounts
+- tenant owner accounts
+- emergency access accounts
+- currently connected automation operator accounts
+- accounts explicitly listed in tenant-local protected object lists
+
+Automation must never delete, disable, rename, recreate, password-reset, role-change, UPN-change, alias-change, license-change, remove group memberships, remove ownership, remove aliases, remove roles, or convert protected administrator objects into regular users unless a separately documented emergency override workflow exists.
+
+Example tenant-local protected object pattern:
+
+| DisplayName | Primary UPN | Known Aliases | Role |
+|---|---|---|---|
+| GLOBAL-Admin | homelab@federicomosqueira0910.onmicrosoft.com | global.admin@federicomosqueira.site; hello@federicomosqueira.site | Global Administrator |
+
+GLOBAL-Admin is a tenant owner / protected global admin account example, not the only possible protected object.
+
+---
+
+# 8. Conditional Access (Recommended)
 
 ## Minimum Policies
 
@@ -141,7 +164,7 @@ Unknown countries / impossible travel review.
 
 ---
 
-# 8. Mail Security
+# 9. Mail Security
 
 ## Exchange Online Baseline
 
@@ -153,7 +176,7 @@ Unknown countries / impossible travel review.
 
 ---
 
-# 9. Data Protection
+# 10. Data Protection
 
 ## Minimum Controls
 
@@ -170,7 +193,7 @@ Unknown countries / impossible travel review.
 
 ---
 
-# 10. Device Security
+# 11. Device Security
 
 If using company devices:
 
@@ -186,7 +209,7 @@ If BYOD:
 
 ---
 
-# 11. Monitoring & Audit
+# 12. Monitoring & Audit
 
 ## Enable / Review
 
@@ -203,7 +226,7 @@ Frequency:
 
 ---
 
-# 12. Lifecycle Security
+# 13. Lifecycle Security
 
 ## Joiner
 
@@ -225,7 +248,7 @@ Frequency:
 
 ---
 
-# 13. Governance Rules
+# 14. Governance Rules
 
 - No shared credentials
 - No personal accounts for business data
@@ -236,7 +259,7 @@ Frequency:
 
 ---
 
-# 14. Security Score Target
+# 15. Security Score Target
 
 Use Microsoft Secure Score.
 
@@ -248,7 +271,7 @@ Initial SME target:
 
 ---
 
-# 15. Automation Ready Tasks
+# 16. Automation Ready Tasks
 
 Can automate:
 
@@ -260,7 +283,7 @@ Can automate:
 
 ---
 
-# 16. Priority Implementation Order
+# 17. Priority Implementation Order
 
 ## Week 1
 
@@ -283,12 +306,12 @@ Can automate:
 
 ---
 
-# 17. Final Principle
+# 18. Final Principle
 
 Security should be invisible when normal, strong when needed, and simple to maintain.
 
 ---
 
-# 18. Next Document
+# 19. Next Document
 
 BLP-TMP-015 — License Matrix

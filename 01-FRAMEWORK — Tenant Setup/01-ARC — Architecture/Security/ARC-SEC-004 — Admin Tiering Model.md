@@ -115,6 +115,22 @@ Restricted sessions
 
 ---
 
+## 5.5 Automation Protection
+
+```text
+Tier 0 and Global Administrator accounts are protected objects.
+```
+
+Automation must not mutate, disable, delete, recreate, rename, password-reset, role-change, alias-change, license-change, remove ownership, or remove group memberships from these accounts unless a documented emergency override workflow exists.
+
+Example tenant-local protected object:
+
+```text
+GLOBAL-Admin / homelab@federicomosqueira0910.onmicrosoft.com
+```
+
+---
+
 # 6. Tier 1 — Service Administration
 
 ## 6.1 Scope

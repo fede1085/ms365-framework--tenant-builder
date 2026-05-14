@@ -103,16 +103,22 @@ build-tenant.ps1
 ```
 01 Connect
 02 Validate CSVs
-03 Create Users
-04 Set User Properties
-05 Assign Licenses
-06 Create Groups
-07 Add Members
-08 Create Shared Mailboxes
-09 Apply Permissions
-10 Add Aliases
-11 Validation Report
+03 Load Protected-Object Rules
+04 Check Protected Objects
+05 Create Users
+06 Set User Properties
+07 Assign Licenses
+08 Create Groups
+09 Add Members
+10 Create Shared Mailboxes
+11 Apply Permissions
+12 Add Aliases
+13 Validation Report
 ```
+
+Full tenant build scripts must import and check protected-object rules before modifying users, groups, mailboxes, permissions, roles, aliases, or licenses.
+
+License runtime execution remains not implemented unless explicitly documented elsewhere.
 
 ---
 

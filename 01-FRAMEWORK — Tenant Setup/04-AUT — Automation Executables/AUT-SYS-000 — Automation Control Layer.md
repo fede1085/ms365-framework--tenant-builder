@@ -44,6 +44,15 @@ Scripts must not delete resources automatically. Removals or deletions should re
 ## 4.4 Protected objects rule
 Core administrative accounts and critical systems are protected and must not be altered, removed, or used as regular user accounts in the automation data.
 
+Before any create, update, delete, disable, password, role, license, group, ownership, or alias operation, AUT must check protected-object rules.
+
+If an object is protected:
+
+- do not mutate it
+- return SKIPPED_PROTECTED or BLOCKED
+- log the protected-object reason
+- continue only when safe
+
 ## 4.5 Validation-before-execute rule
 Always validate the structure and content of the Matrix CSV inputs before passing them to the execution scripts.
 

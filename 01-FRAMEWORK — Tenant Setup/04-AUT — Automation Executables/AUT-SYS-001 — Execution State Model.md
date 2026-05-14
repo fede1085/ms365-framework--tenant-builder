@@ -50,6 +50,7 @@ Allowed runtime states:
 - CREATING
 - UPDATING
 - SKIPPED
+- SKIPPED_PROTECTED
 - WAITING_PROPAGATION
 - VALIDATING_RESULT
 - COMPLETED
@@ -122,6 +123,14 @@ Do not update protected objects automatically.
 Object already exists or is intentionally excluded.
 
 SKIPPED is acceptable only when the existing object matches expected MTX intent.
+
+---
+
+## SKIPPED_PROTECTED
+
+The object matched protected-object rules and was intentionally not modified.
+
+SKIPPED_PROTECTED must be logged with the protected-object reason.
 
 ---
 
@@ -204,7 +213,7 @@ Default transition:
 PENDING
 → VALIDATING
 → READY
-→ CREATING or UPDATING or SKIPPED
+→ CREATING or UPDATING or SKIPPED or SKIPPED_PROTECTED
 → WAITING_PROPAGATION if needed
 → VALIDATING_RESULT
 → COMPLETED or WARNING or FAILED
@@ -214,6 +223,12 @@ Blocked transition:
 PENDING
 → VALIDATING
 → BLOCKED
+
+Protected transition:
+
+PENDING
+→ VALIDATING
+→ SKIPPED_PROTECTED or BLOCKED
 
 Failure transition:
 

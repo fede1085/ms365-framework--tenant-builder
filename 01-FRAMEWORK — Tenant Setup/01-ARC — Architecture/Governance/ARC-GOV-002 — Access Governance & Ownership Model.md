@@ -234,6 +234,18 @@ Elevated access should:
 
 ---
 
+## 11.4 Protected Admin Ownership
+
+Protected admin identities must not have ownership, role assignments, aliases, licenses, or group memberships removed by automated reconciliation.
+
+Changes require manual governance review or a documented emergency override workflow.
+
+Example protected admin identity pattern:
+
+GLOBAL-Admin / homelab@federicomosqueira0910.onmicrosoft.com
+
+---
+
 # 12. Group Governance
 
 ## 12.1 Group Ownership

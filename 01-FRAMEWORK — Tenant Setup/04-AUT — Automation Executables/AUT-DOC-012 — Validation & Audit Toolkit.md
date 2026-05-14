@@ -106,6 +106,12 @@ Check:
 - every shared mailbox has purpose
 - excessive permissions do not exist
 - admin boundaries are respected
+- protected admin accounts exist
+- protected admin accounts remain enabled
+- protected admin accounts retain Global Administrator role
+- protected aliases remain present
+- protected accounts were not mutated by automation
+- automation reports SKIPPED_PROTECTED or BLOCKED events correctly
 
 ---
 
@@ -115,6 +121,9 @@ Check:
 
 - [ ]  homelab exists
 - [ ]  admin users exist
+- [ ]  protected admin accounts exist and remain enabled
+- [ ]  protected admin aliases remain present
+- [ ]  protected Global Administrator role assignments remain present
 - [ ]  department users exist
 - [ ]  display names normalized
 - [ ]  UPN domains correct

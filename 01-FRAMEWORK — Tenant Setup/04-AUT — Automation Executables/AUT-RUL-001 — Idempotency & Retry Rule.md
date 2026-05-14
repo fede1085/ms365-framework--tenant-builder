@@ -331,6 +331,10 @@ Examples:
 
 Protected objects require explicit override approval.
 
+Protected-object violations are non-retryable.
+
+Automation must stop or skip safely. Retries must never attempt to override protected-object controls.
+
 ---
 
 # 20. Logging Requirement

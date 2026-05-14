@@ -260,6 +260,18 @@ without explicit approval.
 
 ---
 
+## 12.3 Lifecycle Exclusion
+
+Protected admin identities are excluded from normal joiner, mover, and leaver automation.
+
+They require manual governance review before any lifecycle change.
+
+Example protected admin identity pattern:
+
+GLOBAL-Admin / homelab@federicomosqueira0910.onmicrosoft.com
+
+---
+
 # 13. Identity Classification
 
 | Classification | Description                   |
