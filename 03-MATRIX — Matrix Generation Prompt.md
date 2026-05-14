@@ -177,27 +177,52 @@ Generate operational MTX data ONLY from validated Blueprint logic.
 
 Generate execution-ready CSV files inside:
 
-```text id="o1u6wc"
+```text
 02-INSTANCES — Projects\[project_name]\03-MTX — Data Matrices
 ```
 
-Required files:
+**Required files:**
 
-```text id="i0e6uh"
-MTX-USERS.csv
-MTX-GROUPS.csv
-MTX-MAILBOXES.csv
-MTX-PERMISSIONS.csv
-```
+* MTX-USERS.csv
+* MTX-GROUPS.csv
+* MTX-MAILBOXES.csv
+* MTX-PERMISSIONS.csv
 
-Optional files:
 
-```text id="s5k0re"
-MTX-LICENSES.csv
-MTX-CHANNELS.csv
-MTX-OWNERSHIP.csv
-MTX-LIFECYCLE.csv
-```
+**Optional files:**
+
+* MTX-LICENSES.csv
+* MTX-CHANNELS.csv
+* MTX-OWNERSHIP.csv
+* MTX-LIFECYCLE.csv
+
+---
+
+# EXECUTION SCHEMA AUTHORITY
+
+Execution-ready CSV schemas are governed by:
+
+@01-FRAMEWORK — Tenant Setup\04-AUT — Automation Executables
+
+Authoritative schema references:
+
+- AUT-DOC-009 — Users CSV Schema.md
+- AUT-DOC-010 — Permissions CSV Schema.md
+- AUT-DOC-011 — Full Tenant Build Script.md
+
+IMPORTANT:
+
+Blueprints define tenant operational logic.
+
+AUT documents define execution-ready CSV structure and operational schema contracts.
+
+MTX generation must:
+
+- generate operational data from validated Blueprint logic
+- use AUT schema contracts as authoritative CSV structure
+- preserve deterministic column consistency with AUT runtime expectations
+
+MTX must NEVER invent alternative execution schemas or column names.
 
 ---
 
@@ -291,7 +316,7 @@ Do NOT simplify intentional governance redundancy.
 
 # FINAL OBJECTIVE
 
-```text id="d0h8ze"
+```text"
 VALIDATED BLUEPRINT LAYER
 → EXECUTION-READY MTX LAYER
 ```
@@ -304,3 +329,31 @@ while preserving:
 * deterministic consistency
 * authority hierarchy
 * framework isolation
+
+----
+
+# EXECUTION SCHEMA AUTHORITY
+
+Execution-ready CSV schemas are governed by:
+
+01-FRAMEWORK — Tenant Setup\04-AUT — Automation Executables
+
+Authoritative schema references:
+
+- AUT-DOC-009 — Users CSV Schema.md
+- AUT-DOC-010 — Permissions CSV Schema.md
+- AUT-DOC-011 — Full Tenant Build Script.md
+
+IMPORTANT:
+
+Blueprints define tenant operational logic.
+
+AUT documents define execution-ready CSV structure and operational schema contracts.
+
+MTX generation must:
+
+- generate operational data from validated Blueprint logic
+- use AUT schema contracts as authoritative CSV structure
+- preserve deterministic column consistency with AUT runtime expectations
+
+MTX must NEVER invent alternative execution schemas or column names.
