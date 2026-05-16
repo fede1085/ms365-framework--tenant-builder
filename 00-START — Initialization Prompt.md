@@ -4,6 +4,8 @@
 
 Use Agent Mode.
 
+This root prompt is a workflow entrypoint. It does not define authority doctrine; authority comes from SYS, CANONICAL, and the framework layers referenced below.
+
 ---
 
 # EXECUTION STATE
@@ -55,7 +57,7 @@ Do NOT modify framework files.
 Read priority must follow:
 
 ```text
-SYS → CAN → ARC → BLP
+SYS → CANONICAL → ARC → BLP → MTX → AUT → INSTANCE/TENANT
 ```
 
 ---
@@ -65,7 +67,7 @@ SYS → CAN → ARC → BLP
 Follow strictly:
 
 ```text
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT
 ```
 
 Current workflow scope:
@@ -80,6 +82,8 @@ This prompt handles ONLY:
 * discovery
 * project initialization
 * master operational blueprint generation
+
+Do not generate tenant content directly unless the user explicitly authorizes `GENERATE`.
 
 It must NOT generate:
 
@@ -99,8 +103,8 @@ Maintain strict ontology boundaries between:
 Includes:
 
 * SYS
-* CAN
-* ARCH
+* CANONICAL
+* ARC
 * semantic governance
 * canonical enforcement
 * framework doctrine
@@ -131,8 +135,8 @@ Represents tenant operational state only.
 Tenant generation must NEVER:
 
 * modify SYS
-* modify CAN
-* modify ARCH
+* modify CANONICAL
+* modify ARC
 * redefine governance
 * redefine semantic meaning
 * redefine canonical meaning
@@ -221,6 +225,8 @@ Forbidden inside tenant instances:
 
 # STEP 3 — GENERATE MASTER OPERATIONAL BLUEPRINT
 
+Run this step only after explicit GENERATE authorization.
+
 Generate:
 
 ```text
@@ -295,7 +301,7 @@ Do NOT continue automatically.
 Core principle:
 
 ```text
-ARCH governs BLP
+ARC governs BLP
 BLP informs MTX
 MTX feeds AUT
 AUT never redefines architecture

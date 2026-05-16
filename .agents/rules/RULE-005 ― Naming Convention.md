@@ -4,6 +4,8 @@ trigger: always_on
 
 # RULE-005 ― Naming Convention
 
+Operational note: this file guides agent naming suggestions. Primary naming authority remains `SYS-STD-002`; canonical enforcement remains `CAN-RUL-002`. Examples below are illustrative operational guidance.
+
 ## Purpose
 
 Use one clear naming system for files, folders, documents, projects, Microsoft 365 objects, scripts, and personal knowledge structures.

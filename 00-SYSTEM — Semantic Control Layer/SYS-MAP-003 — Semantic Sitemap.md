@@ -1,6 +1,7 @@
 # @SYS-MAP-003 - Semantic Sitemap
 
 > **Purpose:** High-level semantic navigation map to help AI systems understand project structure WITHOUT real folders.
+> **Role note:** Conceptual semantic sitemap only; not live filesystem inventory.
 
 ## 1. Hierarchy
 - @ROOT

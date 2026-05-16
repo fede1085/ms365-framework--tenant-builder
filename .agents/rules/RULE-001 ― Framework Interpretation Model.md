@@ -6,11 +6,19 @@ trigger: always_on
 
 The framework contains multiple abstraction layers which must be interpreted differently by the agent.
 
+`.agents` defines operational agent behavior only. It does not redefine semantic doctrine, canonical contracts, or tenant architecture.
+
+Authority order:
+
+SYS → CANONICAL → ARC → BLP → MTX → AUT → INSTANCE/TENANT
+
 
 | Layer | Function               |
 | ----- | --------------------- |
-| ARC   | Baseline concepts |
-| BLP   | Reuzable models |
+| SYS   | Semantic meta-framework control |
+| CANONICAL | Structured schemas, rules, routing, and graph constraints |
+| ARC   | Tenant architecture doctrine |
+| BLP   | Reusable models |
 | MTX   | Real data |
 | AUT   | Execution |
 
@@ -39,7 +47,7 @@ Blueprint files define:
 
 Blueprint examples may contain conceptual operational scenarios for modeling purposes only.
 
-The agent must use these files as reusable implementation logic, NOT as mandatory business structures.
+The agent must use these files as reusable tenant design patterns, NOT as mandatory business structures or runtime input.
 
 ---
 
@@ -51,6 +59,8 @@ Matrix files represent:
 - tenant deployment data
 
 Only Matrix files should be interpreted as deployable tenant configuration data.
+
+AUT must execute validated MTX data only. BLP must never be used as direct runtime input.
 
 ---
 

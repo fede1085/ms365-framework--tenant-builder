@@ -1,6 +1,7 @@
 # @SYS-MAP-005 — Semantic Map
 
 > **Purpose:** Archivo central del Knowledge Graph. Define las restricciones semánticas, jerarquías, dependencias y relaciones globales para los sistemas de IA.
+> **Role note:** High-level semantic map; does not override SYS-MAP-000, SYS-MAP-001, or CANONICAL contracts.
 
 ## 1. Mapa Global (Taxonomy Design)
 La estructura canónica del proyecto se organiza en las siguientes ramas principales:

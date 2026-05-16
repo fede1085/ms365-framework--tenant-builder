@@ -4,6 +4,8 @@
 
 Use Agent Mode.
 
+This root prompt is a workflow entrypoint for MTX generation. It does not define authority doctrine.
+
 ---
 
 # EXECUTION STATE
@@ -71,7 +73,7 @@ Do NOT modify framework files.
 Follow strictly:
 
 ```text id="mjlwm1"
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT
 ```
 
 Current workflow scope:
@@ -104,8 +106,8 @@ Maintain strict ontology boundaries between:
 Includes:
 
 * SYS
-* CAN
-* ARCH
+* CANONICAL
+* ARC
 * semantic governance
 * canonical enforcement
 * framework doctrine
@@ -136,8 +138,8 @@ Represents tenant operational state only.
 MTX generation must NEVER:
 
 * modify SYS
-* modify CAN
-* modify ARCH
+* modify CANONICAL
+* modify ARC
 * redefine governance
 * redefine semantic meaning
 * redefine canonical meaning
@@ -152,6 +154,7 @@ Detect and prevent:
 * framework/tenant authority confusion
 
 MTX operationalizes Blueprint logic only.
+Blueprints are design intent, not runtime input. MTX is the concrete runtime tenant data layer.
 
 ---
 
@@ -170,6 +173,7 @@ validated tenant operational design source
 ```
 
 Generate operational MTX data ONLY from validated Blueprint logic.
+Distinguish semantic IDs from runtime identifiers: semantic IDs describe framework references; runtime identifiers identify concrete tenant objects.
 
 ---
 
@@ -230,7 +234,7 @@ MTX must NEVER invent alternative execution schemas or column names.
 
 MTX generation must:
 
-* apply naming from ARCH
+* apply naming from ARC
 * apply governance from BLP
 * apply ownership logic from MASTER
 * preserve authority hierarchy
@@ -298,7 +302,7 @@ Are you ready for:
 Core principle:
 
 ```text id="b7w4oj"
-ARCH governs BLP
+ARC governs BLP
 BLP informs MTX
 MTX feeds AUT
 AUT never redefines architecture
@@ -329,31 +333,3 @@ while preserving:
 * deterministic consistency
 * authority hierarchy
 * framework isolation
-
-----
-
-# EXECUTION SCHEMA AUTHORITY
-
-Execution-ready CSV schemas are governed by:
-
-01-FRAMEWORK — Tenant Setup\04-AUT — Automation Executables
-
-Authoritative schema references:
-
-- AUT-DOC-009 — Users CSV Schema.md
-- AUT-DOC-010 — Permissions CSV Schema.md
-- AUT-DOC-011 — Full Tenant Build Script.md
-
-IMPORTANT:
-
-Blueprints define tenant operational logic.
-
-AUT documents define execution-ready CSV structure and operational schema contracts.
-
-MTX generation must:
-
-- generate operational data from validated Blueprint logic
-- use AUT schema contracts as authoritative CSV structure
-- preserve deterministic column consistency with AUT runtime expectations
-
-MTX must NEVER invent alternative execution schemas or column names.

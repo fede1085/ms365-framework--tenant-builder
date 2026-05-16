@@ -1,6 +1,7 @@
 ﻿# @SYS-AGT-001 - Agent Map
 
 > **Purpose:** Mapa de agentes. Define las capacidades, límites operacionales y áreas de responsabilidad de la IA dentro del framework.
+> **Role note:** Semantic agent guidance only; `.agents` contains operational agent rules and workflows.
 
 ## 1. Links Importantes
 - **Global Orchestrator Profile:** `C:\Users\fede\.gemini\GEMINI.md`

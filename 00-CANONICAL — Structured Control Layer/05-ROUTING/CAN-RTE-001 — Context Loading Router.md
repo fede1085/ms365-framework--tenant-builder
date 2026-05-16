@@ -17,6 +17,13 @@ authority_level: 1
 >
 > **Compiled Equivalent:** `SYS-CONTEXT.router.yaml` — the machine-readable enforcement representation of this document. Both files must remain semantically identical. If conflict arises, this document (CAN-RTE-001.md) is the human-semantic authority; `SYS-CONTEXT.router.yaml` is the machine-enforcement layer.
 
+## Routing Artifact Roles
+
+- `CAN-RTE-001` is the human-semantic routing authority.
+- `SYS-CONTEXT.router.yaml` is the machine-readable routing table.
+- `SYS-LOAD-PRIORITY.router.yaml` defines startup and load order.
+- `SYS-ROUTING.graph.yaml` is an optional visualization/projection and must not override this router or `SYS-CONTEXT.router.yaml`.
+
 ## 1. Initialization Sequence
 
 Whenever a new Agent session begins, this router dictates the immediate loading sequence before answering user queries.

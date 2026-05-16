@@ -14,14 +14,17 @@ Business → Blueprint → Matrix → Automation
 
 Core model:
 
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT → INSTANCE/TENANT
 
-- ARCH defines governance and rules
-- BLP defines operational structure
+- SYS defines semantic meta-framework control
+- CANONICAL defines schemas, rules, routing, and graph constraints
+- ARC defines tenant architecture doctrine and rules
+- BLP defines reusable tenant blueprint/template structure
 - MTX defines execution-ready data
 - AUT executes validated MTX only
 
 The workflow MUST preserve ontology separation and framework isolation.
+Root prompts are workflow entrypoints, not authority doctrine.
 
 ---
 
@@ -141,6 +144,7 @@ Includes:
 - framework doctrine
 
 Framework sources are STRICT READ-ONLY.
+CANONICAL sources constrain this workflow but do not become tenant implementation content.
 
 ---
 
@@ -290,6 +294,7 @@ Do NOT:
 - simulate deployment
 - bypass validation
 - invoke Deploy-Tenant.ps1 directly
+- use BLP as direct runtime input
 
 ---
 

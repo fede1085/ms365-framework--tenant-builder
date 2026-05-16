@@ -1,3 +1,5 @@
+# role: Machine-readable authority rule projection of CAN-RUL-001.
+# note: This file supports enforcement and must not be treated as independent authority doctrine.
 id: "rule:sys-authority:v1"
 type: "AuthorityRules"
 rules:

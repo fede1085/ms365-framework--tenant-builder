@@ -1,3 +1,5 @@
+# role: Behavioral boundary enforcement related to CAN-SCH-002.
+# note: This file defines enforcement behavior and is not a schema replacement.
 id: "rule:sys-boundary:v1"
 type: "BoundaryRules"
 rules:

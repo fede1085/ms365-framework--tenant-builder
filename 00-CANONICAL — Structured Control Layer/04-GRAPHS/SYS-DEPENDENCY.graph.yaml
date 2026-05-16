@@ -1,6 +1,8 @@
 # source: SYS-MAP-000 — Framework Ontology & Layer Model
 # layer: CAN
 # authority_level: 1
+# role: Machine-readable dependency projection for SYS/CAN/ARC/BLP/MTX/AUT relationships.
+# note: This graph supports deterministic impact analysis but is not independent governance doctrine.
 id: "graph:sys-dependency:v1"
 type: "DirectedGraph"
 nodes:

@@ -1,5 +1,7 @@
 # Taxonomy Design:
 
+Role note: Legacy scaffold/reference guide only. Newer SYS-MAP and CANONICAL files are authoritative when they provide more current structure or control definitions.
+
 /Framework Structure
     /01-ARC — Architecture (Core baselines, policies, and semantic rules)
     /02-BLP — Blueprint Templates (Reusable schemas, generic matrices, safe blueprints)

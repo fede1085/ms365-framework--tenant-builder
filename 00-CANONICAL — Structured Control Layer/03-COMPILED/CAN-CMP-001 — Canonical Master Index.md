@@ -48,23 +48,24 @@ authority_level: 1
 
 ## 3. Compiled Objects Registry
 
-All compiled canonical objects (YAML + JSON pairs) registered below. These are machine-readable representations of their SYS semantic sources.
+All compiled canonical objects registered below are YAML machine-readable representations of their SYS semantic sources.
+YAML is the retained canonical machine-readable compiled format. JSON mirrors are no longer active source files in `03-COMPILED`.
 
-| Compiled ID | Source | YAML | JSON |
-| :--- | :--- | :--- | :--- |
-| `@SYS-MAP-000` | SYS-MAP-000 — Framework Ontology | ✅ | ✅ |
-| `@SYS-MAP-001` | SYS-MAP-001 — Master Index | ✅ | ✅ |
-| `@SYS-MAP-002` | SYS-MAP-002 — Relations Map | ✅ | ✅ |
-| `@SYS-MAP-004` | SYS-MAP-004 — Authority Map | ✅ | ✅ |
-| `@SYS-MAP-007` | SYS-MAP-007 — Extension Dependency Map | ✅ | ✅ |
-| `@SYS-ENT-002` | SYS-ENT-002 — Workload Entity Extension Map | ✅ | ✅ |
-| `@SYS-GOV-001` | SYS-GOV-001 — Read First | ✅ | ✅ |
-| `@SYS-GOV-002` | SYS-GOV-002 — Context Loading Priority | ✅ | ✅ |
-| `@SYS-STD-001` | SYS-STD-001 — Canonical Vocabulary | ✅ | ✅ |
-| `@SYS-STD-002` | SYS-STD-002 — Naming System | ✅ | ✅ |
-| `@SYS-STD-003` | SYS-STD-003 — Maturity Level Vocabulary | ✅ | ✅ |
-| `@SYS-STD-004` | SYS-STD-004 — Sector Template Vocabulary | ✅ | ✅ |
-| `@SYS-TPL-001` | SYS-TPL-001 — Metadata Template | ✅ | ✅ |
+| Compiled ID | Source | Active Compiled Format |
+| :--- | :--- | :--- |
+| `@SYS-MAP-000` | SYS-MAP-000 — Framework Ontology | YAML |
+| `@SYS-MAP-001` | SYS-MAP-001 — Master Index | YAML |
+| `@SYS-MAP-002` | SYS-MAP-002 — Relations Map | YAML |
+| `@SYS-MAP-004` | SYS-MAP-004 — Authority Map | YAML |
+| `@SYS-MAP-007` | SYS-MAP-007 — Extension Dependency Map | YAML |
+| `@SYS-ENT-002` | SYS-ENT-002 — Workload Entity Extension Map | YAML |
+| `@SYS-GOV-001` | SYS-GOV-001 — Read First | YAML |
+| `@SYS-GOV-002` | SYS-GOV-002 — Context Loading Priority | YAML |
+| `@SYS-STD-001` | SYS-STD-001 — Canonical Vocabulary | YAML |
+| `@SYS-STD-002` | SYS-STD-002 — Naming System | YAML |
+| `@SYS-STD-003` | SYS-STD-003 — Maturity Level Vocabulary | YAML |
+| `@SYS-STD-004` | SYS-STD-004 — Sector Template Vocabulary | YAML |
+| `@SYS-TPL-001` | SYS-TPL-001 — Metadata Template | YAML |
 
 ## 4. Node Registration Rule
 

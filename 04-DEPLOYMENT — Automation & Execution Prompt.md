@@ -4,6 +4,8 @@
 
 Use Agent Mode.
 
+This root prompt is a workflow entrypoint for AUT preparation. It does not define authority doctrine.
+
 ---
 
 # EXECUTION STATE
@@ -63,7 +65,7 @@ Do NOT modify framework files.
 Follow strictly:
 
 ```text id="o2z9cp"
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT
 ```
 
 Current workflow scope:
@@ -99,8 +101,8 @@ Maintain strict ontology boundaries between:
 Includes:
 
 * SYS
-* CAN
-* ARCH
+* CANONICAL
+* ARC
 * semantic governance
 * canonical enforcement
 * framework doctrine
@@ -127,8 +129,8 @@ Represents tenant operational state only.
 Deployment preparation must NEVER:
 
 * modify SYS
-* modify CAN
-* modify ARCH
+* modify CANONICAL
+* modify ARC
 * redefine governance
 * redefine semantic meaning
 * redefine canonical meaning
@@ -143,6 +145,7 @@ Prevent:
 * framework/tenant authority confusion
 
 AUT consumes validated MTX data only.
+BLP is not execution input.
 
 ---
 
@@ -206,8 +209,10 @@ Deployment must:
 * remain HUMAN-SUPERVISED
 * require explicit approval
 * require explicit tenant targeting
-* require dry-run capability
+* enforce DryRun first
+* enforce protected-object checks
 * preserve framework isolation
+* avoid destructive execution by default
 
 Do NOT:
 
@@ -215,6 +220,9 @@ Do NOT:
 * auto-connect to Exchange Online
 * auto-run scripts
 * auto-confirm execution
+* assign licenses unless license assignment is explicitly implemented and approved
+* treat BLP as execution input
+* output non-dry-run execution before DryRun passes
 
 ---
 
@@ -243,9 +251,9 @@ Deployment must STOP unless explicitly confirmed.
 
 ---
 
-# APPROVED EXECUTION COMMAND
+# APPROVED DRYRUN COMMAND
 
-If user explicitly approves deployment, output ONLY:
+For first deployment readiness approval, output ONLY the DryRun path:
 
 ```powershell
 .\Run-Project.ps1 -ProjectName "[project_name]"
@@ -258,7 +266,14 @@ Do NOT:
 * generate fake logs
 * invoke Deploy-Tenant.ps1 directly
 
-`Run-Project.ps1` remains the controlled framework entry point.
+`Run-Project.ps1` remains the controlled framework entry point. Treat this command as DryRun/readiness unless a separate explicit EXECUTE approval is given and the framework script contract supports non-dry-run execution.
+
+Before any non-dry-run execution handoff:
+
+* DryRun must complete cleanly
+* protected-object checks must pass
+* tenant targeting must be confirmed
+* license assignment must be explicitly implemented and approved
 
 ---
 
@@ -285,7 +300,7 @@ Automatic continuation is forbidden.
 Core principle:
 
 ```text id="f9u0mk"
-ARCH governs BLP
+ARC governs BLP
 BLP informs MTX
 MTX feeds AUT
 AUT never redefines architecture

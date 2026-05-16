@@ -1,3 +1,5 @@
+# role: Machine-readable routing behavior rules related to CAN-RTE-001 and SYS-CONTEXT.router.yaml.
+# note: This file defines routing behavior constraints and does not replace router tables.
 id: "rule:sys-routing:v1"
 type: "RoutingRules"
 rules:

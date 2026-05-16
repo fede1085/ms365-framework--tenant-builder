@@ -1,6 +1,7 @@
 # @SYS-MAP-006 — Workflow Map
 
 > **Purpose:** Mapa de flujos de trabajo. Define cómo interactúan los procesos lógicos y de ejecución dentro del framework.
+> **Role note:** Defines workflow and orchestration semantics; tenant execution logic remains in the framework AUT layer.
 
 ## 1. Links Importantes
 - **Master Execution Workflow:** `@00-START — Execution Workflow.md` (in 01-FRAMEWORK)

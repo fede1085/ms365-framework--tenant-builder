@@ -1,6 +1,8 @@
 # source: SYS-MAP-000 — Framework Ontology & Layer Model
 # layer: CAN
 # authority_level: 1
+# role: Optional routing visualization projected from SYS-CONTEXT.router.yaml.
+# note: This graph must not override SYS-CONTEXT.router.yaml or CAN-RTE-001.
 id: "graph:sys-routing:v1"
 type: "DirectedGraph"
 nodes:

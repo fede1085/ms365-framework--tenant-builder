@@ -1,6 +1,8 @@
 # source: SYS-MAP-004 — Authority Map
 # layer: CAN
 # authority_level: 1
+# role: Authority-flow projection derived from the authority map and authority rules.
+# note: This graph is not independent authority and must not redefine source governance.
 id: "graph:sys-authority:v1"
 type: "DirectedGraph"
 nodes:

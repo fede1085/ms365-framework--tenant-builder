@@ -1,3 +1,5 @@
+# role: Machine-readable projection of CAN-STATE-001 orchestration modes.
+# note: Distinct from AUT-SYS-001 runtime object states.
 id: "state:execution:v1"
 source: "CAN-STATE-001 — Execution State Model"
 default: "READ_ONLY"

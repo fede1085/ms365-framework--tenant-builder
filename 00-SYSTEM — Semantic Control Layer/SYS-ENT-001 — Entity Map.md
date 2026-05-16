@@ -1,6 +1,7 @@
 # @SYS-ENT-001 - Entity Map
 
 > **Purpose:** Mapa de entidades. Define los objetos principales del sistema, sus límites de responsabilidad y atributos clave.
+> **Role note:** Generic framework entity vocabulary; tenant-specific Microsoft 365 modeling remains in 01-FRAMEWORK.
 
 ## 1. Links Importantes
 - **Diccionario Central:** `@SYS-STD-001 — Canonical Vocabulary.md`

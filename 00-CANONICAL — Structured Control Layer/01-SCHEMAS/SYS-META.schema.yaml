@@ -1,3 +1,5 @@
+# role: Fuller metadata validation schema including relationship and tag fields.
+# note: This schema complements CAN-SCH-001.yaml pending a future consolidation decision.
 $schema: "http://json-schema.org/draft-07/schema#"
 $id: "schema:sys-meta:v1"
 title: "SYS Metadata Schema"

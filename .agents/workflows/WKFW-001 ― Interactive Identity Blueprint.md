@@ -8,12 +8,15 @@ Microsoft 365 Tenant Automation Blueprint
 
 This workflow operates under the following model:
 
-ARCH → defines rules  
+SYS → semantic control  
+CANONICAL → schemas/rules/routing/graph constraints  
+ARC → defines tenant architecture doctrine  
 BLP → defines structure  
 MTX → defines real data  
 AUT → executes data  
 
 The agent MUST respect this separation.
+Root prompts are workflow entrypoints, not authority doctrine.
 
 ## Execution State Gate (Mandatory)
 
@@ -46,6 +49,7 @@ Phase 3 → Matrix Generation (IMPORTANT)
 
 Phase 4 → Execution (external)  
 - Execution is handled only by Automation layer using MTX  
+- BLP is never runtime input for AUT
 
 ---
 
@@ -219,7 +223,7 @@ The agent produces:
 
 The agent must avoid assuming operational structures and real data from examples like Blueprints (BLP-...) and Architecture (ARCH-...) files and must derive the final tenant structure from the interactive project discovery process.
 
-These files are ready for execution by Automation scripts.
+MTX files are prepared for AUT execution handoff.
 
 ---
 
@@ -232,4 +236,4 @@ The agent must differentiate:
 - reusable implementation patterns
 - deployable project data (MTX)
 
-Final tenant structure created for an specific instance of a specific project must always be derived from the interactive discovery process stated in the file @00-START — Initialization Prompt.md
+Final tenant structure for a specific project instance must always be derived from interactive discovery plus the authority order. @00-START — Initialization Prompt.md is a workflow entrypoint, not authority doctrine.

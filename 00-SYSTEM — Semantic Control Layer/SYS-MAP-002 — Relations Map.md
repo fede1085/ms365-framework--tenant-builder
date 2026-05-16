@@ -1,6 +1,7 @@
 # @SYS-MAP-002 — Relations Map
 
 > **Purpose:** Global relationship map to allow AI systems to navigate document relationships.
+> **Role note:** Human-semantic relationship source; CANONICAL graph YAML files are structured projections.
 
 ## Architecture to Blueprint
 @ARC-STD-007

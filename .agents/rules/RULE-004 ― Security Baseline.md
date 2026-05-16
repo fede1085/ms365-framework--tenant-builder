@@ -4,6 +4,8 @@ trigger: always_on
 
 # RULE-004 ― Security Baseline (ARC-STD-014)
 
+Operational note: this file is agent-facing security guidance. It does not replace `ARC-STD-014`, SYS authority, or CANONICAL rules. Detailed controls below are practical checklist guidance, not independent security doctrine.
+
 ## SME Logistics Tenant Blueprint
 
 ---

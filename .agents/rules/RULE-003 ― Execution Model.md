@@ -1,13 +1,18 @@
 # RULE-003 ― Execution Model
 
+`.agents` operational behavior must follow SYS semantic authority and CANONICAL schemas/rules/routing/graph constraints.
+
 ## Execution Model Layer Hierarchy
 
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT → INSTANCE/TENANT
 
-1. **ARCH (Architecture)**: Defines the rules and serves as the source of truth.
-2. **BLP (Blueprint)**: Defines the template layer. It must NEVER contain real tenant data.
-3. **MTX (Matrix)**: Contains instance data. This is the ONLY source of real execution data.
-4. **AUT (Automation)**: Execution layer. Executes ONLY MTX data.
+1. **SYS (Semantic Control)**: Defines semantic doctrine, authority interpretation, and context meaning.
+2. **CANONICAL (Structured Control)**: Defines schemas, rules, routing, and graph constraints.
+3. **ARC (Architecture)**: Defines tenant architecture doctrine and rules.
+4. **BLP (Blueprint)**: Defines reusable tenant templates. It must NEVER contain real tenant data.
+5. **MTX (Matrix)**: Contains concrete instance data. This is the ONLY source of real execution data.
+6. **AUT (Automation)**: Execution layer. Executes ONLY validated MTX data.
+7. **INSTANCE/TENANT**: Concrete tenant-local runtime state.
 
 ## Rules
 
@@ -15,6 +20,8 @@ ARCH → BLP → MTX → AUT
 - MTX is the ONLY source of real execution data.
 - AUT executes ONLY MTX data.
 - Agents MUST NOT skip MTX layer.
+- CANONICAL routing and rules constrain what context agents load and what actions are allowed.
+- Root prompts are workflow entrypoints, not authority doctrine.
 - Naming must always follow Architecture rules.
 - Security rules must always be enforced.
 

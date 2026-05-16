@@ -5,6 +5,8 @@
 
 Use Agent Mode.
 
+This root prompt is a workflow entrypoint for validation. It does not define authority doctrine.
+
 ---
 
 # EXECUTION STATE
@@ -68,7 +70,7 @@ Do NOT modify framework files.
 Follow strictly:
 
 ```text id="svr0r2"
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT
 ```
 
 Current workflow scope:
@@ -102,8 +104,8 @@ Maintain strict ontology boundaries between:
 Includes:
 
 * SYS
-* CAN
-* ARCH
+* CANONICAL
+* ARC
 * semantic governance
 * canonical enforcement
 * framework doctrine
@@ -133,8 +135,8 @@ Represents tenant operational state only.
 Validation must NEVER:
 
 * modify SYS
-* modify CAN
-* modify ARCH
+* modify CANONICAL
+* modify ARC
 * redefine governance
 * redefine semantic meaning
 * redefine canonical meaning
@@ -204,10 +206,12 @@ Validation must:
 * preserve framework isolation
 * preserve tenant isolation
 * preserve deterministic consistency
+* validate against SYS/CANONICAL/ARC/BLP authority and constraints
 
 Validation must NEVER:
 
 * redesign tenant architecture automatically
+* mutate tenant runtime data
 * generate MTX automatically
 * generate AUT automatically
 * create deployment logic
@@ -218,7 +222,7 @@ Generate findings only unless explicitly instructed to correct.
 
 # OUTPUT REQUIREMENTS
 
-Generate a validation report including:
+Return validation findings in chat unless report-file creation is explicitly requested. Include:
 
 * findings summary
 * governance issues
@@ -272,7 +276,7 @@ Are you ready for:
 Core principle:
 
 ```text id="7e9c0z"
-ARCH governs BLP
+ARC governs BLP
 BLP informs MTX
 MTX feeds AUT
 AUT never redefines architecture

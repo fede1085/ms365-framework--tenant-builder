@@ -5,6 +5,8 @@
 
 Use Agent Mode.
 
+This root prompt is a workflow entrypoint for BLP generation. It does not define authority doctrine.
+
 ---
 
 # EXECUTION STATE
@@ -68,7 +70,7 @@ Do NOT modify framework files.
 Follow strictly:
 
 ```text id="2mw9c2"
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT
 ```
 
 Current workflow scope:
@@ -83,6 +85,8 @@ This prompt handles ONLY:
 * Blueprint generation
 * operational decomposition
 * domain Blueprint creation
+
+Blueprint output is tenant design/template content only. It is not runtime MTX and is not direct AUT input.
 
 It must NOT generate:
 
@@ -101,8 +105,8 @@ Maintain strict ontology boundaries between:
 Includes:
 
 * SYS
-* CAN
-* ARCH
+* CANONICAL
+* ARC
 * semantic governance
 * canonical enforcement
 * framework doctrine
@@ -132,8 +136,8 @@ Represents tenant operational state only.
 Blueprint generation must NEVER:
 
 * modify SYS
-* modify CAN
-* modify ARCH
+* modify CANONICAL
+* modify ARC
 * redefine governance
 * redefine semantic meaning
 * redefine canonical meaning
@@ -195,7 +199,7 @@ Do NOT force unnecessary enterprise complexity.
 
 Blueprints must:
 
-* follow ARCH rules
+* follow ARC rules
 * preserve semantic consistency
 * preserve naming conventions
 * preserve ontology boundaries
@@ -210,6 +214,7 @@ Blueprints must NEVER:
 * generate MTX automatically
 * generate AUT automatically
 * create deployment logic
+* act as runtime execution input
 
 ---
 
@@ -265,7 +270,7 @@ Are you ready for:
 Core principle:
 
 ```text id="sjlwmr"
-ARCH governs BLP
+ARC governs BLP
 BLP informs MTX
 MTX feeds AUT
 AUT never redefines architecture
