@@ -11,6 +11,10 @@ This document formalizes the distinction between:
 
 The goal is to ensure deterministic and execution-safe tenant automation behavior.
 
+Implementation status:
+
+This document remains the target AUT runtime contract. Current global framework scripts in `scripts/` are baseline/reference implementations and only partially implement this contract. Tenant-local runtimes may implement stronger behavior, but must remain aligned with this contract.
+
 ---
 
 # Core Principle
@@ -31,7 +35,7 @@ AUT must never infer execution logic directly from Blueprint semantic structures
 Execution flow:
 
 ```text
-ARCH
+ARC
 → BLP
 → Semantic MTX
 → Runtime Normalization
@@ -347,7 +351,7 @@ AUT execution must NOT:
 # Relationship to Framework Layers
 
 ```text
-ARCH
+ARC
 defines governance doctrine
 
 BLP

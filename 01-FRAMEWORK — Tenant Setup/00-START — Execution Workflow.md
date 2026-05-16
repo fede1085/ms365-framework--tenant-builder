@@ -7,7 +7,7 @@ This document defines the safe execution workflow for tenant automation.
 It aligns the automation layer with:
 
 ```text
-ARCH → BLP → MTX → AUT
+SYS → CANONICAL → ARC → BLP → MTX → AUT → INSTANCE/TENANT
 ```
 
 Automation must consume validated Matrix data.
@@ -49,7 +49,7 @@ AUT runtime object states such as PENDING, WAITING_PROPAGATION, READY, FAILED, a
 
 The framework uses a strict semantic abstraction model:
 
-- **ARCH:** Architecture doctrine, governance rules, naming standards, and security baselines.
+- **ARC:** Tenant architecture doctrine, governance rules, naming standards, and security baselines.
 - **BLP:** Reusable operational blueprint templates.
 - **MTX:** Real tenant instance data, usually CSV files.
 - **AUT:** Automation scripts and deployment logic.
@@ -57,10 +57,10 @@ The framework uses a strict semantic abstraction model:
 Layer inheritance:
 
 ```text
-ARCH governs BLP.
+ARC governs BLP.
 BLP informs MTX.
 MTX feeds AUT.
-AUT does not redefine ARCH or BLP.
+AUT does not redefine ARC or BLP.
 ```
 
 ---
@@ -139,7 +139,7 @@ AUT consumes validated MTX only
 
 Generation flow must preserve:
 
-ARCH → BLP → MTX → AUT
+ARC → BLP → MTX → AUT
 ```
 
 ---
@@ -170,9 +170,13 @@ MTX-OWNERSHIP.csv
 MTX-LIFECYCLE.csv
 ```
 
+Teams, SharePoint, device compliance, and access review matrices are framework-capable/future-capable unless active AUT runtime contracts and scripts exist for them.
+
 Matrix files are the only valid execution data source for AUT.
 
-AUT must not consume ARCH or BLP files directly as execution data.
+AUT must not consume ARC or BLP files directly as execution data.
+
+Framework-level `01-FRAMEWORK — Tenant Setup/03-MTX — Data Matrices/` contains generic/sample/template matrices only. Active tenant runtime MTX belongs under `02-INSTANCES — Projects/[project_name]/03-MTX — Data Matrices/`.
 
 ---
 
@@ -353,14 +357,14 @@ Execution principles:
 - Do NOT modify framework files.
 - Do NOT generate tenant data inside framework folders.
 - All execution data comes from tenant `/03-MTX — Data Matrices/`.
-- AUT must never redefine ARCH or BLP.
+- AUT must never redefine ARC or BLP.
 
 ---
 
 ## 15. Final Rule
 
 ```text
-ARCH = Core governance and architecture doctrine
+ARC  = Core governance and architecture doctrine
 BLP  = Reusable operational blueprint logic
 MTX  = Real tenant instance data
 AUT  = Controlled execution scripts

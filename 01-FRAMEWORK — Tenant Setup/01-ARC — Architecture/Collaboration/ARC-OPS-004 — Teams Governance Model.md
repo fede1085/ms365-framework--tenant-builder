@@ -188,7 +188,7 @@ Guest-enabled Teams must define:
 - review cadence
 - data sensitivity boundary
 
-Guests must not receive access to restricted or privileged collaboration spaces unless future ARCH governance explicitly allows it.
+Guests must not receive access to restricted or privileged collaboration spaces unless future ARC governance explicitly allows it.
 
 ### Archive and Review Logic
 
@@ -228,5 +228,5 @@ It must be interpreted together with:
 Future BLP, MTX, or AUT work must preserve:
 
 ```text
-ARCH -> BLP -> MTX -> AUT
+ARC -> BLP -> MTX -> AUT
 ```

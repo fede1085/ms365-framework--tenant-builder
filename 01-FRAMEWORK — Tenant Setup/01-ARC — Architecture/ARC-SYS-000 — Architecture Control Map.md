@@ -16,7 +16,7 @@
 
 This document serves as the **Single Source of Truth** for the entire Microsoft 365 Tenant Blueprint Architecture. It establishes the foundational rules, layer structure, centralized governance, and document relationships that govern the environment.
 
-It acts as the bridge between **LAYER 2 (Meta-Architecture)** logic and the **Execution Lifecycle** (ARCH/BLP/MTX/AUT).
+It acts as the bridge between **LAYER 2 (Meta-Architecture)** logic and the **Execution Lifecycle** (ARC/BLP/MTX/AUT).
 
 ---
 
@@ -34,10 +34,10 @@ It acts as the bridge between **LAYER 2 (Meta-Architecture)** logic and the **Ex
 
 The framework is divided into four sequential execution layers:
 
-1. **ARCH (Architecture):** Defines the strategic rules, governance principles, architecture standards, system-level controls, and foundational models that govern the entire framework (e.g., ARC-SYS, ARC-STD, ARC-GOV, ARC-SEC, ARC-OPS).
+1. **ARC (Architecture):** Defines the strategic rules, governance principles, architecture standards, system-level controls, and foundational models that govern the entire framework (e.g., ARC-SYS, ARC-STD, ARC-GOV, ARC-SEC, ARC-OPS).
 2. **BLP (Blueprint):** Defines reusable blueprint templates, abstract operational structures, implementation models, and tenant design patterns inherited from the Architecture layer.
 3. **MTX (Matrix):** Generates project-specific implementation data including real users, UPNs, departments, groups, mailboxes, permissions, IDs, and structured deployment mappings derived from Blueprint structures.
-4. **AUTO (Automation):** The execution layer consisting of PowerShell scripts, Microsoft Graph integrations, validation tooling, and deployment automation that translates Matrix data into the live Microsoft 365 tenant.
+4. **AUT (Automation):** The execution layer consisting of PowerShell scripts, Microsoft Graph integrations, validation tooling, and deployment automation that translates Matrix data into the live Microsoft 365 tenant.
 
 ---
 
@@ -46,10 +46,10 @@ The framework is divided into four sequential execution layers:
 The framework follows a strict inheritance and execution hierarchy:
 
 ```text
-ARCH → BLP → MTX → AUTO
+ARC → BLP → MTX → AUT
 ```
 
-### ARCH
+### ARC
 
 Defines:
 
@@ -60,7 +60,7 @@ Defines:
 - security baselines
 - operational doctrine
 
-ARCH is the strategic source of truth for the entire framework.
+ARC is the strategic source of truth for the tenant architecture layer.
 
 ---
 
@@ -74,7 +74,7 @@ Defines:
 - implementation logic
 - reusable deployment patterns
 
-BLP must inherit Architecture rules and may NOT redefine governance or security principles established by ARCH.
+BLP must inherit Architecture rules and may NOT redefine governance or security principles established by ARC.
 
 ---
 
@@ -96,7 +96,7 @@ MTX represents the real implementation state for each individual project.
 
 ---
 
-### AUTO
+### AUT
 
 Executes:
 
@@ -108,13 +108,13 @@ Executes:
 - provisioning
 - tenant build operations
 
-AUTO consumes MTX data only and must never modify ARCH or BLP layers directly.
+AUT consumes MTX data only and must never modify ARC or BLP layers directly.
 
 ---
 
 ## 3.2 Layer Boundary Rules (Semantic Safety)
 
-### ARCH Layer (LAYER 2 Focus)
+### ARC Layer (LAYER 2 Focus)
 ```text
 Defines policy and framework logic.
 Must NOT contain project-specific instance data.
@@ -138,7 +138,7 @@ Generated dynamically per project instance.
 
 ---
 
-### AUTO Layer (LAYER 4 Focus)
+### AUT Layer (LAYER 4 Focus)
 ```text
 Executes deployment logic via script and API.
 Must remain idempotent and validation-driven.

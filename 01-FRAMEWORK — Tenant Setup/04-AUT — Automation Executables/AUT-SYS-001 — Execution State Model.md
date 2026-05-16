@@ -26,7 +26,11 @@ It prevents ambiguous automation behavior when scripts create, skip, retry, wait
 
 AUT consumes validated MTX data only.
 
-AUT must never redefine ARCH, BLP, SYS, or CAN governance.
+AUT must never redefine ARC, BLP, SYS, or CANONICAL governance.
+
+Implementation status:
+
+This state model defines target AUT behavior. Current global scripts emit simple dry-run, skip, OK, warning, and error messages, but do not fully implement the complete runtime state model.
 
 ---
 

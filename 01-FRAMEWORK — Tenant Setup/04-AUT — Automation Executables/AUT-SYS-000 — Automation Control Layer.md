@@ -17,7 +17,7 @@ MTX provides the data.
 AUT executes the data.
 
 **Execution Hierarchy:**
-`ARCH (Strategy & Rules) → BLP (Template) → MTX (Data Instance) → AUT (Execution)`
+`ARC (Strategy & Rules) → BLP (Template) → MTX (Data Instance) → AUT (Execution)`
 
 # 3. Required Matrix Input Files
 
@@ -29,6 +29,10 @@ The automation scripts require the following Matrix files for execution:
 - `MTX-LICENSES.csv`
 
 `MTX-LICENSES.csv` is required as an input contract. License runtime execution is not yet implemented.
+
+Current global script implementation:
+
+The global scripts are baseline/reference implementations. They partially implement AUT doctrine, use simpler field names for some current script paths, do not implement protected-object enforcement, and do not implement Teams, SharePoint, non-mailbox permissions, license assignment, full retry orchestration, or full validation reports.
 
 # 4. Execution Rules
 

@@ -299,7 +299,7 @@ Model must support:
 ## 10.3 Separation
 
 ```text
-Structure (ARCH) ≠ Implementation (BLP)
+Structure (ARC) != Implementation (BLP)
 ```
 
 ---

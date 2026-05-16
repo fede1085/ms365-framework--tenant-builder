@@ -29,7 +29,11 @@ This document standardizes how AUT handles:
 
 AUT consumes MTX.
 
-AUT does not redefine ARCH, BLP, SYS, or CAN governance.
+AUT does not redefine ARC, BLP, SYS, or CANONICAL governance.
+
+Implementation status:
+
+This document defines target retry/idempotency behavior. Current global scripts include basic existence checks and a minimal mailbox propagation wait, but do not fully implement bounded retry polling or the full state-driven retry model.
 
 ---
 

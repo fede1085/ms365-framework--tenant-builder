@@ -17,7 +17,7 @@ This document contains:
 
 Define all core users of the tenant.
 
-This matrix feeds:
+This template guides MTX generation for:
 
 - user creation scripts
 - display names
@@ -136,13 +136,13 @@ Avoid generic users.
 
 ---
 
-# 7. Automation Use
+# 7. MTX Generation Use
 
-This file later generates:
+This file guides generation of MTX user data. It is not AUT runtime input.
 
-- New-MgUser
-- passwords
-- licenses
+- user runtime rows
+- generated password strategy
+- license contract fields
 - display names
 - department fields
 - usage location

@@ -422,7 +422,7 @@ Lifecycle governance
 This blueprint must remain compatible with:
 
 ```text
-ARCH
+ARC
 BLP
 OPS
 MTX
@@ -441,6 +441,8 @@ MTX-SEC-005 — Managed Device Inventory
 
 AUT-SEC-003 — Device Compliance Deployment Script
 ```
+
+This mapping is framework-capable/future-capable unless active AUT runtime contracts and scripts exist for device compliance deployment.
 
 ---
 

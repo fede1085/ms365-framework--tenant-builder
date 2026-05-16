@@ -7,14 +7,18 @@ param(
 
     [string]$EnvironmentName = "PROD",
 
-    [switch]$Execute
+    [switch]$Execute,
+
+    [switch]$IncludeTeams,
+
+    [switch]$IncludeSharePoint,
+
+    [string]$SharePointAdminUrl
 )
 
-$BasePath = "..\..\..\02-INSTANCES — Projects"
+$ErrorActionPreference = "Stop"
 
-# -----------------------------
-# ORCHESTRATION MODE
-# -----------------------------
+$BasePath = "..\..\..\02-INSTANCES — Projects"
 
 $OrchestrationMode = if ($Execute) {
     "EXECUTE"
@@ -23,71 +27,37 @@ else {
     "READ_ONLY / DRY-RUN"
 }
 
-# -----------------------------
-# EXECUTION PATH NOTES
-# -----------------------------
-# Expected working directory:
-# 01-FRAMEWORK — Tenant Setup/04-AUT — Automation Executables/scripts
-#
-# Base path resolution depends on framework-relative structure.
-#
-# You may pass:
-# -ProjectPath
-# -TenantId
-# -TenantDomain
-#
-# explicitly to bypass interactive prompts.
-
 Write-Host "=== PROJECT DEPLOY RUNNER ==="
-Write-Host ""
 Write-Host "Orchestration Mode:" $OrchestrationMode
 Write-Host "Working directory:" (Get-Location)
-
-Write-Host "Expected base path root:" `
-    (Resolve-Path "..\..\.." -ErrorAction SilentlyContinue)
-
+Write-Host "Expected base path root:" (Resolve-Path "..\..\.." -ErrorAction SilentlyContinue)
 Write-Host ""
 
-# -----------------------------
-# 1. RESOLVE PROJECT
-# -----------------------------
-
 if ($ProjectPath) {
-
     $projectFullPath = Resolve-Path $ProjectPath
 }
 elseif ($ProjectName) {
-
     $projectFullPath = Join-Path $BasePath $ProjectName
 }
 else {
-
-    Write-Host ""
     Write-Host "Available Projects:"
 
     $projects = Get-ChildItem $BasePath -Directory
 
-    for ($i=0; $i -lt $projects.Count; $i++) {
-
+    for ($i = 0; $i -lt $projects.Count; $i++) {
         Write-Host "[$i] $($projects[$i].Name)"
     }
 
     $selection = Read-Host "Select project number"
-
     $projectFullPath = $projects[$selection].FullName
 }
-
-# -----------------------------
-# 2. VALIDATE
-# -----------------------------
 
 $mtxPath = Join-Path `
     $projectFullPath `
     "03-MTX — Data Matrices"
 
 if (-not (Test-Path $mtxPath)) {
-
-    throw "❌ Matrix folder not found: $mtxPath"
+    throw "FAILED: Matrix folder not found: $mtxPath"
 }
 
 $requiredFiles = @(
@@ -99,85 +69,91 @@ $requiredFiles = @(
 )
 
 foreach ($file in $requiredFiles) {
-
     if (-not (Test-Path (Join-Path $mtxPath $file))) {
-
-        throw "❌ Missing file: $file"
+        throw "FAILED: Missing file: $file"
     }
 }
 
-Write-Host ""
 Write-Host "=== PROJECT VALIDATION ==="
-Write-Host ""
-
 Write-Host "Project Path :" $projectFullPath
 Write-Host "Matrix Path  :" $mtxPath
 Write-Host ""
 
-# -----------------------------
-# 3. TENANT TARGETING
-# -----------------------------
-
 if (-not $TenantId) {
-
     $TenantId = Read-Host "Tenant ID"
 }
 
 if (-not $TenantDomain) {
-
     $TenantDomain = Read-Host "Tenant Domain"
 }
 
-Write-Host ""
 Write-Host "=== TARGET TENANT ==="
-
 Write-Host "Tenant ID      :" $TenantId
 Write-Host "Tenant Domain  :" $TenantDomain
 Write-Host "Environment    :" $EnvironmentName
-
+Write-Host "Include Teams  :" $(if ($IncludeTeams) { "YES" } else { "NO" })
+Write-Host "Include SharePoint:" $(if ($IncludeSharePoint) { "YES" } else { "NO" })
 Write-Host ""
 
-# -----------------------------
-# 4. EXECUTION CONFIRMATION
-# -----------------------------
+$deployScript = Join-Path $PSScriptRoot "Deploy-Tenant.ps1"
 
-if (-not $Execute) {
-
-    Write-Host "[READ_ONLY / DRY-RUN MODE]"
-
-    .\Deploy-Tenant.ps1 `
-        -ProjectPath $mtxPath `
-        -TenantId $TenantId `
-        -TenantDomain $TenantDomain `
-        -EnvironmentName $EnvironmentName
-
-    $confirm = Read-Host `
-        "Type YES to continue into EXECUTE mode"
-
-    if ($confirm -ne "YES") {
-
-        Write-Host "Cancelled."
-
-        exit
-    }
-
-    $Execute = $true
+if (-not (Test-Path $deployScript)) {
+    throw "FAILED: Deploy script not found: $deployScript"
 }
 
-# -----------------------------
-# 5. EXECUTE DEPLOY
-# -----------------------------
+if ($Execute) {
+    Write-Host "[EXECUTE MODE REQUESTED]"
 
-Write-Host ""
-Write-Host "=== STARTING DEPLOYMENT ==="
-Write-Host ""
+    $deployParams = @{
+        ProjectPath = $mtxPath
+        TenantId = $TenantId
+        TenantDomain = $TenantDomain
+        EnvironmentName = $EnvironmentName
+        Execute = $true
+    }
 
-.\Deploy-Tenant.ps1 `
-    -ProjectPath $mtxPath `
-    -TenantId $TenantId `
-    -TenantDomain $TenantDomain `
-    -EnvironmentName $EnvironmentName `
-    -Execute
+    if ($IncludeTeams) {
+        $deployParams["IncludeTeams"] = $true
+    }
+
+    if ($IncludeSharePoint) {
+        $deployParams["IncludeSharePoint"] = $true
+    }
+
+    if ($SharePointAdminUrl) {
+        $deployParams["SharePointAdminUrl"] = $SharePointAdminUrl
+    }
+
+    & $deployScript @deployParams
+}
+else {
+    Write-Host "[READ_ONLY / DRY-RUN MODE]"
+
+    $deployParams = @{
+        ProjectPath = $mtxPath
+        TenantId = $TenantId
+        TenantDomain = $TenantDomain
+        EnvironmentName = $EnvironmentName
+    }
+
+    if ($IncludeTeams) {
+        $deployParams["IncludeTeams"] = $true
+    }
+
+    if ($IncludeSharePoint) {
+        $deployParams["IncludeSharePoint"] = $true
+    }
+
+    if ($SharePointAdminUrl) {
+        $deployParams["SharePointAdminUrl"] = $SharePointAdminUrl
+    }
+
+    & $deployScript @deployParams
+
+    Write-Host ""
+    Write-Host "[STOP] DryRun complete. No execution was started."
+    Write-Host "To execute, rerun this command with -Execute after reviewing DryRun output."
+}
 
 Write-Host ""
 Write-Host "DONE"

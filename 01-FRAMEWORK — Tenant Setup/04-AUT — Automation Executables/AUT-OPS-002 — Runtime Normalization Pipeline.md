@@ -34,6 +34,10 @@ Runtime MTX models executable tenant state.
 AUT executes Runtime MTX only.
 ```
 
+Implementation status:
+
+This pipeline defines the target normalization model. Current global scripts expect a limited baseline field set and do not perform full semantic-to-runtime normalization. Tenant-local runtimes may implement stronger normalization if aligned with `AUT-SCH-001`.
+
 ---
 
 # Pipeline Overview
@@ -41,7 +45,7 @@ AUT executes Runtime MTX only.
 Runtime normalization pipeline:
 
 ```text
-ARCH
+ARC
 → BLP
 → Semantic MTX
 → Runtime Enrichment
@@ -444,7 +448,7 @@ AUT execution must NOT:
 # Relationship to Framework Layers
 
 ```text
-ARCH
+ARC
 defines governance doctrine
 
 BLP

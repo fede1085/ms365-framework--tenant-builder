@@ -35,7 +35,11 @@ for AUT execution.
 
 AUT consumes MTX.
 
-AUT must not redefine ARCH, BLP, SYS, or CAN governance.
+AUT must not redefine ARC, BLP, SYS, or CANONICAL governance.
+
+Implementation status:
+
+This document defines target propagation behavior. Current global scripts include only minimal propagation handling and do not fully implement bounded polling across Graph, Exchange, Teams, SharePoint, licenses, and validation phases.
 
 ---
 

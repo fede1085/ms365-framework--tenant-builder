@@ -92,7 +92,7 @@ It contains reusable patterns only and must not contain real tenant data.
 ## Relationship Chain
 
 ```text
-ARCH SharePoint IA
+ARC SharePoint IA
  -> BLP SharePoint Site Pattern
  -> Future MTX Site/Library Rows
  -> Future AUT Runtime Contract

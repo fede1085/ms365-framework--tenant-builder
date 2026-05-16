@@ -14,6 +14,10 @@ BLP explains the model.
 MTX provides the data.
 AUT executes the data.
 
+Current global script baseline:
+
+The current global scripts do not generate a full validation report. They perform basic file presence checks, dry-run output, simple existence checks, and limited execution feedback. Full validation reporting remains the target toolkit behavior.
+
 ---
 
 # 1. Purpose

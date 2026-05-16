@@ -50,9 +50,9 @@ The Blueprint provides the structural rules that the Matrix must follow:
 - Permissions → Derived from role mapping
 
 **Execution Hierarchy:**
-`ARCH (Strategy & Rules) → BLP (Template) → MTX (Data Instance) → AUT (Execution)`
+`ARC (Strategy & Rules) → BLP (Template) → MTX (Data Instance) → AUT (Execution)`
 
-Any conflicts between BLP and ARCH are resolved in favor of ARCH (`ARC-SYS-000` is the highest authority).
+Any conflicts between BLP and ARC are resolved in favor of ARC (`ARC-SYS-000` is the highest authority).
 
 ---
 
@@ -82,7 +82,7 @@ Maps business roles to Microsoft 365 licensing tiers. (e.g., `ROLE-OPS-COORDINAT
 
 # 5. Automation-Ready Definition
 
-The Blueprint layer acts as a consistent rulebook that automation scripts can trust. Because placeholders and predictable structures are used, an automation engine can ingest the BLP structure, replace placeholders with MTX data, and confidently generate valid PowerShell commands (e.g., `New-MgUser`, `New-MgGroup`, `Add-MailboxPermission`).
+The Blueprint layer acts as a consistent rulebook for generating MTX. BLP guides MTX generation, but AUT must not consume BLP as runtime input. AUT executes validated MTX only.
 
 ---
 

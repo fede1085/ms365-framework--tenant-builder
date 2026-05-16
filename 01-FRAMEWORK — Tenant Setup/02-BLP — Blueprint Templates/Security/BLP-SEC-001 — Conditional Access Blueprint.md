@@ -458,7 +458,7 @@ Lifecycle governance
 This blueprint must remain compatible with:
 
 ```text
-ARCH
+ARC
 BLP
 OPS
 MTX

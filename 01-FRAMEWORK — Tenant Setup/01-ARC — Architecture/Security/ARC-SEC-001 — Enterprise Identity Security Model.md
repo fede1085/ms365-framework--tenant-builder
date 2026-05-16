@@ -383,7 +383,7 @@ Model must scale:
 This model must remain compatible with:
 
 ```text
-ARCH
+ARC
 BLP
 OPS
 MTX

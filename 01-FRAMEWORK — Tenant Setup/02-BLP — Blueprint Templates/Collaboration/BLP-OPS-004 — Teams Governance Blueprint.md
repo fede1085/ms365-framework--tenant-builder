@@ -88,7 +88,7 @@ It contains template logic only and must not contain real tenant data.
 ## Relationship Chain
 
 ```text
-ARCH Teams Governance
+ARC Teams Governance
  -> BLP Teams Governance Pattern
  -> Future MTX Team Rows
  -> Future AUT Runtime Contract

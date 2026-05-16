@@ -87,7 +87,7 @@ framework ontology
 Rules:
 
 - Framework files remain READ-ONLY.
-- MASTER documents must never modify SYS, ARC, CAN, or BLP framework standards.
+- MASTER documents must never modify SYS, ARC, CANONICAL, or BLP framework standards.
 - MASTER documents may only describe tenant operational reality.
 - MASTER documents must never contain deployment execution logic.
 

@@ -12,6 +12,10 @@ BLP explains the model.
 MTX provides the data.
 AUT executes the data.
 
+Current global script baseline:
+
+The global `scripts/Deploy-Tenant.ps1` and `scripts/Run-Project.ps1` are reference implementations. They read MTX only, support dry-run baseline behavior, load `MTX-LICENSES.csv` without assigning licenses, and do not fully implement protected-object enforcement, Teams execution, SharePoint execution, non-mailbox permissions, bounded retry polling, or full validation reports.
+
 ---
 
 # 1. Purpose
@@ -62,11 +66,13 @@ Set display names / departments
 
 ## Phase 05
 
-Assign licenses
+Load license contract; license assignment is not implemented unless explicitly added.
 
 ## Phase 06
 
 Create groups / Teams
+
+Teams execution is framework-capable but not implemented by the current global scripts.
 
 ## Phase 07
 

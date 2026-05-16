@@ -238,7 +238,7 @@ It must be interpreted together with:
 Future implementation must preserve:
 
 ```text
-ARCH -> BLP -> MTX -> AUT
+ARC -> BLP -> MTX -> AUT
 ```
 
-No access review process may redefine ownership, permission, lifecycle, or automation boundaries established by prior ARC and CAN governance.
+No access review process may redefine ownership, permission, lifecycle, or automation boundaries established by prior ARC and CANONICAL governance.

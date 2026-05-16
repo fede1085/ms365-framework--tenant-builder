@@ -373,7 +373,7 @@ Operational workflows
 This strategy must remain compatible with:
 
 ```text
-ARCH
+ARC
 BLP
 OPS
 MTX

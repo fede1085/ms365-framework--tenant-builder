@@ -98,7 +98,7 @@ It contains reusable governance patterns only and must not contain real tenant d
 ## Relationship Chain
 
 ```text
-ARCH Access Review Governance
+ARC Access Review Governance
  -> BLP Access Review Pattern
  -> Future MTX Review Rows
  -> Future Validation/Audit Output

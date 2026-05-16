@@ -29,6 +29,16 @@ BLP explains the model.
 MTX provides the data.
 AUT executes the data.
 
+Current global script-supported fields:
+
+- `MTX-USERS.csv`: `UserPrincipalName`, `MailNickname`, `DisplayName`
+- `MTX-GROUPS.csv`: `GroupName`, `Alias`
+- `MTX-MAILBOXES.csv`: `Mailbox`
+- `MTX-PERMISSIONS.csv`: `Enabled`, `PermissionID`, `TargetAddress`, `UserUPN`, `AccessType`
+- `MTX-LICENSES.csv`: required input contract; loaded only; no license assignment
+
+These fields describe the current global baseline scripts only. They do not replace `AUT-SCH-001` as the target runtime contract.
+
 ---
 
 # 1. Purpose
@@ -37,9 +47,11 @@ Provide the master execution script model.
 
 Goal:
 
-Build a full Microsoft 365 SME logistics tenant from zero using blueprint CSV files.
+Build a full Microsoft 365 SME logistics tenant from zero using runtime MTX CSV files.
 
 This is the orchestration layer.
+
+The current global scripts are baseline/reference scripts and only partially implement this model.
 
 ---
 
@@ -60,6 +72,8 @@ License runtime execution not yet implemented.
 ```
 
 Current scripts load `MTX-LICENSES.csv` to prevent input ambiguity, but do not assign licenses yet.
+
+Protected-object enforcement is required by AUT doctrine but is not implemented in the current global scripts.
 
 Optional:
 
@@ -107,7 +121,7 @@ build-tenant.ps1
 04 Check Protected Objects
 05 Create Users
 06 Set User Properties
-07 Assign Licenses
+07 Load License Contract (no assignment unless implemented)
 08 Create Groups
 09 Add Members
 10 Create Shared Mailboxes
