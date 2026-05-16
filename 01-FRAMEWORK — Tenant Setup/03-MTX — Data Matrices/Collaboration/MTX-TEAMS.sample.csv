@@ -1,0 +1,3 @@
+TeamID,DisplayName,GroupMailNickname,PrimarySMTP,OwnerUPN,Visibility,Enabled
+TEAM-OPS,Operations Team,operations.team,operations.team@example.com,ops.lead@example.com,Private,True
+TEAM-SUP,Support Team,support.team,support.team@example.com,support.agent@example.com,Private,True

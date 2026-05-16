@@ -16,7 +16,9 @@ param(
 
     [switch]$IncludeSharePoint,
 
-    [string]$SharePointAdminUrl
+    [string]$SharePointAdminUrl,
+
+    [string]$OutputReportPath
 )
 
 $ErrorActionPreference = "Stop"
@@ -40,6 +42,59 @@ $SkippedProtectedCount = 0
 $WarningCount = 0
 $FailedCount = 0
 $UnsupportedFutureCount = 0
+$CurrentWorkload = "GENERAL"
+$WorkloadNames = @(
+    "USERS",
+    "GROUPS",
+    "MAILBOXES",
+    "PERMISSIONS",
+    "TEAMS",
+    "SHAREPOINT"
+)
+$WorkloadSummaries = [ordered]@{}
+
+foreach ($workloadName in $WorkloadNames) {
+    $WorkloadSummaries[$workloadName] = [ordered]@{
+        planned = 0
+        created = 0
+        skipped = 0
+        skippedProtected = 0
+        blocked = 0
+        failed = 0
+        unsupportedFuture = 0
+    }
+}
+
+function Set-AutWorkload {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Name
+    )
+
+    if ($script:WorkloadSummaries.Contains($Name)) {
+        $script:CurrentWorkload = $Name
+    }
+    else {
+        $script:CurrentWorkload = "GENERAL"
+    }
+}
+
+function Add-AutWorkloadMetric {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Metric
+    )
+
+    if (-not $script:WorkloadSummaries.Contains($script:CurrentWorkload)) {
+        return
+    }
+
+    if (-not $script:WorkloadSummaries[$script:CurrentWorkload].Contains($Metric)) {
+        return
+    }
+
+    $script:WorkloadSummaries[$script:CurrentWorkload][$Metric]++
+}
 
 function Write-AutState {
     param(
@@ -51,17 +106,33 @@ function Write-AutState {
     )
 
     switch ($State) {
-        "COMPLETED" { $script:CreatedCount++ }
-        "SKIPPED" { $script:SkippedCount++ }
-        "SKIPPED_PROTECTED" { $script:SkippedProtectedCount++ }
-        "BLOCKED" { $script:BlockedCount++ }
+        "COMPLETED" {
+            $script:CreatedCount++
+            Add-AutWorkloadMetric -Metric "created"
+        }
+        "SKIPPED" {
+            $script:SkippedCount++
+            Add-AutWorkloadMetric -Metric "skipped"
+        }
+        "SKIPPED_PROTECTED" {
+            $script:SkippedProtectedCount++
+            Add-AutWorkloadMetric -Metric "skippedProtected"
+        }
+        "BLOCKED" {
+            $script:BlockedCount++
+            Add-AutWorkloadMetric -Metric "blocked"
+        }
         "WARNING" {
             $script:WarningCount++
             if ($Message -match "FUTURE_NOT_IMPLEMENTED|UNSUPPORTED_IN_GLOBAL_BASELINE") {
                 $script:UnsupportedFutureCount++
+                Add-AutWorkloadMetric -Metric "unsupportedFuture"
             }
         }
-        "FAILED" { $script:FailedCount++ }
+        "FAILED" {
+            $script:FailedCount++
+            Add-AutWorkloadMetric -Metric "failed"
+        }
     }
 
     Write-Host "[$State] $Message"
@@ -86,6 +157,7 @@ function Write-AutPlanned {
     )
 
     $script:PlannedCount++
+    Add-AutWorkloadMetric -Metric "planned"
     Write-AutState $State $Message
 }
 
@@ -106,6 +178,87 @@ function Write-AutSummary {
     Write-Host "license rows loaded only     : $LicenseRows"
     Write-Host "license assignments performed: 0"
     Write-Host ""
+    Write-Host "=== WORKLOAD SUMMARY ==="
+
+    foreach ($workloadName in $WorkloadNames) {
+        $summary = $WorkloadSummaries[$workloadName]
+        Write-Host "$workloadName planned=$($summary.planned) created=$($summary.created) skipped=$($summary.skipped) skippedProtected=$($summary.skippedProtected) blocked=$($summary.blocked) failed=$($summary.failed) unsupportedFuture=$($summary.unsupportedFuture)"
+    }
+
+    Write-Host ""
+}
+
+function Get-AutWorkloadSummaryObject {
+    $result = [ordered]@{}
+
+    foreach ($workloadName in $WorkloadNames) {
+        $summary = $WorkloadSummaries[$workloadName]
+        $result[$workloadName] = [ordered]@{
+            planned = $summary.planned
+            created = $summary.created
+            skipped = $summary.skipped
+            skippedProtected = $summary.skippedProtected
+            blocked = $summary.blocked
+            failed = $summary.failed
+            unsupportedFuture = $summary.unsupportedFuture
+        }
+    }
+
+    return $result
+}
+
+function Export-AutExecutionReport {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$FinalStatus,
+
+        [int]$LicenseRows
+    )
+
+    if (-not $OutputReportPath) {
+        return
+    }
+
+    $report = [ordered]@{
+        metadata = [ordered]@{
+            generatedAt = (Get-Date).ToUniversalTime().ToString("o")
+            script = $MyInvocation.MyCommand.Name
+            projectPath = $ProjectPath
+            tenantDomain = $TenantDomain
+            tenantId = $TenantId
+            mode = if ($Execute) { "EXECUTE" } else { "DRY_RUN" }
+            environmentName = $EnvironmentName
+            finalStatus = $FinalStatus
+        }
+        enabledWorkloads = [ordered]@{
+            core = $true
+            teams = [bool]$IncludeTeams
+            sharePoint = [bool]$IncludeSharePoint
+            licenseAssignment = $false
+        }
+        workloadSummaries = Get-AutWorkloadSummaryObject
+        finalCounters = [ordered]@{
+            planned = $PlannedCount
+            created = $CreatedCount
+            skipped = $SkippedCount
+            skippedProtected = $SkippedProtectedCount
+            blocked = $BlockedCount
+            warnings = $WarningCount
+            failed = $FailedCount
+            unsupportedFuture = $UnsupportedFutureCount
+            licenseRowsLoadedOnly = $LicenseRows
+            licenseAssignmentsPerformed = 0
+        }
+    }
+
+    $reportDirectory = Split-Path -Parent $OutputReportPath
+
+    if ($reportDirectory -and -not (Test-Path $reportDirectory)) {
+        New-Item -ItemType Directory -Path $reportDirectory -Force | Out-Null
+    }
+
+    $report | ConvertTo-Json -Depth 8 | Set-Content -Path $OutputReportPath -Encoding UTF8
+    Write-AutState "READY" "Execution report exported to $OutputReportPath"
 }
 
 function Get-AutProjectRoot {
@@ -176,6 +329,75 @@ function Import-AutTenantProtectedObjects {
 
     if (-not $loaded) {
         Write-AutState "WARNING" "No tenant-local protected-object override found; using framework placeholder protected objects"
+    }
+}
+
+function Test-AutModuleAvailability {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ModuleName,
+
+        [Parameter(Mandatory=$true)]
+        [string]$WorkloadName
+    )
+
+    $module = Get-Module -ListAvailable -Name $ModuleName | Select-Object -First 1
+
+    if (-not $module) {
+        $message = "Required module '$ModuleName' for workload '$WorkloadName' is not installed or not visible"
+
+        if ($Execute) {
+            Write-AutBlocked $message
+        }
+        else {
+            Write-AutState "WARNING" "$message; DryRun will continue without importing it"
+        }
+
+        return
+    }
+
+    if (-not $Execute) {
+        Write-AutState "READY" "Module preflight visibility check passed for $WorkloadName: $ModuleName"
+        return
+    }
+
+    try {
+        Import-Module -Name $ModuleName -ErrorAction Stop
+        Write-AutState "READY" "Module preflight passed for $WorkloadName: $ModuleName"
+    }
+    catch {
+        $message = "Module '$ModuleName' for workload '$WorkloadName' is available but failed to import: $_"
+
+        if ($Execute) {
+            Write-AutBlocked $message
+        }
+        else {
+            Write-AutState "WARNING" "$message; DryRun will continue"
+        }
+    }
+}
+
+function Invoke-AutModulePreflight {
+    Write-AutState "VALIDATING" "Running workload module preflight"
+
+    $moduleChecks = @(
+        @{ ModuleName = "Microsoft.Graph"; WorkloadName = "CORE" },
+        @{ ModuleName = "ExchangeOnlineManagement"; WorkloadName = "CORE" }
+    )
+
+    if ($IncludeTeams) {
+        $moduleChecks += @{ ModuleName = "MicrosoftTeams"; WorkloadName = "TEAMS" }
+    }
+
+    if ($IncludeSharePoint) {
+        $moduleChecks += @{ ModuleName = "Microsoft.Online.SharePoint.PowerShell"; WorkloadName = "SHAREPOINT" }
+        $moduleChecks += @{ ModuleName = "PnP.PowerShell"; WorkloadName = "SHAREPOINT" }
+    }
+
+    foreach ($moduleCheck in $moduleChecks) {
+        Test-AutModuleAvailability `
+            -ModuleName $moduleCheck.ModuleName `
+            -WorkloadName $moduleCheck.WorkloadName
     }
 }
 
@@ -1257,6 +1479,8 @@ if ($IncludeSharePoint) {
 Write-AutState "READY" "MTX-LICENSES.csv loaded as input contract only; rows: $($Licenses.Count)"
 Write-AutState "WARNING" "License assignment is not implemented in the global baseline scripts"
 
+Invoke-AutModulePreflight
+
 $ResolvedSharePointAdminUrl = $null
 
 if ($Execute -and $IncludeSharePoint) {
@@ -1264,6 +1488,8 @@ if ($Execute -and $IncludeSharePoint) {
 }
 
 if ($Execute -and $BlockedCount -gt 0) {
+    Write-AutSummary -LicenseRows $Licenses.Count
+    Export-AutExecutionReport -FinalStatus "BLOCKED_PREFLIGHT" -LicenseRows $Licenses.Count
     throw "FAILED: Blocking validation errors detected before execution. Blocked=$BlockedCount"
 }
 
@@ -1282,6 +1508,7 @@ else {
 
 Write-Host ""
 Write-Host "--- USERS ---"
+Set-AutWorkload -Name "USERS"
 
 foreach ($u in $Users) {
     $label = $u.UserPrincipalName
@@ -1330,6 +1557,7 @@ foreach ($u in $Users) {
 
 Write-Host ""
 Write-Host "--- GROUPS ---"
+Set-AutWorkload -Name "GROUPS"
 
 foreach ($g in $Groups) {
     $label = $g.DisplayName
@@ -1388,6 +1616,7 @@ foreach ($g in $Groups) {
 if ($IncludeTeams) {
     Write-Host ""
     Write-Host "--- TEAMS ---"
+    Set-AutWorkload -Name "TEAMS"
 
     $enabledTeams = @($Teams | Where-Object {
         (ConvertTo-AutBool -Value $_.Enabled -Default $false) -and
@@ -1582,6 +1811,7 @@ if ($IncludeTeams) {
 if ($IncludeSharePoint) {
     Write-Host ""
     Write-Host "--- SHAREPOINT SITES ---"
+    Set-AutWorkload -Name "SHAREPOINT"
 
     $enabledSites = @($Sites | Where-Object {
         (ConvertTo-AutBool -Value $_.Enabled -Default $false) -and
@@ -1776,6 +2006,7 @@ if ($IncludeSharePoint) {
 
 Write-Host ""
 Write-Host "--- MAILBOXES ---"
+Set-AutWorkload -Name "MAILBOXES"
 
 foreach ($m in $Mailboxes) {
     $label = $m.TargetAddress
@@ -1817,6 +2048,7 @@ foreach ($m in $Mailboxes) {
 
 Write-Host ""
 Write-Host "--- PERMISSIONS ---"
+Set-AutWorkload -Name "PERMISSIONS"
 
 foreach ($p in $Permissions) {
     $label = "$($p.ObjectType) $($p.AccessType) $($p.UserUPN) -> $($p.TargetAddress)"
@@ -1969,9 +2201,17 @@ foreach ($p in $Permissions) {
     Write-AutState "WARNING" "UNSUPPORTED_IN_GLOBAL_BASELINE permission object type '$($p.ObjectType)' for $label"
 }
 
-Write-AutSummary -LicenseRows $Licenses.Count
+$FinalStatus = if ($FailedCount -gt 0 -or $BlockedCount -gt 0) {
+    "COMPLETED_WITH_FAILURES"
+}
+else {
+    "COMPLETED"
+}
 
-if ($FailedCount -gt 0 -or $BlockedCount -gt 0) {
+Write-AutSummary -LicenseRows $Licenses.Count
+Export-AutExecutionReport -FinalStatus $FinalStatus -LicenseRows $Licenses.Count
+
+if ($FinalStatus -eq "COMPLETED_WITH_FAILURES") {
     Write-Host "[COMPLETED_WITH_FAILURES] DONE"
 
     if ($Execute) {

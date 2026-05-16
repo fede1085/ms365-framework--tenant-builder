@@ -1,0 +1,5 @@
+PermissionID,ObjectType,ObjectName,TargetAddress,UserUPN,AccessType,RoleScope,Enabled
+PERM-001,M365Group,Operations Team,operations.team@example.com,ops.lead@example.com,Owner,Operations,True
+PERM-002,M365Group,Support Team,support.team@example.com,support.agent@example.com,Member,Support,True
+PERM-003,SecurityGroup,Finance Secure Access,finance.secure@example.com,finance.analyst@example.com,Member,Finance,True
+PERM-004,SharedMailbox,Support Mailbox,support@example.com,support.agent@example.com,FullAccess,Support,True

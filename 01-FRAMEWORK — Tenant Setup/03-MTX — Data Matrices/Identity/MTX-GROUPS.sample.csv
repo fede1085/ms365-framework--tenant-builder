@@ -1,0 +1,4 @@
+DisplayName,MailNickname,PrimarySMTP,GroupType,OwnerUPN,MailEnabled,SecurityEnabled
+Operations Team,operations.team,operations.team@example.com,M365Group,ops.lead@example.com,True,False
+Support Team,support.team,support.team@example.com,M365Group,support.agent@example.com,True,False
+Finance Secure Access,finance.secure,finance.secure@example.com,SecurityGroup,finance.analyst@example.com,False,True

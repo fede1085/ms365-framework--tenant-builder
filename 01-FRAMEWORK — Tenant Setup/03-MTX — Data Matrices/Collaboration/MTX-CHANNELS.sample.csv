@@ -1,0 +1,4 @@
+ChannelID,TeamID,TeamDisplayName,ChannelName,ChannelType,Enabled
+CH-OPS-001,TEAM-OPS,Operations Team,CH-OPS-Internal,Standard,True
+CH-OPS-002,TEAM-OPS,Operations Team,CH-FNC-Dispatch,Standard,True
+CH-SUP-001,TEAM-SUP,Support Team,CH-FNC-Tickets,Standard,True

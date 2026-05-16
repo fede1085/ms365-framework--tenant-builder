@@ -1,0 +1,4 @@
+SiteID,SiteName,SiteUrl,SiteType,OwnerUPN,Enabled
+SITE-OPS,Operations Site,https://example.sharepoint.com/sites/operations,TeamBacked,ops.lead@example.com,True
+SITE-SUP,Support Site,https://example.sharepoint.com/sites/support,TeamBacked,support.agent@example.com,True
+SITE-HQ,Company Communications,https://example.sharepoint.com/sites/company-communications,Communication,ops.lead@example.com,True

@@ -1,0 +1,4 @@
+UserPrincipalName,DisplayName,MailNickname,JobTitle,Department,UsageLocation,LicenseSKU,PasswordProfile,AccountEnabled
+ops.lead@example.com,Operations Lead,ops.lead,Operations Lead,Operations,US,M365-BUSINESS-PREMIUM,<GENERATED_SECURE_PASSWORD>,True
+support.agent@example.com,Support Agent,support.agent,Support Agent,Support,US,M365-BUSINESS-BASIC,<GENERATED_SECURE_PASSWORD>,True
+finance.analyst@example.com,Finance Analyst,finance.analyst,Finance Analyst,Finance,US,M365-BUSINESS-STANDARD,<GENERATED_SECURE_PASSWORD>,True

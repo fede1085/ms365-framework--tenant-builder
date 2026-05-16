@@ -13,7 +13,9 @@ param(
 
     [switch]$IncludeSharePoint,
 
-    [string]$SharePointAdminUrl
+    [string]$SharePointAdminUrl,
+
+    [string]$OutputReportPath
 )
 
 $ErrorActionPreference = "Stop"
@@ -93,6 +95,7 @@ Write-Host "Tenant Domain  :" $TenantDomain
 Write-Host "Environment    :" $EnvironmentName
 Write-Host "Include Teams  :" $(if ($IncludeTeams) { "YES" } else { "NO" })
 Write-Host "Include SharePoint:" $(if ($IncludeSharePoint) { "YES" } else { "NO" })
+Write-Host "Output Report  :" $(if ($OutputReportPath) { $OutputReportPath } else { "<none>" })
 Write-Host ""
 
 $deployScript = Join-Path $PSScriptRoot "Deploy-Tenant.ps1"
@@ -124,6 +127,10 @@ if ($Execute) {
         $deployParams["SharePointAdminUrl"] = $SharePointAdminUrl
     }
 
+    if ($OutputReportPath) {
+        $deployParams["OutputReportPath"] = $OutputReportPath
+    }
+
     & $deployScript @deployParams
 }
 else {
@@ -146,6 +153,10 @@ else {
 
     if ($SharePointAdminUrl) {
         $deployParams["SharePointAdminUrl"] = $SharePointAdminUrl
+    }
+
+    if ($OutputReportPath) {
+        $deployParams["OutputReportPath"] = $OutputReportPath
     }
 
     & $deployScript @deployParams

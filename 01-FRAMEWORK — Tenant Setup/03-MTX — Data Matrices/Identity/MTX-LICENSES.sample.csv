@@ -1,0 +1,4 @@
+UserPrincipalName,LicenseSKU,UsageLocation,AssignmentState,Notes
+ops.lead@example.com,M365-BUSINESS-PREMIUM,US,Planned,Input contract example only; global AUT does not assign licenses
+support.agent@example.com,M365-BUSINESS-BASIC,US,Planned,Input contract example only; global AUT does not assign licenses
+finance.analyst@example.com,M365-BUSINESS-STANDARD,US,Planned,Input contract example only; global AUT does not assign licenses
