@@ -293,6 +293,16 @@ Security Admin
 Automation Accounts
 ```
 
+## Protected Object Matrix Output
+
+When a tenant blueprint includes privileged identities, break-glass accounts, tenant owner accounts, or automation operator accounts, the MTX generation phase should produce or update:
+
+MTX-PROTECTED-OBJECTS.csv
+
+This matrix remains tenant-local and must not contain framework-global values.
+
+It feeds AUT safety checks before lifecycle, role, license, alias, ownership, or permission mutations.
+
 ---
 
 ## 12.2 Restrictions

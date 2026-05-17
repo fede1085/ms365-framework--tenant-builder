@@ -15,6 +15,7 @@ $script:AutDefaultProtectedObjects = @{
     RoleTitles = @(
         "Global Administrator"
     )
+    ObjectIds = @()
 }
 
 function Normalize-AutProtectedValue {
@@ -36,6 +37,7 @@ function Get-AutProtectedObjects {
         DisplayNames = @{}
         Aliases = @{}
         RoleTitles = @{}
+        ObjectIds = @{}
     }
 
     foreach ($category in $script:AutDefaultProtectedObjects.Keys) {
@@ -124,6 +126,12 @@ function Import-AutProtectedObjectsCsv {
                 Add-AutProtectedObjectValue -ProtectedObjects $ProtectedObjects -Category "RoleTitles" -Value $row.$field
             }
         }
+
+        foreach ($field in @("ObjectId", "ObjectID", "Id", "ID", "UserId", "UserID")) {
+            if ($row.PSObject.Properties.Name.Contains($field)) {
+                Add-AutProtectedObjectValue -ProtectedObjects $ProtectedObjects -Category "ObjectIds" -Value $row.$field
+            }
+        }
     }
 }
 
@@ -185,6 +193,10 @@ function Test-AutProtectedRow {
         }
 
         if (Test-AutProtectedValue -ProtectedObjects $ProtectedObjects -Category "RoleTitles" -Value $value) {
+            $matches.Add("$field=$value")
+        }
+
+        if (Test-AutProtectedValue -ProtectedObjects $ProtectedObjects -Category "ObjectIds" -Value $value) {
             $matches.Add("$field=$value")
         }
     }

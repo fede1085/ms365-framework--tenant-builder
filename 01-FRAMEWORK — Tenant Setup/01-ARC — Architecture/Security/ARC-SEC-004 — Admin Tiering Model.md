@@ -129,6 +129,24 @@ Example tenant-local protected object:
 GLOBAL-Admin / homelab@federicomosqueira0910.onmicrosoft.com
 ```
 
+## Protected Admin Objects
+
+Privileged administrative accounts that can affect tenant availability or security must be treated as protected objects.
+
+Examples:
+
+- Global Administrator accounts
+- break-glass accounts
+- security administrator accounts
+- tenant owner accounts
+- automation operator accounts
+
+The operational protected-object list should be stored per tenant instance:
+
+02-INSTANCES — Projects/<Tenant>/03-MTX — Data Matrices/MTX-PROTECTED-OBJECTS.csv
+
+AUT must not delete, disable, rename, reset, downgrade, relicense, remove aliases, remove ownership, or alter role assignments for these accounts without explicit approval.
+
 ---
 
 # 6. Tier 1 — Service Administration

@@ -252,6 +252,45 @@ PermissionID
 ObjectID
 ```
 
+## MTX-PROTECTED-OBJECTS.csv
+
+Purpose:
+
+Define tenant-local protected identity objects that automation must not mutate without explicit approval.
+
+Required runtime fields:
+
+- ProtectedObjectID
+- UserPrincipalName
+- DisplayName
+- Alias
+- ObjectId
+- RoleTitle
+- ProtectionReason
+- MutationPolicy
+- Notes
+
+Valid MutationPolicy values:
+
+- NoMutation
+- ManualApprovalRequired
+- EmergencyOverrideOnly
+
+Rules:
+
+- This matrix is tenant-local.
+- This matrix is required for production-safe execution.
+- It should be generated inside each real tenant instance.
+- It is not a normal provisioning matrix.
+- AUT must load it before mutation steps when present.
+- AUT must check it before user, role, license, alias, group, ownership, or permission changes.
+- Matching may occur by UserPrincipalName, Alias, or ObjectId.
+- If matched, AUT must return SKIPPED_PROTECTED or BLOCKED.
+
+Expected instance path:
+
+02-INSTANCES — Projects/<Tenant>/03-MTX — Data Matrices/MTX-PROTECTED-OBJECTS.csv
+
 ---
 
 # Runtime Normalization Layer

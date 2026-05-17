@@ -237,12 +237,24 @@ Detect:
 
 Critical identities must be protected:
 
-
 break-glass
 global admin
 automation accounts
 security admins
 
+Protected identities should be declared in the tenant-local protected objects matrix:
+
+02-INSTANCES — Projects/<Tenant>/03-MTX — Data Matrices/MTX-PROTECTED-OBJECTS.csv
+
+This matrix is the operational source used by AUT to prevent accidental mutation of privileged identities.
+
+Protected identities include:
+
+- break-glass accounts
+- global admin accounts
+- automation accounts
+- security admin accounts
+- tenant owner accounts
 
 ---
 

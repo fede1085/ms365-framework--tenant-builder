@@ -63,6 +63,7 @@ MTX-GROUPS.csv
 MTX-MAILBOXES.csv
 MTX-PERMISSIONS.csv
 MTX-LICENSES.csv
+MTX-PROTECTED-OBJECTS.csv
 ```
 
 License runtime execution status:
@@ -73,7 +74,11 @@ License runtime execution not yet implemented.
 
 Current scripts load `MTX-LICENSES.csv` to prevent input ambiguity, but do not assign licenses yet.
 
-Protected-object enforcement is required by AUT doctrine but is not implemented in the current global scripts.
+Protected-object enforcement is required by AUT doctrine.
+
+`MTX-PROTECTED-OBJECTS.csv` must be loaded when present in the tenant instance.
+
+Current global scripts may still be baseline/reference implementations, but tenant-local runtimes should check this file before modifying users, groups, mailboxes, permissions, roles, aliases, ownership, or licenses.
 
 Optional:
 
@@ -133,6 +138,14 @@ build-tenant.ps1
 Full tenant build scripts must import and check protected-object rules before modifying users, groups, mailboxes, permissions, roles, aliases, or licenses.
 
 License runtime execution remains not implemented unless explicitly documented elsewhere.
+
+**Protected-object rules are loaded from:**
+
+02-INSTANCES — Projects/<Tenant>/03-MTX — Data Matrices/MTX-PROTECTED-OBJECTS.csv
+
+If the file is absent, production execution should warn or block depending on execution mode.
+
+Lab execution may continue with warning only.
 
 ---
 

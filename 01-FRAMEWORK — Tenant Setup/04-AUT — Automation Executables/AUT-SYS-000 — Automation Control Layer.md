@@ -27,10 +27,10 @@ The automation scripts require the following Matrix files for execution:
 - `MTX-MAILBOXES.csv`
 - `MTX-PERMISSIONS.csv`
 - `MTX-LICENSES.csv`
+- `MTX-PROTECTED-OBJECTS.csv`(for production-safe tenant execution)
+- `MTX-LICENSES.csv` (is required as an input contract. License runtime execution is not yet implemented.)
 
-`MTX-LICENSES.csv` is required as an input contract. License runtime execution is not yet implemented.
-
-Current global script implementation:
+**Current global script implementation:**
 
 The global scripts are baseline/reference implementations. They partially implement AUT doctrine, use simpler field names for some current script paths, do not implement protected-object enforcement, and do not implement Teams, SharePoint, non-mailbox permissions, license assignment, full retry orchestration, or full validation reports.
 
@@ -59,6 +59,13 @@ If an object is protected:
 
 ## 4.5 Validation-before-execute rule
 Always validate the structure and content of the Matrix CSV inputs before passing them to the execution scripts.
+
+**Protected-object rules should be loaded from the tenant-local matrix when available:**
+
+02-INSTANCES — Projects/<Tenant>/03-MTX — Data Matrices/MTX-PROTECTED-OBJECTS.csv
+
+This matrix must be checked before any mutation to users, groups, mailboxes, roles, aliases, ownership, permissions, or licenses.
+
 
 ---
 
